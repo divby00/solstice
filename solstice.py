@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 from __future__ import division
-import sys
 import io
-import zipfile
 import pygame
 from pygame import gfxdraw
-import xml.etree.ElementTree as ElementTree
-
+import ziptiled
 import bitmapfont
 
 
@@ -14,256 +11,6 @@ class Player(object):
 
     def __init__(self):
         pass
-
-
-class Tileset(object):
-
-    def __init__(self, name, w, h, tilew, tileh, src, firstgid):
-        self.name = name
-        self.w = w
-        self.h = h
-        self.tilew = tilew
-        self.tileh = tileh
-        self.src = src
-        self.firstgid = firstgid
-        self.img = None
-
-    def __cmp__(self, other):
-        return cmp(self.firstgid, other.firstgid)
-
-
-class Tile(object):
-
-    def __init__(self, srfc, size):
-        self.srfc = srfc
-        self.size = size
-
-
-class Map(object):
-
-    def __init__(self, width, height, tilewidth, tileheight):
-        self.width = width
-        self.height = height
-        self.tilewidth = tilewidth
-        self.tileheight = tileheight
-        self.width_pixels = width * tilewidth
-        self.height_pixels = height * tileheight
-
-
-class Layer(object):
-
-    def __init__(self, name, size):
-        self.name = name
-        self.size = size
-        self.data = []
-        self.zindex = None
-        self.visible = False
-        self.animated_tiles = []
-
-    def get_gid(self, x, y):
-
-        if x < 0 or y < 0:
-            return 0
-
-        if (y * self.size[0]) + x >= (self.size[0] * self.size[1]):
-            return 0
-
-        return self.data[(y * self.size[0]) + x]
-
-    def __cmp__(self, other):
-        return cmp(self.zindex, other.zindex)
-
-
-class ZippedTiledLoader(object):
-
-    def __init__(self, filename, tmxfile):
-        self.zf = zipfile.ZipFile(filename)
-        self.tiles = []
-        self.layers = []
-        self.background = None
-        self.map = None
-        self.marcador = None
-        self.__load(tmxfile)
-
-    def __load(self, tmxfile):
-        xml = self.zf.read('levels/' + tmxfile)
-
-        source = None
-        imgwidth = 0
-        imgheight = 0
-        tilewidth = 0
-        tileheight = 0
-        firstgid = 0
-        name = None
-        tilesets = []
-        root = ElementTree.fromstring(xml)
-
-        #Read basic map info
-        self.map = Map(int(root.get('width')), int(root.get('height')),
-                       int(root.get('tilewidth')), int(root.get('tileheight')))
-
-        #Read tileset info
-        animated_tiles = []
-
-        for tileset in root.findall('tileset'):
-            tilewidth = int(tileset.get('tilewidth'))
-            tileheight = int(tileset.get('tileheight'))
-            firstgid = int(tileset.get('firstgid'))
-            name = tileset.get('name')
-
-            for image in tileset.findall('image'):
-                source = image.get('source')
-                imgwidth = int(image.get('width'))
-                imgheight = int(image.get('height'))
-
-            for tile in tileset.findall('tile'):
-                tileid = int(tile.get('id'))
-
-                for properties in tile.findall('properties'):
-                    for property in properties:
-                        name = property.get('name')
-
-                        if name == 'animated':
-                            if property.get('value') == 'True':
-                                animated_tiles.append(tileid)
-
-            tilesets.append(Tileset(name, imgwidth, imgheight, tilewidth,
-                                    tileheight, source, firstgid))
-
-        tilesets.sort(key=lambda obj: obj.firstgid)
-
-        #Read background info
-        source = None
-
-        for imagelayer in root.findall('imagelayer'):
-            for image in imagelayer.findall('image'):
-                source = image.get('source')
-
-        if source is not None:
-            img_data = self.zf.read('gfx/' + source)
-            byte_data = io.BytesIO(img_data)
-
-            if byte_data is not None:
-                self.background = pygame.image.load(byte_data)
-
-        #Read layer info
-        layerwidth = layerheight = layername = gid = None
-
-        for layer in root.findall('layer'):
-            layerwidth = int(layer.get('width'))
-            layerheight = int(layer.get('height'))
-            layername = layer.get('name')
-            l = Layer(layername, (layerwidth, layerheight))
-
-            for properties in layer.findall('properties'):
-                for property in properties.findall('property'):
-                    prop = property.get('name')
-
-                    if prop == 'zindex':
-                        l.zindex = int(property.get('value'))
-
-                    if prop == 'visible':
-                        l.visible = (property.get('value') == 'True')
-
-            for data in layer.findall('data'):
-                for tile in data.findall('tile'):
-                    gid = int(tile.get('gid'))
-
-                    if gid in animated_tiles:
-                        l.animated_tiles.append(gid)
-
-                    l.data.append(gid)
-
-            self.layers.append(l)
-
-        self.layers.sort(key=lambda obj: obj.zindex)
-
-        # Get beginning point
-        for l in self.layers:
-
-            if l.name == 'special':
-                for a in xrange(0, l.size[1]):
-                    for i in xrange(0, l.size[0]):
-
-                        if l.get_gid(i, a) == 521:
-                            self.start_point = (i, a)
-
-        # Load tiles sprites
-        img_count = 0
-        blank = pygame.Color(0, 0, 0, 0)
-
-        for t in tilesets:
-            img_data = self.zf.read('gfx/' + t.src)
-            byte_data = io.BytesIO(img_data)
-
-            if byte_data is not None:
-                t.img = pygame.image.load(byte_data)
-                t.img = t.img.convert_alpha()
-
-            if t.img is not None:
-
-                for y in xrange(0, t.h, t.tileh):
-
-                    for x in xrange(0, t.w, t.tilew):
-                        srfc = pygame.Surface((t.tilew, t.tileh))
-                        srfc = srfc.convert_alpha()
-
-                        if srfc is not None:
-                            srfc.fill(blank)
-                            srfc.blit(t.img,
-                                      (0, 0),
-                                      (x, y, t.tilew, t.tileh),
-                                      0)
-
-                        self.tiles.append(Tile(srfc, (t.tilew, t.tileh)))
-                        img_count += 1
-
-        # TODO: Remove this
-        img_data = self.zf.read('gfx/marcador.png')
-        byte_data = io.BytesIO(img_data)
-
-        if byte_data is not None:
-            self.marcador = pygame.image.load(byte_data)
-
-        img_data = self.zf.read('gfx/equinox.png')
-        byte_data = io.BytesIO(img_data)
-
-        if byte_data is not None:
-            temp = pygame.image.load(byte_data)
-            self.equinox = []
-            self.animation = 0
-            self.direction = 1
-
-            for i in xrange(0, 1024, 64):
-                srfc = pygame.Surface((64, 64))
-                srfc = srfc.convert_alpha()
-                srfc.fill(blank)
-                srfc.blit(temp, (0, 0), (i, 0, i+64, 64))
-                self.equinox.append(srfc)
-
-        img_data = self.zf.read('gfx/tree.png')
-        byte_data = io.BytesIO(img_data)
-
-        if byte_data is not None:
-            temp = pygame.image.load(byte_data)
-            self.tree = []
-            self.tanimation = 0
-
-            for i in xrange(0, 1152, 192):
-                srfc = pygame.Surface((192, 192))
-                srfc = srfc.convert_alpha()
-                srfc.fill(blank)
-                srfc.blit(temp, (0, 0), (i, 0, i+192, 192))
-                self.tree.append(srfc)
-        # Fin TODO
-
-        self.zf.close()
-
-    def get_gid(self, x, y, name):
-        for l in self.layers:
-            if l.name == name:
-                return l.get_gid(x, y)
-        return 0
 
 
 def render(surface, level, cursor, view_port, player):
@@ -357,23 +104,26 @@ def render(surface, level, cursor, view_port, player):
 
     if level.animation < 0:
         level.animation = 15
-
+    '''
     pygame.draw.line(surface, (255,255,255), (512, 0), (512, 768), 1)
     pygame.draw.line(surface, (255,255,255), (0, 288), (1024, 288), 1)
+    '''
     surface.blit(level.marcador, (0, view_port[1]))
 
 
 def main():
     pygame.init()
-    pygame.display.set_mode((1024, 768))
+    display = pygame.display.set_mode((1024, 768), pygame.DOUBLEBUF)
     pygame.display.set_caption('Solstice, Equinox remake')
     display_info = pygame.display.Info()
+    '''
     display = pygame.display.set_mode((display_info.current_w,
                                       display_info.current_h),
                                       pygame.DOUBLEBUF)
+    '''
     virt = pygame.Surface((display_info.current_w, display_info.current_h), 0)
     pygame.event.set_allowed([pygame.QUIT])
-    level = ZippedTiledLoader('data.zip', 'level01.tmx')
+    level = ziptiled.TiledLoader('data.zip', 'level02.tmx')
     font = bitmapfont.BitmapFont('data.zip', 'font_white.png')
     texto = font.get(', SOLSTICE ,')
     scroll_speed = [16, 16]
