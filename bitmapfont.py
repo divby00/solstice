@@ -6,6 +6,8 @@ import io
 class BitmapFont(object):
 
     FONTS = 'fonts/'
+    GLYPHS_PER_ROW = 32
+    ROWS = 4
 
     def __init__(self, zip_file, font_file):
         zf = zipfile.ZipFile(zip_file)
@@ -24,8 +26,8 @@ class BitmapFont(object):
                     assert(w > 0)
                     assert(h > 0)
 
-                    self.gl_width = w / 32   # 32 are columns (glyphs per row)
-                    self.gl_height = h / 4   # 4  is the number of rows
+                    self.gl_width = w / GLYPHS_PER_ROW
+                    self.gl_height = h / ROWS
                     self.blank = pygame.Color(0, 0, 0, 0)
                     self.glyph = []
                     self.glyphs = {}
