@@ -26,8 +26,8 @@ class BitmapFont(object):
                     assert(w > 0)
                     assert(h > 0)
 
-                    self.gl_width = w / GLYPHS_PER_ROW
-                    self.gl_height = h / ROWS
+                    self.gl_width = w / BitmapFont.GLYPHS_PER_ROW
+                    self.gl_height = h / BitmapFont.ROWS
                     self.blank = pygame.Color(0, 0, 0, 0)
                     self.glyph = []
                     self.glyphs = {}
