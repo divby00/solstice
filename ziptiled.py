@@ -240,11 +240,11 @@ class TiledLoader(object):
             self.animation = 0
             self.direction = 1
 
-            for i in xrange(0, 1024, 64):
-                srfc = pygame.Surface((64, 64))
+            for i in xrange(0, 1024/4, 64/4):
+                srfc = pygame.Surface((64/4, 64/4))
                 srfc = srfc.convert_alpha()
                 srfc.fill(blank)
-                srfc.blit(temp, (0, 0), (i, 0, i+64, 64))
+                srfc.blit(temp, (0, 0), (i, 0, i+(64/4), 64/4))
                 self.equinox.append(srfc)
 
         img_data = self.zf.read(TiledLoader.GFX + 'tree.png')
@@ -255,11 +255,11 @@ class TiledLoader(object):
             self.tree = []
             self.tanimation = 0
 
-            for i in xrange(0, 1152, 192):
-                srfc = pygame.Surface((192, 192))
+            for i in xrange(0, 1152/4, 192/4):
+                srfc = pygame.Surface((192/4, 192/4))
                 srfc = srfc.convert_alpha()
                 srfc.fill(blank)
-                srfc.blit(temp, (0, 0), (i, 0, i+192, 192))
+                srfc.blit(temp, (0, 0), (i, 0, i+(192/4), 192/4))
                 self.tree.append(srfc)
         # Fin TODO
 

@@ -5,6 +5,7 @@ import pygame
 from pygame import gfxdraw
 import ziptiled
 import bitmapfont
+import config
 
 
 class Player(object):
@@ -22,8 +23,8 @@ def render(surface, level, cursor, view_port, player):
     backw = level.background.get_width()
     backh = level.background.get_height()
 
-    for y in xrange(-1, int(768 / backh)):
-        for x in xrange(-1, int(1024 / backw)):
+    for y in xrange(-1, int(192 / backh)):
+        for x in xrange(-1, int(256 / backw)):
             backx = backw - (cursor[0] % backw)
             backy = backh - (cursor[1] % backh)
             surface.blit(level.background,
@@ -112,6 +113,9 @@ def render(surface, level, cursor, view_port, player):
 
 
 def main():
+    
+    cfg = config.Configuration()
+
     pygame.init()
     display = pygame.display.set_mode((1024, 768), pygame.DOUBLEBUF)
     pygame.display.set_caption('Solstice, Equinox remake')
@@ -121,20 +125,24 @@ def main():
                                       display_info.current_h),
                                       pygame.DOUBLEBUF)
     '''
-    virt = pygame.Surface((display_info.current_w, display_info.current_h), 0)
+    
+    #virt = pygame.Surface((display_info.current_w, display_info.current_h), 0)
+    virt = pygame.Surface((256, 192), 0)
+
     pygame.event.set_allowed([pygame.QUIT])
     level = ziptiled.TiledLoader('data.zip', 'level02.tmx')
     font = bitmapfont.BitmapFont('data.zip', 'font_white.png')
     texto = font.get(', SOLSTICE ,')
-    scroll_speed = [16, 16]
+    scroll_speed = [4, 4]
     # OJO!!! 192. Altura del marcador.
-    view_port = [display_info.current_w, display_info.current_h - 192]
+    #view_port = [display_info.current_w, display_info.current_h - (192/4)]
+    view_port = [256, 144]
     running = True
     accumulator = 0
 
     player = Player()
-    player.w = 64
-    player.h = 64
+    player.w = 16
+    player.h = 16
     player.x = level.start_point[0] * level.map.tilewidth
     player.y = level.start_point[1] * level.map.tileheight
     player.absolute_x = player.x
@@ -163,7 +171,7 @@ def main():
         if keys[pygame.K_p]:
             if not check_right_collision(player, level):
                 if (player.x % view_port[0]) >= (view_port[0]/2) - (player.w / 2):
-                    if cursor[0] < level.map.width_pixels - display_info.current_w:
+                    if cursor[0] < level.map.width_pixels - view_port[0]:
                         level.direction = 1
                         cursor[0] += scroll_speed[0]
                         player.absolute_x += scroll_speed[0]
@@ -191,7 +199,7 @@ def main():
         if keys[pygame.K_a]:
             if not check_bottom_collision(player, level):
                 if (player.y % view_port[1]) >= (view_port[1]/2) - (player.h / 2):
-                    if cursor[1] < level.map.height_pixels - display_info.current_h + 192:
+                    if cursor[1] < level.map.height_pixels - view_port[1] + (192/4):
                         cursor[1] += scroll_speed[1]
                         player.absolute_y += scroll_speed[1]
                     else:
@@ -218,9 +226,10 @@ def main():
             running = False
 
         render(virt, level, cursor, view_port, player)
-        virt.blit(texto, (512 - (texto.get_width()/2), 32))
-        display.blit(virt, (0, 0))
-        pygame.display.flip()
+        virt.blit(texto, ((256/2) - (texto.get_width()/2), 32/4))
+        pygame.transform.scale(virt, (1024, 768), display)
+        #display.blit(virt, (0, 0))
+        pygame.display.update()
         #pygame.time.delay(20)
 
     pygame.quit()
