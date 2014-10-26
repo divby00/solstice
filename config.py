@@ -5,6 +5,7 @@ class Configuration(object):
 
     OPT_SCREEN_WIDTH = 'screen width'
     OPT_SCREEN_HEIGHT = 'screen height'
+    OPT_FULLSCREEN = 'fullscreen'
     OPT_SOUND = 'sound'
     OPT_MUSIC = 'music'
     OPT_SOUND_VOL = 'sound volume'
@@ -29,6 +30,8 @@ class Configuration(object):
                                           Configuration.OPT_SCREEN_WIDTH)
             h = self.config_parser.getint(Configuration.SECTION[0],
                                           Configuration.OPT_SCREEN_HEIGHT)
+            self.fullscreen = self.config_parser.getboolean(Configuration.SECTION[0],
+                                                            Configuration.OPT_FULLSCREEN)
             self.sound = self.config_parser.getboolean(Configuration.SECTION[1],
                                                        Configuration.OPT_SOUND)
             self.music = self.config_parser.getboolean(Configuration.SECTION[1],
@@ -49,6 +52,9 @@ class Configuration(object):
             self.config_parser.set(Configuration.SECTION[0],
                                    Configuration.OPT_SCREEN_HEIGHT,
                                    Configuration.SCREEN_SIZE[1])
+            self.config_parser.set(Configuration.SECTION[0],
+                                   Configuration.OPT_FULLSCREEN,
+                                   Configuration.FULLSCREEN)
             self.config_parser.set(Configuration.SECTION[1],
                                    Configuration.OPT_SOUND,
                                    Configuration.SOUND)
@@ -63,6 +69,14 @@ class Configuration(object):
                                    Configuration.MUSIC_VOLUME)
 
             self.save()
+            
+            self.screen_size = (Configuration.SCREEN_SIZE[0],
+                                Configuration.SCREEN_SIZE[1])
+            self.fullscreen = Configuration.FULLSCREEN
+            self.sound = Configuration.SOUND
+            self.music = Configuration.MUSIC
+            self.sound_vol = Configuration.SOUND_VOLUME
+            self.music_vol = Configuration.MUSIC_VOLUME
 
     def save(self):
         with open(Configuration.CFGFILE_NAME, 'wb') as config_file:

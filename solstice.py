@@ -8,8 +8,6 @@ import bitmapfont
 import config
 import resmngr
 
-SCREEN = (1024, 768)
-
 
 class Player(object):
 
@@ -117,10 +115,15 @@ def render(surface, level, cursor, view_port, player):
 
 def main():
     cfg = config.Configuration()
-
     pygame.init()
-    display = pygame.display.set_mode((SCREEN[0], SCREEN[1]), pygame.DOUBLEBUF)
-    pygame.display.set_caption('Solstice, Equinox remake')
+    graphics_params = pygame.DOUBLEBUF
+
+    if cfg.fullscreen:
+        graphics_params |= pygame.FULLSCREEN
+        
+    display = pygame.display.set_mode(cfg.screen_size, graphics_params)
+    pygame.display.set_caption('Solstice')
+    pygame.mouse.set_visible(False)
     display_info = pygame.display.Info()
     virt = pygame.Surface((256, 192), 0)
     pygame.event.set_allowed([pygame.QUIT])
@@ -135,11 +138,15 @@ def main():
 
     clock = pygame.time.Clock()
     level = ziptiled.TiledLoader('data.zip', 'level02.tmx')
-    pygame.mixer.music.load(music)
-    pygame.mixer.music.play(-1, 0.0)
+
+    if cfg.music:
+        pygame.mixer.music.load(music)
+        pygame.mixer.music.set_volume(cfg.music_vol / 10)
+        pygame.mixer.music.play(-1, 0.0)
+
     running = True
     dither_anim = 6
-    FPS = 35
+    FPS = 30
 
     while running:
 
@@ -156,14 +163,14 @@ def main():
         if dither_anim > 0:
             dither_anim -= 1
 
-        pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
+        pygame.transform.scale(virt, cfg.screen_size, display)
         pygame.display.update()
         clock.tick(FPS)
 
         if dither_anim == 0:
             running = False
             virt.blit(logo, (128-(logo.get_width()/2), 96-(logo.get_height()/2)))
-            pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
+            pygame.transform.scale(virt, cfg.screen_size, display)
             pygame.display.update()
             pygame.time.delay(1500)
 
@@ -185,13 +192,13 @@ def main():
         if dither_anim < 7:
             dither_anim += 1
 
-        pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
+        pygame.transform.scale(virt, cfg.screen_size, display)
         pygame.display.update()
         clock.tick(FPS)
 
         if dither_anim == 7:
             running = False
-            pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
+            pygame.transform.scale(virt, cfg.screen_size, display)
             pygame.display.update()
 
     scroll_speed = [4, 4]
@@ -286,7 +293,7 @@ def main():
             running = False
 
         render(virt, level, cursor, view_port, player)
-        pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
+        pygame.transform.scale(virt, cfg.screen_size, display)
         pygame.display.update()
         milliseconds = clock.tick(FPS)
         playtime += milliseconds / 1000.0
