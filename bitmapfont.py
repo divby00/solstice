@@ -5,45 +5,33 @@ import io
 
 class BitmapFont(object):
 
-    FONTS = 'fonts/'
-    GLYPHS_PER_ROW = 32
-    ROWS = 4
 
-    def __init__(self, zip_file, font_file):
-        zf = zipfile.ZipFile(zip_file)
-        img_data = zf.read(BitmapFont.FONTS + font_file)
+    def __init__(self, surface, rows, columns):
 
-        if img_data is not None:
-            byte_data = io.BytesIO(img_data)
+        w = surface.get_width()
+        h = surface.get_height()
 
-            if byte_data is not None:
-                surface = pygame.image.load(byte_data)
+        assert(w > 0)
+        assert(h > 0)
 
-                if surface is not None:
-                    w = surface.get_width()
-                    h = surface.get_height()
+        self.gl_width = w / columns
+        self.gl_height = h / rows
+        self.blank = pygame.Color(0, 0, 0, 0)
+        self.glyph = []
+        self.glyphs = {}
 
-                    assert(w > 0)
-                    assert(h > 0)
+        for a in xrange(0, h, self.gl_height):
 
-                    self.gl_width = w / BitmapFont.GLYPHS_PER_ROW
-                    self.gl_height = h / BitmapFont.ROWS
-                    self.blank = pygame.Color(0, 0, 0, 0)
-                    self.glyph = []
-                    self.glyphs = {}
+            for i in xrange(0, w, self.gl_width):
+                dst_surface = pygame.Surface((self.gl_width,
+                                              self.gl_height))
 
-                    for a in xrange(0, h, self.gl_height):
-
-                        for i in xrange(0, w, self.gl_width):
-                            dst_surface = pygame.Surface((self.gl_width,
-                                                          self.gl_height))
-
-                            if dst_surface is not None:
-                                dst_surface = dst_surface.convert_alpha()
-                                dst_surface.fill(self.blank)
-                                dst_surface.blit(surface, (0, 0),
-                                                (i, a, self.gl_width, self.gl_height), 0)
-                                self.glyph.append(dst_surface)
+                if dst_surface is not None:
+                    dst_surface = dst_surface.convert_alpha()
+                    dst_surface.fill(self.blank)
+                    dst_surface.blit(surface, (0, 0),
+                                    (i, a, self.gl_width, self.gl_height), 0)
+                    self.glyph.append(dst_surface)
 
     def get(self, text):
         assert(text is not None)

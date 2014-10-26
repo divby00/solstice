@@ -6,9 +6,9 @@ from pygame import gfxdraw
 import ziptiled
 import bitmapfont
 import config
-import resource_mngr
+import resmngr
 
-SCREEN = (512, 384)
+SCREEN = (1024, 768)
 
 
 class Player(object):
@@ -116,7 +116,6 @@ def render(surface, level, cursor, view_port, player):
 
 
 def main():
-    
     cfg = config.Configuration()
 
     pygame.init()
@@ -127,28 +126,26 @@ def main():
     pygame.event.set_allowed([pygame.QUIT])
 
     #Resource loading...
-    res_mngr = resource_mngr.ResourceManager('data.zip')
-    logo = res_mngr.get('logo')
-    music = res_mngr.get('ingame')
+    rmngr = resmngr.ResourceManager('data.zip')
+    logo = rmngr.get('logo')
+    menu = rmngr.get('menu')
+    music = rmngr.get('menu_song')
+    font = rmngr.get('font')
     #Resource loading...
 
+    clock = pygame.time.Clock()
     level = ziptiled.TiledLoader('data.zip', 'level02.tmx')
-    font = bitmapfont.BitmapFont('data.zip', 'font_white.png')
     pygame.mixer.music.load(music)
     pygame.mixer.music.play(-1, 0.0)
     running = True
     dither_anim = 6
+    FPS = 35
 
     while running:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_RETURN]:
-            running = False
 
         virt.blit(logo, (128-(logo.get_width()/2), 96-(logo.get_height()/2)))
 
@@ -159,16 +156,45 @@ def main():
         if dither_anim > 0:
             dither_anim -= 1
 
+        pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
+        pygame.display.update()
+        clock.tick(FPS)
+
+        if dither_anim == 0:
+            running = False
+            virt.blit(logo, (128-(logo.get_width()/2), 96-(logo.get_height()/2)))
+            pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
+            pygame.display.update()
+            pygame.time.delay(1500)
+
+    dither_anim = 0
+    running = True
+
+    while running:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        virt.blit(logo, (128-(logo.get_width()/2), 96-(logo.get_height()/2)))
+
+        for a in xrange(0, 192, 8):
+            for i in xrange(0, 256, 8):
+                virt.blit(level.dither[dither_anim], (i, a))
+
+        if dither_anim < 7:
+            dither_anim += 1
 
         pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
         pygame.display.update()
-        pygame.time.delay(20)
+        clock.tick(FPS)
 
+        if dither_anim == 7:
+            running = False
+            pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
+            pygame.display.update()
 
-    texto = font.get(', SOLSTICE ,')
     scroll_speed = [4, 4]
-    # OJO!!! 192. Altura del marcador.
-    #view_port = [display_info.current_w, display_info.current_h - (192/4)]
     view_port = [256, 144]
     running = True
     accumulator = 0
@@ -192,6 +218,7 @@ def main():
         cursor[1] = 0
 
     player.y = view_port[1] / 2 - (player.h / 2)
+    playtime = 0.0
 
     while running:
 
@@ -259,11 +286,10 @@ def main():
             running = False
 
         render(virt, level, cursor, view_port, player)
-        virt.blit(texto, ((256/2) - (texto.get_width()/2), 8))
         pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
-        #display.blit(virt, (0, 0))
         pygame.display.update()
-        #pygame.time.delay(20)
+        milliseconds = clock.tick(FPS)
+        playtime += milliseconds / 1000.0
 
     pygame.quit()
     return 0
