@@ -1,7 +1,0 @@
-<root>
-    <resource type='gfx' name='logo' src='gfx/logo.png' x='0' y='0' width='76' height='45'/>
-    <resource type='gfx' name='menu' src='gfx/menu.png' x='0' y='0' width='360' height='225'/>
-    <resource type='music' name='ingame_song' src='music/ingame.xm'/>
-    <resource type='music' name='menu_song' src='music/menu.xm'/>
-    <resource type='font' name='font' src='fonts/font_white.png' rows='4' columns='32'/>
-</root>
