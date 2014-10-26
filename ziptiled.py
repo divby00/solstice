@@ -225,6 +225,26 @@ class TiledLoader(object):
                         img_count += 1
 
         # TODO: Remove this
+        img_data = self.zf.read(TiledLoader.GFX + 'dither.png')
+        byte_data = io.BytesIO(img_data)
+
+        if byte_data is not None:
+            temp = pygame.image.load(byte_data)
+            self.dither = []
+
+            for i in xrange(0, 56, 8):
+                srfc = pygame.Surface((8, 8))
+                srfc = srfc.convert_alpha()
+                srfc.fill(blank)
+                srfc.blit(temp, (0, 0), (i, 0, i+(8), 8))
+                self.dither.append(srfc)
+
+        img_data = self.zf.read(TiledLoader.GFX + 'logo.png')
+        byte_data = io.BytesIO(img_data)
+
+        if byte_data is not None:
+            self.logo = pygame.image.load(byte_data)
+
         img_data = self.zf.read(TiledLoader.GFX + 'marcador.png')
         byte_data = io.BytesIO(img_data)
 

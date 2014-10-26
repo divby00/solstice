@@ -6,6 +6,9 @@ from pygame import gfxdraw
 import ziptiled
 import bitmapfont
 import config
+import resource_mngr
+
+SCREEN = (512, 384)
 
 
 class Player(object):
@@ -117,21 +120,51 @@ def main():
     cfg = config.Configuration()
 
     pygame.init()
-    display = pygame.display.set_mode((1024, 768), pygame.DOUBLEBUF)
+    display = pygame.display.set_mode((SCREEN[0], SCREEN[1]), pygame.DOUBLEBUF)
     pygame.display.set_caption('Solstice, Equinox remake')
     display_info = pygame.display.Info()
-    '''
-    display = pygame.display.set_mode((display_info.current_w,
-                                      display_info.current_h),
-                                      pygame.DOUBLEBUF)
-    '''
-    
-    #virt = pygame.Surface((display_info.current_w, display_info.current_h), 0)
     virt = pygame.Surface((256, 192), 0)
-
     pygame.event.set_allowed([pygame.QUIT])
+
+    #Resource loading...
+    res_mngr = resource_mngr.ResourceManager('data.zip')
+    logo = res_mngr.get('logo')
+    music = res_mngr.get('ingame')
+    #Resource loading...
+
     level = ziptiled.TiledLoader('data.zip', 'level02.tmx')
     font = bitmapfont.BitmapFont('data.zip', 'font_white.png')
+    pygame.mixer.music.load(music)
+    pygame.mixer.music.play(-1, 0.0)
+    running = True
+    dither_anim = 6
+
+    while running:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_RETURN]:
+            running = False
+
+        virt.blit(logo, (128-(logo.get_width()/2), 96-(logo.get_height()/2)))
+
+        for a in xrange(0, 192, 8):
+            for i in xrange(0, 256, 8):
+                virt.blit(level.dither[dither_anim], (i, a))
+
+        if dither_anim > 0:
+            dither_anim -= 1
+
+
+        pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
+        pygame.display.update()
+        pygame.time.delay(20)
+
+
     texto = font.get(', SOLSTICE ,')
     scroll_speed = [4, 4]
     # OJO!!! 192. Altura del marcador.
@@ -226,8 +259,8 @@ def main():
             running = False
 
         render(virt, level, cursor, view_port, player)
-        virt.blit(texto, ((256/2) - (texto.get_width()/2), 32/4))
-        pygame.transform.scale(virt, (1024, 768), display)
+        virt.blit(texto, ((256/2) - (texto.get_width()/2), 8))
+        pygame.transform.scale(virt, (SCREEN[0], SCREEN[1]), display)
         #display.blit(virt, (0, 0))
         pygame.display.update()
         #pygame.time.delay(20)
