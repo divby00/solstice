@@ -2,7 +2,8 @@
 from __future__ import division
 import io
 import pygame
-from pygame import gfxdraw
+import gettext
+import i18n
 import ziptiled
 import bitmapfont
 import config
@@ -114,15 +115,16 @@ def render(surface, level, cursor, view_port, player):
 
 
 def main():
+    gettext.bindtextdomain('solstice', 'locale')
+    gettext.textdomain('solstice')
     cfg = config.Configuration()
     pygame.init()
     graphics_params = pygame.DOUBLEBUF
 
     if cfg.fullscreen:
         graphics_params |= pygame.FULLSCREEN
-        
     display = pygame.display.set_mode(cfg.screen_size, graphics_params)
-    pygame.display.set_caption('Solstice')
+    pygame.display.set_caption(i18n._('Solstice'))
     pygame.mouse.set_visible(False)
     display_info = pygame.display.Info()
     virt = pygame.Surface((256, 192), 0)
