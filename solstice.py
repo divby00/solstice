@@ -136,6 +136,7 @@ def main():
     menu = rmngr.get('menu')
     music = rmngr.get('menu_song')
     font = rmngr.get('font')
+    laser = pygame.mixer.Sound(rmngr.get('laser'))
     #Resource loading...
 
     clock = pygame.time.Clock()
@@ -264,6 +265,10 @@ def main():
                 else:
                     player.x -= scroll_speed[0]
                     player.absolute_x -= scroll_speed[0]
+
+        if keys[pygame.K_SPACE]:
+            laser.play()
+
 
         if keys[pygame.K_a]:
             if not check_bottom_collision(player, level):

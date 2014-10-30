@@ -14,13 +14,17 @@ class ResourceManager(object):
 
         self.images = {}
         self.songs = {}
+        self.samples = {}
         self.fonts = {}
+        self.resources = root.findall('resource')
 
         for resource in root.findall('resource'):
             if resource.get('type')=='gfx':
                 self.load_gfx(resource)
             elif resource.get('type')=='music':
                 self.load_song(resource)
+            elif resource.get('type')=='sample':
+                self.load_sample(resource)
             elif resource.get('type')=='font':
                 self.load_font(resource)
 
@@ -57,6 +61,15 @@ class ResourceManager(object):
         if song is not None:
             self.songs[name] = song
 
+    def load_sample(self, resource):
+        src = resource.get('src')
+        name = resource.get('name')
+        sample_data = self.zf.read(src)
+        sample = io.BytesIO(sample_data)
+
+        if sample is not None:
+            self.samples[name] = sample
+
     def load_font(self, resource):
         src = resource.get('src')
         name = resource.get('name')
@@ -79,4 +92,6 @@ class ResourceManager(object):
             return self.songs[res_name]
         elif self.fonts.has_key(res_name):
             return self.fonts[res_name]
+        elif self.samples.has_key(res_name):
+            return self.samples[res_name]
 
