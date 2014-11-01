@@ -5,7 +5,6 @@ import sys
 import pygame
 import gettext
 import i18n
-import ziptiled
 import bitmapfont
 import config
 import resmngr
