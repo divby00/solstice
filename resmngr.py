@@ -1,8 +1,9 @@
 import pygame
 import io
+import xml.etree.ElementTree as ElementTree
 import zipfile
 import bitmapfont
-import xml.etree.ElementTree as ElementTree
+import tiled_tools
 
 
 class ResourceManager(object):
@@ -16,6 +17,7 @@ class ResourceManager(object):
         self.songs = {}
         self.samples = {}
         self.fonts = {}
+        self.levels = {}
         self.resources = root.findall('resource')
 
         for resource in root.findall('resource'):
@@ -27,12 +29,13 @@ class ResourceManager(object):
                 self.load_sample(resource)
             elif resource.get('type')=='font':
                 self.load_font(resource)
+            elif resource.get('type')=='level':
+                self.load_level(resource)
 
-        '''
         print('Loaded %d images' % len(self.images))
         print('Loaded %d songs' % len(self.songs))
         print('Loaded %d fonts' % len(self.fonts))
-        '''
+        print('Loaded %d levels' % len(self.levels))
 
     def load_gfx(self, resource):
         src = resource.get('src')
@@ -85,6 +88,17 @@ class ResourceManager(object):
             if font is not None:
                 self.fonts[name] = font
 
+    def load_level(self, resource):
+        src = resource.get('src')
+        name = resource.get('name')
+        lvl_data = self.zf.read(src)
+
+        if lvl_data is not None:
+            level = tiled_tools.TiledLevel(self.zf, lvl_data)
+
+            if level is not None:
+                self.levels[name] = level
+
     def get(self, res_name):
         if self.images.has_key(res_name):
             return self.images[res_name]
@@ -94,4 +108,6 @@ class ResourceManager(object):
             return self.fonts[res_name]
         elif self.samples.has_key(res_name):
             return self.samples[res_name]
+        elif self.levels.has_key(res_name):
+            return self.levels[res_name]
 
