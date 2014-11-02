@@ -30,7 +30,13 @@ class GameScene(scene.Scene):
         self.half_view_port = (self.view_port[0]/2, self.view_port[1]/2)
         self.half_player = (self.player.w/2, self.player.h/2)
 
+        self.music = rmngr.get('ingame_song')
+
     def run(self):
+
+        if pygame.mixer.music.get_busy()==False:
+            pygame.mixer.music.load(self.music)
+            pygame.mixer.music.play(-1)
 
         keys = pygame.key.get_pressed()
 
@@ -66,10 +72,6 @@ class GameScene(scene.Scene):
                     self.player.direction = -1
                     self.player.x -= self.scroll_speed[0]
                     self.player.absolute_x -= self.scroll_speed[0]
-
-        if keys[pygame.K_SPACE]:
-            laser.play()
-
 
         if keys[pygame.K_a]:
             if not check_bottom_collision(self.player, self.current_level):

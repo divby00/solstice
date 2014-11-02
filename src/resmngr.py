@@ -8,7 +8,7 @@ import tiled_tools
 
 class ResourceManager(object):
 
-    def __init__(self, cfg, zipfilename, xmlfilename='resources.xml'):
+    def __init__(self, scr, cfg, zipfilename, xmlfilename='resources.xml'):
         file_path = ''.join([cfg.data_path, zipfilename])
         self.zf = zipfile.ZipFile(file_path)
         xml = self.zf.read(xmlfilename)
@@ -20,25 +20,39 @@ class ResourceManager(object):
         self.fonts = {}
         self.levels = {}
         self.resources = root.findall('resource')
+        self.total_resources = len(root.findall('resource'))
+        self.actual_resource = 0
 
         for resource in root.findall('resource'):
-            if resource.get('type')=='gfx':
+            if resource.get('type') == 'gfx':
                 self.__load_gfx(resource)
-            elif resource.get('type')=='music':
+                self.actual_resource += 1
+            elif resource.get('type') == 'music':
                 self.__load_song(resource)
-            elif resource.get('type')=='sample':
+                self.actual_resource += 1
+            elif resource.get('type') == 'sample':
                 self.__load_sample(resource)
-            elif resource.get('type')=='font':
+                self.actual_resource += 1
+            elif resource.get('type') == 'font':
                 self.__load_font(resource)
-            elif resource.get('type')=='level':
+                self.actual_resource += 1
+            elif resource.get('type') == 'level':
                 self.__load_level(resource)
+                self.actual_resource += 1
+            self.__update_load_screen(scr)
 
-        '''
-        print('Loaded %d images' % len(self.images))
-        print('Loaded %d songs' % len(self.songs))
-        print('Loaded %d fonts' % len(self.fonts))
-        print('Loaded %d levels' % len(self.levels))
-        '''
+        self.__update_load_screen(scr)
+        pygame.time.delay(500)
+
+    def __update_load_screen(self, scr):
+        scr.virt.fill((0, 0, 0, 0))
+        pygame.draw.rect(scr.virt, (0, 170, 0), (100, 92, 56, 8), 1)
+        bar_size = (self.actual_resource * 52) / self.total_resources
+        pygame.draw.rect(scr.virt, (85, 255, 85), (102, 94, bar_size, 4), 0)
+        pygame.transform.scale(scr.virt,
+                               scr.screen_size,
+                               scr.display)
+        pygame.display.update()
 
     def __load_gfx(self, resource):
         src, name = self.__get_common_info(resource)
@@ -103,14 +117,13 @@ class ResourceManager(object):
         return src, name
 
     def get(self, res_name):
-        if self.images.has_key(res_name):
+        if self.images in res_name:
             return self.images[res_name]
-        elif self.songs.has_key(res_name):
+        elif self.songs in res_name:
             return self.songs[res_name]
-        elif self.fonts.has_key(res_name):
+        elif self.fonts in res_name:
             return self.fonts[res_name]
-        elif self.samples.has_key(res_name):
+        elif self.samples in res_name:
             return self.samples[res_name]
-        elif self.levels.has_key(res_name):
+        elif self.levels in res_name:
             return self.levels[res_name]
-

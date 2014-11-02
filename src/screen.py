@@ -12,7 +12,8 @@ class Screen(object):
             graphics_params |= pygame.FULLSCREEN
 
         self.screen_size = cfg.screen_size
-        self.display = pygame.display.set_mode(self.screen_size, graphics_params)
+        self.display = pygame.display.set_mode(self.screen_size,
+                                               graphics_params)
         self.display_info = pygame.display.Info()
         self.virt = pygame.Surface(Screen.WINDOW_SIZE, 0)
         pygame.display.set_caption(caption)

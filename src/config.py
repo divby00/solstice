@@ -31,9 +31,9 @@ class Configuration(object):
 
         if len(parsed_file) > 0:
             self.data_path = self.config_parser.get(Configuration.SECTION[0],
-                                               Configuration.OPT_DATA_PATH)
+                                                    Configuration.OPT_DATA_PATH)
             self.locale_path = self.config_parser.get(Configuration.SECTION[0],
-                                               Configuration.OPT_LOCALE_PATH)
+                                                      Configuration.OPT_LOCALE_PATH)
             w = self.config_parser.getint(Configuration.SECTION[1],
                                           Configuration.OPT_SCREEN_WIDTH)
             h = self.config_parser.getint(Configuration.SECTION[1],
