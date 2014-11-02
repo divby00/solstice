@@ -5,13 +5,13 @@ import player
 
 class GameScene(scene.Scene):
 
-    def __init__(self, rmngr, scene_speed=30):
-        super(GameScene, self).__init__(rmngr, scene_speed)
-        self.marcador = rmngr.get('marcador')
-        self.level01 = rmngr.get('level01')
-        self.level02 = rmngr.get('level02')
+    def __init__(self, resourcemanager, scene_speed=30):
+        super(GameScene, self).__init__(resourcemanager, scene_speed)
+        self.marcador = resourcemanager.get('marcador')
+        self.level01 = resourcemanager.get('level01')
+        self.level02 = resourcemanager.get('level02')
         self.current_level = self.level02
-        self.player = player.Player(rmngr, self.current_level)
+        self.player = player.Player(resourcemanager, self.current_level)
 
         ''' Scroll related variables '''
         self.scroll_speed = [4, 4]
@@ -30,7 +30,7 @@ class GameScene(scene.Scene):
         self.half_view_port = (self.view_port[0]/2, self.view_port[1]/2)
         self.half_player = (self.player.w/2, self.player.h/2)
 
-        self.music = rmngr.get('ingame_song')
+        self.music = resourcemanager.get('ingame_song')
 
     def run(self):
 

@@ -12,6 +12,8 @@ class Screen(object):
             graphics_params |= pygame.FULLSCREEN
 
         self.screen_size = cfg.screen_size
+        self.icon = pygame.image.load("solstice.png")
+        pygame.display.set_icon(self.icon)
         self.display = pygame.display.set_mode(self.screen_size,
                                                graphics_params)
         self.display_info = pygame.display.Info()

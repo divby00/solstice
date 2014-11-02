@@ -2,8 +2,18 @@ import pygame
 import io
 import xml.etree.ElementTree as ElementTree
 import zipfile
-import bitmapfont
+import i18n
+import bitmap_font
 import tiled_tools
+
+
+class ResourceNotFoundError(Exception):
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return self.value
 
 
 class ResourceManager(object):
@@ -49,6 +59,10 @@ class ResourceManager(object):
         pygame.draw.rect(scr.virt, (0, 170, 0), (100, 92, 56, 8), 1)
         bar_size = (self.actual_resource * 52) / self.total_resources
         pygame.draw.rect(scr.virt, (85, 255, 85), (102, 94, bar_size, 4), 0)
+
+        for x in xrange(0, 51, 3):
+            pygame.draw.rect(scr.virt, (0, 0, 0), (101+x, 93, 4, 6), 1)
+
         pygame.transform.scale(scr.virt,
                                scr.screen_size,
                                scr.display)
@@ -96,7 +110,7 @@ class ResourceManager(object):
 
         if byte_data is not None:
             surface = pygame.image.load(byte_data)
-            font = bitmapfont.BitmapFont(surface, rows, columns)
+            font = bitmap_font.BitmapFont(surface, rows, columns)
 
             if font is not None:
                 self.fonts[name] = font
@@ -117,13 +131,19 @@ class ResourceManager(object):
         return src, name
 
     def get(self, res_name):
-        if res_name in self.images:
-            return self.images[res_name]
-        elif res_name in self.songs:
-            return self.songs[res_name]
-        elif res_name in self.fonts:
-            return self.fonts[res_name]
-        elif res_name in self.samples:
-            return self.samples[res_name]
-        elif res_name in self.levels:
-            return self.levels[res_name]
+        try:
+            if res_name in self.images:
+                return self.images[res_name]
+            elif res_name in self.songs:
+                return self.songs[res_name]
+            elif res_name in self.fonts:
+                return self.fonts[res_name]
+            elif res_name in self.samples:
+                return self.samples[res_name]
+            elif res_name in self.levels:
+                return self.levels[res_name]
+            else:
+                message = i18n._('Resource %s not found.' % res_name)
+                raise ResourceNotFoundError(message)
+        except ResourceNotFoundError as e:
+            print(e.value)

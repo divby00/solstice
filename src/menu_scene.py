@@ -5,16 +5,16 @@ import i18n
 
 class MenuScene(scene.Scene):
 
-    def __init__(self, rmngr, scene_speed=30):
-        super(MenuScene, self).__init__(rmngr, scene_speed)
-        self.menu = rmngr.get('menu')
+    def __init__(self, resourcemanager, scene_speed=30):
+        super(MenuScene, self).__init__(resourcemanager, scene_speed)
+        self.menu = resourcemanager.get('menu')
         self.panel = []
         panel = ['panel0', 'panel1', 'panel2',
                  'panel3', 'panel4', 'panel5',
                  'panel6', 'panel7', 'panel8']
 
         for p in xrange(0, len(panel)):
-            self.panel.insert(p, rmngr.get(panel[p]))
+            self.panel.insert(p, resourcemanager.get(panel[p]))
 
         self.text = self.font.get('Solstice')
         self.text_0 = self.font.get(i18n._('Test Text'))
@@ -23,7 +23,7 @@ class MenuScene(scene.Scene):
         self.pnl_srf.fill((0, 0, 0, 0))
         img = -1
 
-        self.music = rmngr.get('menu_song')
+        self.music = resourcemanager.get('menu_song')
 
         for a in xrange(0, 80, 8):
             for i in xrange(0, 128, 8):

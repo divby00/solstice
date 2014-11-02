@@ -4,7 +4,7 @@ import pygame
 import gettext
 import i18n
 import config
-import resmngr
+import resource_manager
 import scene_manager
 import scene
 import logo_scene
@@ -19,17 +19,17 @@ def main():
     gettext.textdomain('solstice')
     pygame.init()
     scr = screen.Screen(cfg, i18n._('Solstice'))
-    rmngr = resmngr.ResourceManager(scr, cfg, 'data.zip')
-    logoscene = logo_scene.LogoScene(rmngr)
-    menuscene = menu_scene.MenuScene(rmngr)
-    gamescene = game_scene.GameScene(rmngr)
-    scene_mngr = scene_manager.SceneManager(scr)
-    scene_mngr.set(logoscene)
-    scene_mngr.run()
-    scene_mngr.set(menuscene)
-    scene_mngr.run()
-    scene_mngr.set(gamescene)
-    scene_mngr.run()
+    resourcemanager = resource_manager.ResourceManager(scr, cfg, 'data.zip')
+    logoscene = logo_scene.LogoScene(resourcemanager)
+    menuscene = menu_scene.MenuScene(resourcemanager)
+    gamescene = game_scene.GameScene(resourcemanager)
+    scenemanager = scene_manager.SceneManager(scr)
+    scenemanager.set(logoscene)
+    scenemanager.run()
+    scenemanager.set(menuscene)
+    scenemanager.run()
+    scenemanager.set(gamescene)
+    scenemanager.run()
     cfg.save()
     pygame.quit()
     return 0
