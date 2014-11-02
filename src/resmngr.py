@@ -117,13 +117,13 @@ class ResourceManager(object):
         return src, name
 
     def get(self, res_name):
-        if self.images in res_name:
+        if res_name in self.images:
             return self.images[res_name]
-        elif self.songs in res_name:
+        elif res_name in self.songs:
             return self.songs[res_name]
-        elif self.fonts in res_name:
+        elif res_name in self.fonts:
             return self.fonts[res_name]
-        elif self.samples in res_name:
+        elif res_name in self.samples:
             return self.samples[res_name]
-        elif self.levels in res_name:
+        elif res_name in self.levels:
             return self.levels[res_name]
