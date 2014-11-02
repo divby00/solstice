@@ -3,6 +3,15 @@ import scene
 import i18n
 
 
+class Star(object):
+
+    def __init__(self, x, y, star_type, frame):
+        self.x = x
+        self.y = y
+        self.star_type = star_type
+        self.frame = frame
+
+
 class MenuScene(scene.Scene):
 
     def __init__(self, resourcemanager, scene_speed=30):
@@ -13,11 +22,16 @@ class MenuScene(scene.Scene):
                  'panel3', 'panel4', 'panel5',
                  'panel6', 'panel7', 'panel8']
 
+        stars = ['star0', 'star1', 'star2',
+                 'star3', 'star4', 'star5',
+                 'star6', 'star7', 'star8',
+                 'star9']
+
         for p in xrange(0, len(panel)):
             self.panel.insert(p, resourcemanager.get(panel[p]))
 
-        self.text = self.font.get('Solstice')
-        self.text_0 = self.font.get(i18n._('Test Text'))
+        self.text = self.font.get(i18n._('Press Return'), 256)
+        self.intro_text = self.font.get(i18n._('In a very near place a nuclear plant is going to blow!'), 200)
         self.pnl_srf = pygame.Surface((128, 80))
         self.pnl_srf = self.pnl_srf.convert_alpha()
         self.pnl_srf.fill((0, 0, 0, 0))
@@ -61,4 +75,10 @@ class MenuScene(scene.Scene):
             self.running = False
 
     def render(self, scr):
-        scr.virt.blit(self.menu, (128-self.menu.get_width()/2, 0))
+        #scr.virt.blit(self.menu, (128-self.menu.get_width()/2, 0))
+        scr.virt.blit(self.menu, (0, 0))
+        scr.virt.blit(self.text, (128-self.text.get_width()/2, 172))
+        scr.virt.blit(self.intro_text, (128-self.intro_text.get_width()/2, 80))
+
+    def __init_stars(self):
+        pass

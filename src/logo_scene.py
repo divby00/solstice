@@ -9,6 +9,7 @@ class LogoScene(scene.Scene):
     def __init__(self, resourcemanager, scene_speed=30):
         super(LogoScene, self).__init__(resourcemanager, scene_speed)
         self.logo = resourcemanager.get('logo')
+        self.logo_sound = resourcemanager.get('logo_sound')
         self.dither = []
         dither_images = [
             'dither0', 'dither1', 'dither2',
@@ -20,6 +21,7 @@ class LogoScene(scene.Scene):
 
         self.dither_anim = len(self.dither)
         self.fading = 0
+        pygame.mixer.Sound(self.logo_sound).play()
 
     def run(self):
 
