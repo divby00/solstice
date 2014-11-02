@@ -10,7 +10,7 @@ class GameScene(scene.Scene):
         self.marcador = rmngr.get('marcador')
         self.level01 = rmngr.get('level01')
         self.level02 = rmngr.get('level02')
-        self.current_level = self.level01
+        self.current_level = self.level02
         self.player = player.Player(rmngr, self.current_level)
 
         ''' Scroll related variables '''

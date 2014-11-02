@@ -8,8 +8,9 @@ import tiled_tools
 
 class ResourceManager(object):
 
-    def __init__(self, zipfilename, xmlfilename='resources.xml'):
-        self.zf = zipfile.ZipFile(zipfilename)
+    def __init__(self, cfg, zipfilename, xmlfilename='resources.xml'):
+        file_path = ''.join([cfg.data_path, zipfilename])
+        self.zf = zipfile.ZipFile(file_path)
         xml = self.zf.read(xmlfilename)
         root = ElementTree.fromstring(xml)
 
@@ -22,28 +23,29 @@ class ResourceManager(object):
 
         for resource in root.findall('resource'):
             if resource.get('type')=='gfx':
-                self.load_gfx(resource)
+                self.__load_gfx(resource)
             elif resource.get('type')=='music':
-                self.load_song(resource)
+                self.__load_song(resource)
             elif resource.get('type')=='sample':
-                self.load_sample(resource)
+                self.__load_sample(resource)
             elif resource.get('type')=='font':
-                self.load_font(resource)
+                self.__load_font(resource)
             elif resource.get('type')=='level':
-                self.load_level(resource)
+                self.__load_level(resource)
 
+        '''
         print('Loaded %d images' % len(self.images))
         print('Loaded %d songs' % len(self.songs))
         print('Loaded %d fonts' % len(self.fonts))
         print('Loaded %d levels' % len(self.levels))
+        '''
 
-    def load_gfx(self, resource):
-        src = resource.get('src')
+    def __load_gfx(self, resource):
+        src, name = self.__get_common_info(resource)
         width = int(resource.get('width'))
         height = int(resource.get('height'))
         x = int(resource.get('x'))
         y = int(resource.get('y'))
-        name = resource.get('name')
         img_data = self.zf.read(src)
         byte_data = io.BytesIO(img_data)
 
@@ -55,27 +57,24 @@ class ResourceManager(object):
             srfc.blit(temp, (0, 0), (x, y, x + width, y + height))
             self.images[name] = srfc
 
-    def load_song(self, resource):
-        src = resource.get('src')
-        name = resource.get('name')
+    def __load_song(self, resource):
+        src, name = self.__get_common_info(resource)
         song_data = self.zf.read(src)
         song = io.BytesIO(song_data)
 
         if song is not None:
             self.songs[name] = song
 
-    def load_sample(self, resource):
-        src = resource.get('src')
-        name = resource.get('name')
+    def __load_sample(self, resource):
+        src, name = self.__get_common_info(resource)
         sample_data = self.zf.read(src)
         sample = io.BytesIO(sample_data)
 
         if sample is not None:
             self.samples[name] = sample
 
-    def load_font(self, resource):
-        src = resource.get('src')
-        name = resource.get('name')
+    def __load_font(self, resource):
+        src, name = self.__get_common_info(resource)
         rows = int(resource.get('rows'))
         columns = int(resource.get('columns'))
         fnt_data = self.zf.read(src)
@@ -88,9 +87,8 @@ class ResourceManager(object):
             if font is not None:
                 self.fonts[name] = font
 
-    def load_level(self, resource):
-        src = resource.get('src')
-        name = resource.get('name')
+    def __load_level(self, resource):
+        src, name = self.__get_common_info(resource)
         lvl_data = self.zf.read(src)
 
         if lvl_data is not None:
@@ -98,6 +96,11 @@ class ResourceManager(object):
 
             if level is not None:
                 self.levels[name] = level
+
+    def __get_common_info(self, resource):
+        src = resource.get('src')
+        name = resource.get('name')
+        return src, name
 
     def get(self, res_name):
         if self.images.has_key(res_name):

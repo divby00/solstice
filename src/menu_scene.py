@@ -48,7 +48,10 @@ class MenuScene(scene.Scene):
                 self.pnl_srf.blit(self.text, (32,16))
 
     def run(self):
-        pass
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_RETURN]:
+            self.running = False
 
     def render(self, scr):
         scr.virt.blit(self.menu, (128-self.menu.get_width()/2,0))

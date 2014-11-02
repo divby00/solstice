@@ -12,21 +12,25 @@ import menu_scene
 import game_scene
 import screen
 
+
 def main():
-    gettext.bindtextdomain('solstice', 'locale')
-    gettext.textdomain('solstice')
     cfg = config.Configuration()
+    gettext.bindtextdomain('solstice', cfg.locale_path)
+    gettext.textdomain('solstice')
     pygame.init()
-    scr = screen.Screen(cfg.screen_size, cfg, i18n._('Solstice'))
-    rmngr = resmngr.ResourceManager('data.zip')
+    scr = screen.Screen(cfg, i18n._('Solstice'))
+    rmngr = resmngr.ResourceManager(cfg, 'data.zip')
     logoscene = logo_scene.LogoScene(rmngr)
     menuscene = menu_scene.MenuScene(rmngr)
     gamescene = game_scene.GameScene(rmngr)
     scene_mngr = scene_manager.SceneManager(scr)
     scene_mngr.set(logoscene)
     scene_mngr.run()
+    scene_mngr.set(menuscene)
+    scene_mngr.run()
     scene_mngr.set(gamescene)
     scene_mngr.run()
+    cfg.save()
     pygame.quit()
     return 0
 

@@ -5,14 +5,14 @@ class Screen(object):
 
     WINDOW_SIZE = (256, 192)
 
-    def __init__(self, screen_size, cfg, caption):
+    def __init__(self, cfg, caption):
         graphics_params = pygame.DOUBLEBUF
 
         if cfg.fullscreen:
             graphics_params |= pygame.FULLSCREEN
 
-        self.screen_size = screen_size
-        self.display = pygame.display.set_mode(screen_size, graphics_params)
+        self.screen_size = cfg.screen_size
+        self.display = pygame.display.set_mode(self.screen_size, graphics_params)
         self.display_info = pygame.display.Info()
         self.virt = pygame.Surface(Screen.WINDOW_SIZE, 0)
         pygame.display.set_caption(caption)
