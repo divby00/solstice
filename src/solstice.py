@@ -19,6 +19,7 @@ def main():
     gettext.textdomain('solstice')
     pygame.init()
     scr = screen.Screen(cfg, i18n._('Solstice'))
+    pygame.mixer.pre_init(44100,-16,2, 1024 * 3)
     resourcemanager = resource_manager.ResourceManager(scr, cfg, 'data.zip')
     logoscene = logo_scene.LogoScene(resourcemanager)
     menuscene = menu_scene.MenuScene(resourcemanager)

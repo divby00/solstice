@@ -29,15 +29,17 @@ class GameScene(scene.Scene):
         self.player.y = self.view_port[1] / 2 - (self.player.h / 2)
         self.half_view_port = (self.view_port[0]/2, self.view_port[1]/2)
         self.half_player = (self.player.w/2, self.player.h/2)
-
-        self.music = resourcemanager.get('ingame_song')
+	self.song = resourcemanager.get('level01_song')
+	self.laser = resourcemanager.get('laser')
+	self.music = pygame.mixer.Sound(self.song)
+	self.playing = False
 
     def run(self):
 
-        if pygame.mixer.music.get_busy()==False:
-            pygame.mixer.music.load(self.music)
-            pygame.mixer.music.play(-1)
-
+	if not self.playing:
+	    self.playing = True
+            self.music.play(-1)
+	
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_p]:
@@ -98,6 +100,9 @@ class GameScene(scene.Scene):
                 else:
                     self.player.y -= self.scroll_speed[1]
                     self.player.absolute_y -= self.scroll_speed[1]
+
+	if keys[pygame.K_SPACE]:
+	    self.laser.play()
 
         if keys[pygame.K_ESCAPE]:
             self.running = False

@@ -21,9 +21,13 @@ class LogoScene(scene.Scene):
 
         self.dither_anim = len(self.dither)
         self.fading = 0
-        pygame.mixer.Sound(self.logo_sound).play()
+	self.playing = False
 
     def run(self):
+
+	if not self.playing:
+	    self.playing = True
+	    pygame.mixer.Sound(self.logo_sound).play()
 
         if self.dither_anim > -1 and self.fading == 0:
             self.dither_anim -= 1
