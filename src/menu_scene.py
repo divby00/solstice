@@ -31,7 +31,7 @@ class MenuScene(scene.Scene):
             self.panel.insert(p, resourcemanager.get(panel[p]))
 
         self.text = self.font.get(i18n._('Press Return'), 256)
-        self.intro_text = self.font.get(i18n._('In a very near place a nuclear plant is going to blow!'), 200)
+        self.intro_text = self.font.get(i18n._('In a very near place a nuclear plant is going to blow!'), 256)
         self.pnl_srf = pygame.Surface((128, 80))
         self.pnl_srf = self.pnl_srf.convert_alpha()
         self.pnl_srf.fill((0, 0, 0, 0))
@@ -75,10 +75,11 @@ class MenuScene(scene.Scene):
             self.running = False
 
     def render(self, scr):
-        #scr.virt.blit(self.menu, (128-self.menu.get_width()/2, 0))
-        scr.virt.blit(self.menu, (0, 0))
+        scr.virt.blit(self.menu, (128-self.menu.get_width()/2, 0))
+        #scr.virt.blit(self.menu, (0, 0))
         scr.virt.blit(self.text, (128-self.text.get_width()/2, 172))
-        scr.virt.blit(self.intro_text, (128-self.intro_text.get_width()/2, 80))
+        #scr.virt.blit(self.intro_text, (128-self.intro_text.get_width()/2, 80))
+        scr.virt.blit(self.intro_text, (128-self.intro_text.get_width()/2, 68))
 
     def __init_stars(self):
         pass

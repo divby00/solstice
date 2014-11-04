@@ -10,7 +10,7 @@ class GameScene(scene.Scene):
         self.marcador = resourcemanager.get('marcador')
         self.level01 = resourcemanager.get('level01')
         self.level02 = resourcemanager.get('level02')
-        self.current_level = self.level02
+        self.current_level = self.level01
         self.player = player.Player(resourcemanager, self.current_level)
 
         ''' Scroll related variables '''
