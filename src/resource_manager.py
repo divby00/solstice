@@ -24,6 +24,7 @@ class ResourceManager(object):
         xml = self.zf.read(xmlfilename)
         root = ElementTree.fromstring(xml)
 
+        self.images_buffer = {}
         self.images = {}
         self.songs = {}
         self.samples = {}
@@ -78,16 +79,28 @@ class ResourceManager(object):
         height = int(resource.get('height'))
         x = int(resource.get('x'))
         y = int(resource.get('y'))
-        img_data = self.zf.read(src)
-        byte_data = io.BytesIO(img_data)
 
-        if byte_data is not None:
-            temp = pygame.image.load(byte_data)
+        # Load optimization
+        # Check if the image has been saved previously.
+        if src in self.images_buffer:
+            temp = self.images_buffer[src]
             srfc = pygame.Surface((width, height))
             srfc = srfc.convert_alpha()
             srfc.fill((0, 0, 0, 0))
             srfc.blit(temp, (0, 0), (x, y, x + width, y + height))
             self.images[name] = srfc
+        else:
+            img_data = self.zf.read(src)
+            byte_data = io.BytesIO(img_data)
+
+            if byte_data is not None:
+                temp = pygame.image.load(byte_data)
+                srfc = pygame.Surface((width, height))
+                srfc = srfc.convert_alpha()
+                srfc.fill((0, 0, 0, 0))
+                srfc.blit(temp, (0, 0), (x, y, x + width, y + height))
+                self.images[name] = srfc
+                self.images_buffer[src] = temp
 
     def __load_song(self, resource):
         src, name = self.__get_common_info(resource)

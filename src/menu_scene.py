@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 import scene
 import i18n
 
@@ -10,9 +11,11 @@ class Star(object):
         self.x = x
         self.y = y
         self.star_type = star_type
+        self.frame_incrementor = random.triangular()
+
         if self.star_type in [0, 1]:
-            self.frame = random.randint(0, 2)
-            self.maxframe = 3
+            self.frame = random.randint(0, 3)
+            self.maxframe = 4
         else:
             self.frame = random.randint(0, 1)
             self.maxframe = 2
@@ -20,7 +23,7 @@ class Star(object):
 
 class MenuScene(scene.Scene):
 
-    def __init__(self, resourcemanager, scene_speed=10):
+    def __init__(self, resourcemanager, scene_speed=30):
         super(MenuScene, self).__init__(resourcemanager, scene_speed)
         self.menu = resourcemanager.get('menu')
         self.panel = []
@@ -31,17 +34,20 @@ class MenuScene(scene.Scene):
         for p in xrange(0, len(panel)):
             self.panel.insert(p, resourcemanager.get(panel[p]))
 
+        self.planet = resourcemanager.get('planet')
+        self.title = resourcemanager.get('title')
+
         self.stars = []
         stars_imgs = ['star0', 'star1', 'star2',
                       'star3', 'star4', 'star5',
                       'star6', 'star7', 'star8',
-                      'star9']
+                      'star9', 'star10', 'star11']
 
         self.star_sprites = []
         for s in xrange(0, len(stars_imgs)):
             self.star_sprites.insert(s, resourcemanager.get(stars_imgs[s]))
 
-        for s in xrange(0, 10):
+        for s in xrange(0, 20):
             self.stars.insert(s, Star(random.randint(0, 256), random.randint(0, 50), random.randint(0, 4)))
 
         self.text = self.font.get(i18n._('Press Return'), 256)
@@ -89,41 +95,42 @@ class MenuScene(scene.Scene):
             self.running = False
 
         for s in self.stars:
-            s.frame += 1
+            s.frame += s.frame_incrementor
 
-            if s.star_type==0:
-                if s.frame == 3:
+            if s.star_type == 0:
+                if s.frame >= 4:
                     s.frame = 0
-            if s.star_type==1:
-                if s.frame == 3:
+            if s.star_type == 1:
+                if s.frame >= 4:
                     s.frame = 0
-            if s.star_type==2:
-                if s.frame == 2:
+            if s.star_type == 2:
+                if s.frame >= 2:
                     s.frame = 0
-            if s.star_type==3:
-                if s.frame == 2:
+            if s.star_type == 3:
+                if s.frame >= 2:
                     s.frame = 0
 
 
     def render(self, scr):
         scr.virt.blit(self.menu, (128-self.menu.get_width()/2, 0))
-        #scr.virt.blit(self.menu, (0, 0))
         scr.virt.blit(self.text, (128-self.text.get_width()/2, 172))
-        #scr.virt.blit(self.intro_text, (128-self.intro_text.get_width()/2, 80))
         scr.virt.blit(self.intro_text, (128-self.intro_text.get_width()/2, 68))
 
         for s in self.stars:
             img = None
             if s.star_type==0:
-                img = self.star_sprites[0 + s.frame]
+                img = self.star_sprites[int(0 + s.frame)]
             if s.star_type==1:
-                img = self.star_sprites[3 + s.frame]
+                img = self.star_sprites[int(4 + s.frame)]
             if s.star_type==2:
-                img = self.star_sprites[6 + s.frame]
+                img = self.star_sprites[int(8 + s.frame)]
             if s.star_type==3:
-                img = self.star_sprites[8 + s.frame]
+                img = self.star_sprites[int(10 + s.frame)]
             if img is not None:
                 scr.virt.blit(img, (s.x, s.y))
+
+        scr.virt.blit(self.planet, (128-self.planet.get_width()/2, 0))
+        scr.virt.blit(self.title, (128-self.title.get_width()/2, 16))
 
     def __init_stars(self):
         pass
