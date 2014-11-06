@@ -26,6 +26,10 @@ class MenuScene(scene.Scene):
     def __init__(self, resourcemanager, scene_speed=30):
         super(MenuScene, self).__init__(resourcemanager, scene_speed)
         self.menu = resourcemanager.get('menu')
+        self.background = pygame.Surface((self.menu.get_width(),
+                                         self.menu.get_height())).convert()
+        self.background_x_position = 0
+        self.title_anim = 0
         self.panel = []
         panel = ['panel0', 'panel1', 'panel2',
                  'panel3', 'panel4', 'panel5',
@@ -37,21 +41,15 @@ class MenuScene(scene.Scene):
         self.planet = resourcemanager.get('planet')
         self.title = resourcemanager.get('title')
 
-        self.stars = []
-        stars_imgs = ['star0', 'star1', 'star2',
-                      'star3', 'star4', 'star5',
-                      'star6', 'star7', 'star8',
-                      'star9', 'star10', 'star11']
-
-        self.star_sprites = []
-        for s in xrange(0, len(stars_imgs)):
-            self.star_sprites.insert(s, resourcemanager.get(stars_imgs[s]))
-
-        for s in xrange(0, 20):
-            self.stars.insert(s, Star(random.randint(0, 256), random.randint(0, 50), random.randint(0, 4)))
-
+        self.__init_stars(resourcemanager)
         self.text = self.font.get(i18n._('Press Return'), 256)
-        self.intro_text = self.font.get(i18n._('In a very near place a nuclear plant is going to blow!'), 256)
+        self.intro_text = []
+        self.intro_text.insert(0,
+                               self.font.get(i18n._('In a very near place...'),
+                                             256))
+        self.intro_text.insert(1,
+                               self.font.get(i18n._('...a nuclear plant is \
+                                                    going to blow!!!'), 256))
         self.pnl_srf = pygame.Surface((128, 80))
         self.pnl_srf = self.pnl_srf.convert_alpha()
         self.pnl_srf.fill((0, 0, 0, 0))
@@ -110,27 +108,56 @@ class MenuScene(scene.Scene):
                 if s.frame >= 2:
                     s.frame = 0
 
+        # 196 is the sun position in the menu background image
+        if self.background_x_position < 196:
+            self.background_x_position += 2
+        else:
+            self.title_anim = 1
 
     def render(self, scr):
-        scr.virt.blit(self.menu, (128-self.menu.get_width()/2, 0))
-        scr.virt.blit(self.text, (128-self.text.get_width()/2, 172))
-        scr.virt.blit(self.intro_text, (128-self.intro_text.get_width()/2, 68))
+
+        self.background.blit(self.menu, (0, 0))
 
         for s in self.stars:
             img = None
-            if s.star_type==0:
+            if s.star_type == 0:
                 img = self.star_sprites[int(0 + s.frame)]
-            if s.star_type==1:
+            if s.star_type == 1:
                 img = self.star_sprites[int(4 + s.frame)]
-            if s.star_type==2:
+            if s.star_type == 2:
                 img = self.star_sprites[int(8 + s.frame)]
-            if s.star_type==3:
+            if s.star_type == 3:
                 img = self.star_sprites[int(10 + s.frame)]
             if img is not None:
-                scr.virt.blit(img, (s.x, s.y))
+                self.background.blit(img, (s.x, s.y))
 
-        scr.virt.blit(self.planet, (128-self.planet.get_width()/2, 0))
-        scr.virt.blit(self.title, (128-self.title.get_width()/2, 16))
+        self.background.blit(self.planet, (278, 0))
 
-    def __init_stars(self):
-        pass
+        if self.title_anim > 0:
+            self.background.blit(self.title, (298, 16))
+
+        scr.virt.blit(self.background, (0, 0), (self.background_x_position, 0,
+                                                scr.WINDOW_SIZE[0],
+                                                scr.WINDOW_SIZE[1]))
+        scr.virt.blit(self.text, (128-self.text.get_width()/2, 172))
+
+        if self.background_x_position < 98:
+            scr.virt.blit(self.intro_text[0],
+                         (128-self.intro_text[0].get_width()/2, 68))
+        elif self.background_x_position >= 98 and self.background_x_position < 196:
+            scr.virt.blit(self.intro_text[1], 
+                         (128-self.intro_text[1].get_width()/2, 68))
+
+    def __init_stars(self, resourcemanager):
+        self.stars = []
+        stars_imgs = ['star0', 'star1', 'star2',
+                      'star3', 'star4', 'star5',
+                      'star6', 'star7', 'star8',
+                      'star9', 'star10', 'star11']
+
+        self.star_sprites = []
+        for s in xrange(0, len(stars_imgs)):
+            self.star_sprites.insert(s, resourcemanager.get(stars_imgs[s]))
+
+        for s in xrange(0, 30):
+            self.stars.insert(s, Star(random.randint(0, self.menu.get_width()), random.randint(0, 75), 1))
