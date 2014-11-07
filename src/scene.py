@@ -2,6 +2,7 @@ class Scene(object):
 
     def __init__(self, resourcemanager, scene_speed=40):
         self.font = resourcemanager.get('font')
+        self.font_selected = resourcemanager.get('font_selected')
         self.scene_speed = scene_speed
         self.running = False
 
