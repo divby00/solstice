@@ -5,6 +5,50 @@ import scene
 import i18n
 
 
+class Panel(object):
+
+    def __init__(self, resourcemanager):
+        self.panel_imgs = []
+        panel = ['panel0', 'panel1', 'panel2',
+                 'panel3', 'panel4', 'panel5',
+                 'panel6', 'panel7', 'panel8']
+
+        for p in xrange(0, len(panel)):
+            self.panel_imgs.insert(p, resourcemanager.get(panel[p]))
+
+    def get(self, size):
+        assert(size[0] > 0)
+        assert(size[1] > 0)
+        surface = pygame.Surface(size).convert_alpha()
+        surface.fill((0, 0, 0, 0))
+        img = -1
+
+        for a in xrange(0, size[1], 8):
+            for i in xrange(0, size[0], 8):
+                if a == 0 and i == 0:
+                    img = 0
+                if a == 0 and i > 0 and i < size[0] - 8:
+                    img = 1
+                if a == 0 and i == size[0] - 8:
+                    img = 2
+                if a > 0 and a < size[1] - 8 and i == 0:
+                    img = 3
+                if a > 0 and a < size[1] - 8 and i > 0 and i < size[0] - 8:
+                    img = 4
+                if a > 0 and a < size[1] - 8 and i == size[0] - 8:
+                    img = 5
+                if a == size[1] - 8 and i == 0:
+                    img = 6
+                if a == size[1] - 8 and i > 0 and i < size[0] - 8:
+                    img = 7
+                if a == size[1] - 8 and i == size[0] - 8:
+                    img = 8
+
+                surface.blit(self.panel_imgs[img], (i, a))
+
+        return surface
+
+
 class Star(object):
 
     def __init__(self, x, y, star_type):
@@ -23,63 +67,34 @@ class Star(object):
 
 class MenuScene(scene.Scene):
 
-    def __init__(self, resourcemanager, scene_speed=30):
+    def __init__(self, resourcemanager, scene_speed=20):
         super(MenuScene, self).__init__(resourcemanager, scene_speed)
         self.menu = resourcemanager.get('menu')
-        self.background = pygame.Surface((self.menu.get_width(),
-                                         self.menu.get_height())).convert()
-        self.background_x_position = 0
-        self.title_anim = 0
-        self.panel = []
-        panel = ['panel0', 'panel1', 'panel2',
-                 'panel3', 'panel4', 'panel5',
-                 'panel6', 'panel7', 'panel8']
-
-        for p in xrange(0, len(panel)):
-            self.panel.insert(p, resourcemanager.get(panel[p]))
-
         self.planet = resourcemanager.get('planet')
         self.title = resourcemanager.get('title')
-
+        self.music = resourcemanager.get('menu_song')
         self.__init_stars(resourcemanager)
         self.text = self.font.get(i18n._('Press Return'), 256)
         self.intro_text = []
-        self.intro_text.insert(0,
-                               self.font.get(i18n._('In a very near place...'),
-                                             256))
-        self.intro_text.insert(1,
-                               self.font.get(i18n._('...a nuclear plant is \
-                                                    going to blow!!!'), 256))
-        self.pnl_srf = pygame.Surface((128, 80))
-        self.pnl_srf = self.pnl_srf.convert_alpha()
-        self.pnl_srf.fill((0, 0, 0, 0))
-        img = -1
+        self.intro_text.insert(0, self.font.get(i18n._('In a very near place...'), 164))
+        self.intro_text.insert(1, self.font.get(i18n._('...a nuclear plant is going to blow!!!'), 164))
+        self.menu_text = []
+        self.menu_text.insert(0, self.font.get(i18n._('Start'), 128))
+        self.menu_text.insert(1, self.font.get(i18n._('Options'), 128))
+        self.menu_text.insert(2, self.font.get(i18n._('Instructions'), 128))
+        self.menu_text.insert(3, self.font.get(i18n._('Exit'), 128))
+        panel = Panel(resourcemanager)
 
-        self.music = resourcemanager.get('menu_song')
-
-        for a in xrange(0, 80, 8):
-            for i in xrange(0, 128, 8):
-                if a == 0 and i == 0:
-                    img = 0
-                if a == 0 and i > 0 and i < 120:
-                    img = 1
-                if a == 0 and i == 120:
-                    img = 2
-                if a > 0 and a < 72 and i == 0:
-                    img = 3
-                if a > 0 and a < 72 and i > 0 and i < 120:
-                    img = 4
-                if a > 0 and a < 72 and i == 120:
-                    img = 5
-                if a == 72 and i == 0:
-                    img = 6
-                if a == 72 and i > 0 and i < 120:
-                    img = 7
-                if a == 72 and i == 120:
-                    img = 8
-
-                self.pnl_srf.blit(self.panel[img], (i, a))
-                self.pnl_srf.blit(self.text, (32, 16))
+        text_max_length = 0
+        for t in self.menu_text:
+            if t.get_width() > text_max_length:
+                text_max_length = t.get_width()
+        text_max_length += self.font.gl_width * 2
+        panel_height = (len(self.menu_text) * 12) + 16
+        self.panel = panel.get((text_max_length, panel_height))
+        self.background = pygame.Surface((self.menu.get_width(), self.menu.get_height())).convert()
+        self.background_x_position = 0
+        self.title_anim = 0
 
     def run(self):
         if not pygame.mixer.music.get_busy():
@@ -135,6 +150,12 @@ class MenuScene(scene.Scene):
 
         if self.title_anim > 0:
             self.background.blit(self.title, (298, 16))
+            self.background.blit(self.panel, (266, 70))
+
+            y = 78
+            for t in self.menu_text:
+                self.background.blit(t, (274, y))
+                y += 12
 
         scr.virt.blit(self.background, (0, 0), (self.background_x_position, 0,
                                                 scr.WINDOW_SIZE[0],
@@ -142,11 +163,9 @@ class MenuScene(scene.Scene):
         scr.virt.blit(self.text, (128-self.text.get_width()/2, 172))
 
         if self.background_x_position < 98:
-            scr.virt.blit(self.intro_text[0],
-                         (128-self.intro_text[0].get_width()/2, 68))
+            scr.virt.blit(self.intro_text[0], (128-self.intro_text[0].get_width()/2, 68))
         elif self.background_x_position >= 98 and self.background_x_position < 196:
-            scr.virt.blit(self.intro_text[1], 
-                         (128-self.intro_text[1].get_width()/2, 68))
+            scr.virt.blit(self.intro_text[1], (128-self.intro_text[1].get_width()/2, 68))
 
     def __init_stars(self, resourcemanager):
         self.stars = []
@@ -159,5 +178,5 @@ class MenuScene(scene.Scene):
         for s in xrange(0, len(stars_imgs)):
             self.star_sprites.insert(s, resourcemanager.get(stars_imgs[s]))
 
-        for s in xrange(0, 30):
-            self.stars.insert(s, Star(random.randint(0, self.menu.get_width()), random.randint(0, 75), 1))
+        for s in xrange(0, 200):
+            self.stars.insert(s, Star(random.randint(0, self.menu.get_width()), random.randint(0, 125), random.randint(1,4)))
