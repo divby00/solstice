@@ -67,11 +67,13 @@ class Star(object):
 
 class MenuScene(scene.Scene):
 
-    def __init__(self, resourcemanager, scene_speed=20):
+    def __init__(self, resourcemanager, scene_speed=10):
         super(MenuScene, self).__init__(resourcemanager, scene_speed)
         self.menu = resourcemanager.get('menu')
         self.planet = resourcemanager.get('planet')
         self.title = resourcemanager.get('title')
+        self.sun = resourcemanager.get('sun')
+        self.plant = resourcemanager.get('plant')
         self.music = resourcemanager.get('menu_song')
         self.__init_stars(resourcemanager)
         self.text = self.font.get(i18n._('Press Return'), 256)
@@ -147,16 +149,19 @@ class MenuScene(scene.Scene):
                 self.background.blit(img, (s.x, s.y))
 
         self.background.blit(self.planet, (278, 0))
+        self.background.blit(self.sun, (310, 84))
+        self.background.blit(self.plant, (377, 125))
 
         if self.title_anim > 0:
             self.background.blit(self.title, (298, 16))
+            '''
             self.background.blit(self.panel, (266, 70))
 
             y = 78
             for t in self.menu_text:
                 self.background.blit(t, (274, y))
                 y += 12
-
+            '''
         scr.virt.blit(self.background, (0, 0), (self.background_x_position, 0,
                                                 scr.WINDOW_SIZE[0],
                                                 scr.WINDOW_SIZE[1]))
@@ -179,4 +184,4 @@ class MenuScene(scene.Scene):
             self.star_sprites.insert(s, resourcemanager.get(stars_imgs[s]))
 
         for s in xrange(0, 200):
-            self.stars.insert(s, Star(random.randint(0, self.menu.get_width()), random.randint(0, 125), random.randint(1,4)))
+            self.stars.insert(s, Star(random.randint(0, self.menu.get_width()), random.randint(0, 145), random.randint(1,4)))
