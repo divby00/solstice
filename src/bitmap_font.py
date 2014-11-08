@@ -5,7 +5,6 @@ import io
 
 class BitmapFont(object):
 
-
     def __init__(self, surface, rows, columns):
 
         w = surface.get_width()
@@ -62,10 +61,11 @@ class BitmapFont(object):
 
         texts.insert(actual_text, texto.strip())
         texts.pop(len(texts)-1)
-
         max_len = 0
+
         for t in texts:
             phrase_len = len(t) * self.gl_width
+
             if phrase_len > max_len:
                 max_len = phrase_len
 

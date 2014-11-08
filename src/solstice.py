@@ -17,7 +17,7 @@ def main():
     cfg = config.Configuration()
     gettext.bindtextdomain('solstice', cfg.locale_path)
     gettext.textdomain('solstice')
-    pygame.mixer.pre_init(22050,-16,2, 1024 * 3)
+    pygame.mixer.pre_init(22050, -16, 2, 1024 * 3)
     pygame.init()
     scr = screen.Screen(cfg, i18n._('Solstice'))
     resourcemanager = resource_manager.ResourceManager(scr, cfg, 'data.zip')

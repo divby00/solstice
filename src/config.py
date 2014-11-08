@@ -12,11 +12,18 @@ class Configuration(object):
     OPT_MUSIC = 'music'
     OPT_SOUND_VOL = 'sound volume'
     OPT_MUSIC_VOL = 'music volume'
+    OPT_CONTROL_TYPE = 'type'
+    OPT_KEY_UP = 'key up'
+    OPT_KEY_DOWN = 'key down'
+    OPT_KEY_LEFT = 'key left'
+    OPT_KEY_RIGHT = 'key right'
+    OPT_KEY_ACTION_1 = 'key action 1'
+    OPT_KEY_ACTION_2 = 'key action 2'
 
     ''' Default values '''
     DATA_PATH = './'
     LOCALE_PATH = 'locale'
-    SECTION = ['Paths', 'Graphics', 'Sound']
+    SECTION = ['Paths', 'Graphics', 'Sound', 'Control']
     SCREEN_SIZE = [1024, 768]
     FULLSCREEN = False
     SOUND = True
@@ -24,6 +31,13 @@ class Configuration(object):
     SOUND_VOLUME = 10
     MUSIC_VOLUME = 10
     CFGFILE_NAME = 'solstice.cfg'
+    CONTROL_TYPE = 'keyboard'
+    KEY_UP = 'a'
+    KEY_DOWN = 'b'
+    KEY_LEFT = 'c'
+    KEY_RIGHT = 'd'
+    KEY_ACTION_1 = 'e'
+    KEY_ACTION_2 = 'f'
 
     def __init__(self):
         self.config_parser = ConfigParser.ConfigParser()
@@ -50,16 +64,33 @@ class Configuration(object):
                                                        Configuration.OPT_MUSIC_VOL)
             self.screen_size = (w, h)
 
+            self.control_type = self.config_parser.get(Configuration.SECTION[3],
+                                                       Configuration.OPT_CONTROL_TYPE)
+            self.key_up = self.config_parser.get(Configuration.SECTION[3],
+                                                 Configuration.OPT_KEY_UP)
+            self.key_down = self.config_parser.get(Configuration.SECTION[3],
+                                                   Configuration.OPT_KEY_DOWN)
+            self.key_left = self.config_parser.get(Configuration.SECTION[3],
+                                                   Configuration.OPT_KEY_LEFT)
+            self.key_right = self.config_parser.get(Configuration.SECTION[3],
+                                                    Configuration.OPT_KEY_RIGHT)
+            self.key_act1 = self.config_parser.get(Configuration.SECTION[3],
+                                                   Configuration.OPT_KEY_ACTION_1)
+            self.key_act2 = self.config_parser.get(Configuration.SECTION[3],
+                                                   Configuration.OPT_KEY_ACTION_2)
         else:
+
             for section in Configuration.SECTION:
                 self.config_parser.add_section(section)
 
+            ''' Paths '''
             self.config_parser.set(Configuration.SECTION[0],
                                    Configuration.OPT_DATA_PATH,
                                    Configuration.DATA_PATH)
             self.config_parser.set(Configuration.SECTION[0],
                                    Configuration.OPT_LOCALE_PATH,
                                    Configuration.LOCALE_PATH)
+            ''' Graphics'''
             self.config_parser.set(Configuration.SECTION[1],
                                    Configuration.OPT_SCREEN_WIDTH,
                                    Configuration.SCREEN_SIZE[0])
@@ -69,6 +100,7 @@ class Configuration(object):
             self.config_parser.set(Configuration.SECTION[1],
                                    Configuration.OPT_FULLSCREEN,
                                    Configuration.FULLSCREEN)
+            ''' Sound '''
             self.config_parser.set(Configuration.SECTION[2],
                                    Configuration.OPT_SOUND,
                                    Configuration.SOUND)
@@ -81,7 +113,28 @@ class Configuration(object):
             self.config_parser.set(Configuration.SECTION[2],
                                    Configuration.OPT_MUSIC_VOL,
                                    Configuration.MUSIC_VOLUME)
-
+            ''' Control '''
+            self.config_parser.set(Configuration.SECTION[3],
+                                   Configuration.OPT_CONTROL_TYPE,
+                                   Configuration.CONTROL_TYPE),
+            self.config_parser.set(Configuration.SECTION[3],
+                                   Configuration.OPT_KEY_UP,
+                                   Configuration.KEY_UP),
+            self.config_parser.set(Configuration.SECTION[3],
+                                   Configuration.OPT_KEY_DOWN,
+                                   Configuration.KEY_DOWN),
+            self.config_parser.set(Configuration.SECTION[3],
+                                   Configuration.OPT_KEY_LEFT,
+                                   Configuration.KEY_LEFT),
+            self.config_parser.set(Configuration.SECTION[3],
+                                   Configuration.OPT_KEY_RIGHT,
+                                   Configuration.KEY_RIGHT),
+            self.config_parser.set(Configuration.SECTION[3],
+                                   Configuration.OPT_KEY_ACTION_1,
+                                   Configuration.KEY_ACTION_1),
+            self.config_parser.set(Configuration.SECTION[3],
+                                   Configuration.OPT_KEY_ACTION_2,
+                                   Configuration.KEY_ACTION_2)
             self.save()
 
             self.data_path = Configuration.DATA_PATH
@@ -93,6 +146,13 @@ class Configuration(object):
             self.music = Configuration.MUSIC
             self.sound_vol = Configuration.SOUND_VOLUME
             self.music_vol = Configuration.MUSIC_VOLUME
+            self.control_type = Configuration.CONTROL_TYPE
+            self.key_up = Configuration.KEY_UP
+            self.key_down = Configuration.KEY_DOWN
+            self.key_left = Configuration.KEY_LEFT
+            self.key_right = Configuration.KEY_RIGHT
+            self.key_act1 = Configuration.KEY_ACTION_1
+            self.key_act2 = Configuration.KEY_ACTION_2
 
     def save(self):
         with open(Configuration.CFGFILE_NAME, 'wb') as config_file:

@@ -29,17 +29,17 @@ class GameScene(scene.Scene):
         self.player.y = self.view_port[1] / 2 - (self.player.h / 2)
         self.half_view_port = (self.view_port[0]/2, self.view_port[1]/2)
         self.half_player = (self.player.w/2, self.player.h/2)
-	self.song = resourcemanager.get('level01_song')
-	self.laser = resourcemanager.get('laser')
-	self.music = pygame.mixer.Sound(self.song)
-	self.playing = False
+        self.song = resourcemanager.get('level01_song')
+        self.laser = resourcemanager.get('laser')
+        self.music = pygame.mixer.Sound(self.song)
+        self.playing = False
 
     def run(self):
 
-	if not self.playing:
-	    self.playing = True
+        if not self.playing:
+            self.playing = True
             self.music.play(-1)
-	
+
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_p]:
@@ -101,8 +101,8 @@ class GameScene(scene.Scene):
                     self.player.y -= self.scroll_speed[1]
                     self.player.absolute_y -= self.scroll_speed[1]
 
-	if keys[pygame.K_SPACE]:
-	    self.laser.play()
+        if keys[pygame.K_SPACE]:
+            self.laser.play()
 
         if keys[pygame.K_ESCAPE]:
             self.running = False
@@ -113,7 +113,6 @@ class GameScene(scene.Scene):
             self.player.animation = 0
         if self.player.animation < 0:
             self.player.animation = 14
-
 
     def render(self, scr):
         posx = posy = 0
@@ -150,9 +149,9 @@ class GameScene(scene.Scene):
 
                             if gid > 0:
                                 scr.virt.blit(self.current_level.tiles[gid-1].srfc,
-                                            (posx - offset_pixels[0],
-                                             posy - offset_pixels[1]),
-                                            (0, 0, l.size[0], l.size[1]))
+                                              (posx - offset_pixels[0],
+                                               posy - offset_pixels[1]),
+                                              (0, 0, l.size[0], l.size[1]))
 
                             posx += self.current_level.tiles[gid - 1].size[0]
 
@@ -171,9 +170,9 @@ class GameScene(scene.Scene):
 
                             if gid > 0:
                                 scr.virt.blit(self.current_level.tiles[gid-1].srfc,
-                                            (posx - offset_pixels[0],
-                                             posy - offset_pixels[1]),
-                                            (0, 0, l.size[0], l.size[1]))
+                                             (posx - offset_pixels[0],
+                                              posy - offset_pixels[1]),
+                                             (0, 0, l.size[0], l.size[1]))
 
                             posx += self.current_level.tiles[gid-1].size[0]
 
@@ -181,6 +180,7 @@ class GameScene(scene.Scene):
                         posy += self.current_level.tiles[gid-1].size[1]
 
         scr.virt.blit(self.marcador, (0, self.view_port[1]))
+
 
 def check_right_collision(player, level):
 

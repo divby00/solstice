@@ -80,8 +80,11 @@ class MenuScene(scene.Scene):
         self.skip_text = self.font.get(i18n._('Press ESC to skip'), 256)
         self.text = self.font.get(i18n._('Press Return'), 256)
         self.intro_text = []
-        self.intro_text.insert(0, self.font.get(i18n._('In a very near place...'), 164))
-        self.intro_text.insert(1, self.font.get(i18n._('...a nuclear plant is going to blow!!!'), 164))
+        self.intro_text.insert(0, self.font.get(i18n._('In a very near \
+                                                        place...'), 256))
+        self.intro_text.insert(1, self.font.get(i18n._('...a nuclear plant is \
+                                                      going to blow!!!'),
+                                                256))
         self.menu_text = []
         self.menu_text_sel = []
 
@@ -90,7 +93,8 @@ class MenuScene(scene.Scene):
         self.menu_text.insert(2, self.font.get(i18n._('Instructions'), 128))
         self.menu_text.insert(3, self.font.get(i18n._('Exit'), 128))
 
-        self.menu_text_sel.insert(0, self.font_selected.get(i18n._('Start'), 128))
+        self.menu_text_sel.insert(0, self.font_selected.get(i18n._('Start'),
+                                                            128))
         self.menu_text_sel.insert(1, self.font_selected.get(i18n._('Options'), 128))
         self.menu_text_sel.insert(2, self.font_selected.get(i18n._('Instructions'), 128))
         self.menu_text_sel.insert(3, self.font_selected.get(i18n._('Exit'), 128))
