@@ -49,10 +49,10 @@ class Configuration(object):
     KEY_ACTION_2 = 'f'
 
     def __init__(self):
-        self.config_parser = ConfigParser.ConfigParser()
-        parsed_file = self.config_parser.read([Configuration.CFGFILE_NAME])
-
         try:
+            self.config_parser = ConfigParser.ConfigParser()
+            parsed_file = self.config_parser.read([Configuration.CFGFILE_NAME])
+
             if len(parsed_file) > 0:
                 self.data_path = self.config_parser.get(Configuration.SECTION[0],
                                                         Configuration.OPT_DATA_PATH)
@@ -89,15 +89,16 @@ class Configuration(object):
                 self.key_act2 = self.config_parser.get(Configuration.SECTION[3],
                                                        Configuration.OPT_KEY_ACTION_2)
             else:
-                for section in Configuration.SECTION:
-                    self.config_parser.add_section(section)
-
                 self.__set_default_values()
 
         except:
             self.__set_default_values()
 
     def __set_default_values(self):
+        for section in Configuration.SECTION:
+            if not self.config_parser.has_section(section):
+                self.config_parser.add_section(section)
+
         ''' Paths '''
         self.config_parser.set(Configuration.SECTION[0],
                                Configuration.OPT_DATA_PATH,
