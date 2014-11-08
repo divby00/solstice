@@ -3,51 +3,8 @@ import random
 import math
 import scene
 import i18n
-
-
-class Panel(object):
-
-    def __init__(self, resourcemanager):
-        self.panel_imgs = []
-        panel = ['panel0', 'panel1', 'panel2',
-                 'panel3', 'panel4', 'panel5',
-                 'panel6', 'panel7', 'panel8']
-
-        for p in xrange(0, len(panel)):
-            self.panel_imgs.insert(p, resourcemanager.get(panel[p]))
-
-    def get(self, size):
-        assert(size[0] > 0)
-        assert(size[1] > 0)
-        surface = pygame.Surface(size).convert_alpha()
-        surface.fill((0, 0, 0, 0))
-        img = -1
-
-        for a in xrange(0, size[1], 8):
-            for i in xrange(0, size[0], 8):
-                if a == 0 and i == 0:
-                    img = 0
-                if a == 0 and i > 0 and i < size[0] - 8:
-                    img = 1
-                if a == 0 and i == size[0] - 8:
-                    img = 2
-                if a > 0 and a < size[1] - 8 and i == 0:
-                    img = 3
-                if a > 0 and a < size[1] - 8 and i > 0 and i < size[0] - 8:
-                    img = 4
-                if a > 0 and a < size[1] - 8 and i == size[0] - 8:
-                    img = 5
-                if a == size[1] - 8 and i == 0:
-                    img = 6
-                if a == size[1] - 8 and i > 0 and i < size[0] - 8:
-                    img = 7
-                if a == size[1] - 8 and i == size[0] - 8:
-                    img = 8
-
-                surface.blit(self.panel_imgs[img], (i, a))
-
-        return surface
-
+import menu
+import solstice
 
 class Star(object):
 
@@ -78,39 +35,17 @@ class MenuScene(scene.Scene):
         self.music = resourcemanager.get('menu_song')
         self.__init_stars(resourcemanager)
         self.skip_text = self.font.get(i18n._('Press ESC to skip'), 256)
-        self.text = self.font.get(i18n._('Press Return'), 256)
         self.intro_text = []
-        self.intro_text.insert(0, self.font.get(i18n._('In a very near \
-                                                        place...'), 256))
-        self.intro_text.insert(1, self.font.get(i18n._('...a nuclear plant is \
-                                                      going to blow!!!'),
-                                                256))
-        self.menu_text = []
-        self.menu_text_sel = []
-
-        self.menu_text.insert(0, self.font.get(i18n._('Start'), 128))
-        self.menu_text.insert(1, self.font.get(i18n._('Options'), 128))
-        self.menu_text.insert(2, self.font.get(i18n._('Instructions'), 128))
-        self.menu_text.insert(3, self.font.get(i18n._('Exit'), 128))
-
-        self.menu_text_sel.insert(0, self.font_selected.get(i18n._('Start'),
-                                                            128))
-        self.menu_text_sel.insert(1, self.font_selected.get(i18n._('Options'), 128))
-        self.menu_text_sel.insert(2, self.font_selected.get(i18n._('Instructions'), 128))
-        self.menu_text_sel.insert(3, self.font_selected.get(i18n._('Exit'), 128))
-        panel = Panel(resourcemanager)
-
-        text_max_length = 0
-        for t in self.menu_text:
-            if t.get_width() > text_max_length:
-                text_max_length = t.get_width()
-        text_max_length += self.font.gl_width * 2
-        panel_height = (len(self.menu_text) * 12) + 16
-        self.panel = panel.get((text_max_length, panel_height))
+        self.intro_text.insert(0, self.font.get(i18n._('In a very near place...'), 256))
+        self.intro_text.insert(1, self.font.get(i18n._('...a nuclear plant is going to blow!!!'), 256))
+        self.__init_credits()
         self.background = pygame.Surface((self.menu.get_width(), self.menu.get_height())).convert()
         self.background_x_position = 0
         self.title_anim = 0
         self.show_menu = False
+        fonts = (self.font, self.font_selected)
+        options = [i18n._('start'), i18n._('options'), i18n._('instructions'), i18n._('exit')]
+        self.main_menu = menu.Menu(self.panel_imgs, fonts, options)
 
     def run(self):
         if not pygame.mixer.music.get_busy():
@@ -123,26 +58,31 @@ class MenuScene(scene.Scene):
             self.title_anim = 12
             self.background_x_position = 196
             self.show_menu = True
+            self.credits_anim = 0
 
-        if keys[pygame.K_RETURN]:
-            pygame.mixer.music.stop()
-            self.running = False
+        if self.show_menu:
+            if keys[pygame.K_RETURN]:
+                if self.main_menu.selected_option == 0:
+                    pygame.mixer.music.stop()
+                    self.running = False
 
-        for s in self.stars:
-            s.frame += s.frame_incrementor
+                if self.main_menu.selected_option == 3:
+                    solstice.exit(0)
 
-            if s.star_type == 0:
-                if s.frame >= 4:
-                    s.frame = 0
-            if s.star_type == 1:
-                if s.frame >= 4:
-                    s.frame = 0
-            if s.star_type == 2:
-                if s.frame >= 2:
-                    s.frame = 0
-            if s.star_type == 3:
-                if s.frame >= 2:
-                    s.frame = 0
+        if keys[pygame.K_UP]:
+            self.main_menu.selected_option -= 1
+            if self.main_menu.selected_option == -1:
+                self.main_menu.selected_option = len(self.main_menu.options) - 1
+
+        if keys[pygame.K_DOWN]:
+            self.main_menu.selected_option += 1
+            if self.main_menu.selected_option == len(self.main_menu.options):
+                self.main_menu.selected_option = 0
+
+        self.__run_stars()
+        
+        if self.show_menu:
+            self.__run_credits()
 
         # 196 is the sun position in the menu background image
         if self.background_x_position < 196:
@@ -155,20 +95,7 @@ class MenuScene(scene.Scene):
     def render(self, scr):
 
         self.background.blit(self.menu, (0, 0))
-
-        for s in self.stars:
-            img = None
-            if s.star_type == 0:
-                img = self.star_sprites[int(0 + s.frame)]
-            if s.star_type == 1:
-                img = self.star_sprites[int(4 + s.frame)]
-            if s.star_type == 2:
-                img = self.star_sprites[int(8 + s.frame)]
-            if s.star_type == 3:
-                img = self.star_sprites[int(10 + s.frame)]
-            if img is not None:
-                self.background.blit(img, (s.x, s.y))
-
+        self.__render_stars()
         self.background.blit(self.planet, (325 - self.planet.get_width()/2, 0))
         self.background.blit(self.sun, (310, 84))
         self.background.blit(self.plant, (377, 125))
@@ -181,23 +108,13 @@ class MenuScene(scene.Scene):
             tmp_surface = None
 
         if self.show_menu:
-            self.background.blit(self.panel, (325 - self.panel.get_width()/2, 70))
-            y = 78
-
-            for t in self.menu_text:
-                self.background.blit(t, (282, y))
-                y += 12
-
-            self.background.blit(self.menu_text_sel[0], (282, 78))
-            self.background.blit(self.cursor, (274, 78))
+            self.main_menu.render(self.background, (325 - self.main_menu.panel.surface.get_width()/2, 70))
 
         scr.virt.blit(self.background, (0, 0), (self.background_x_position, 0,
                                                 scr.WINDOW_SIZE[0],
                                                 scr.WINDOW_SIZE[1]))
         if not self.show_menu:
             scr.virt.blit(self.skip_text, (128-self.skip_text.get_width()/2, 172))
-        else:
-            scr.virt.blit(self.text, (128-self.text.get_width()/2, 172))
 
         if self.background_x_position < 98:
             scr.virt.blit(self.intro_text[0], (128-self.intro_text[0].get_width()/2, 68))
@@ -217,3 +134,54 @@ class MenuScene(scene.Scene):
 
         for s in xrange(0, 300):
             self.stars.insert(s, Star(random.randint(0, self.menu.get_width()), random.randint(0, 145), random.randint(1, 4)))
+
+    def __run_stars(self):
+        for s in self.stars:
+            s.frame += s.frame_incrementor
+
+            if s.star_type == 0:
+                if s.frame >= 4:
+                    s.frame = 0
+            if s.star_type == 1:
+                if s.frame >= 4:
+                    s.frame = 0
+            if s.star_type == 2:
+                if s.frame >= 2:
+                    s.frame = 0
+            if s.star_type == 3:
+                if s.frame >= 2:
+                    s.frame = 0
+
+    def __render_stars(self):
+        for s in self.stars:
+            img = None
+            if s.star_type == 0:
+                img = self.star_sprites[int(0 + s.frame)]
+            if s.star_type == 1:
+                img = self.star_sprites[int(4 + s.frame)]
+            if s.star_type == 2:
+                img = self.star_sprites[int(8 + s.frame)]
+            if s.star_type == 3:
+                img = self.star_sprites[int(10 + s.frame)]
+            if img is not None:
+                self.background.blit(img, (s.x, s.y))
+
+    def __init_credits(self):
+        self.credits_text = [
+            i18n._('Solstice is an Equinox remake'),
+            i18n._('Program and graphics by'),
+            i18n._('Jesus Chicharro'),
+            i18n._('Music by'),
+            i18n._('Daniel Galan'),
+            i18n._('Hope you enjoy this game...'),
+            i18n._('...and long life to EGA graphics!!!'),
+            i18n._('2015 Love4Retro Games')
+        ]
+
+        self.credits_imgs = []
+        for i in xrange(0, len(self.credits_text)):
+            self.credits_imgs.insert(0, self.font.get(self.credits_text[i], 256))
+
+
+    def __run_credits(self):
+        self.credits_anim += 1

@@ -37,7 +37,7 @@ class BitmapFont(object):
         assert(len(text) > 0)
 
         if text in self.glyphs.keys():
-            return self.glyps[text]
+            return self.glyphs[text]
 
         else:
             return self.__render(text, max_width)

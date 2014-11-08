@@ -2,6 +2,7 @@
 from __future__ import division
 import pygame
 import gettext
+import sys
 import i18n
 import config
 import resource_manager
@@ -12,12 +13,12 @@ import menu_scene
 import game_scene
 import screen
 
+cfg = config.Configuration()
 
 def main():
-    cfg = config.Configuration()
     gettext.bindtextdomain('solstice', cfg.locale_path)
     gettext.textdomain('solstice')
-    pygame.mixer.pre_init(22050, -16, 2, 1024 * 3)
+    pygame.mixer.pre_init(22050, -16, 2, 4096)
     pygame.init()
     scr = screen.Screen(cfg, i18n._('Solstice'))
     resourcemanager = resource_manager.ResourceManager(scr, cfg, 'data.zip')
@@ -31,9 +32,12 @@ def main():
     scenemanager.run()
     scenemanager.set(gamescene)
     scenemanager.run()
+    exit(0)
+
+def exit(exit_code):
     cfg.save()
     pygame.quit()
-    return 0
+    sys.exit(exit_code)
 
 if __name__ == '__main__':
     main()
