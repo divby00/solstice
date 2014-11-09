@@ -131,7 +131,12 @@ class MenuScene(scene.Scene):
         self.exit = context.exit
         self.menu = context.resourcemanager.get('menu')
         self.planet = context.resourcemanager.get('planet')
-        self.title = context.resourcemanager.get('title')
+        title = ['title0', 'title1', 'title2', 'title3', 'title4']
+        self.title_imgs = []
+
+        for i in xrange(0, len(title)):
+            self.title_imgs.insert(i, context.resourcemanager.get(title[i]))
+
         self.sun = context.resourcemanager.get('sun')
         self.plant = context.resourcemanager.get('plant')
         self.cursor = context.resourcemanager.get('cursor')
@@ -149,6 +154,7 @@ class MenuScene(scene.Scene):
         self.background = pygame.Surface((self.menu.get_width(), self.menu.get_height())).convert()
         self.background_x_position = 0
         self.title_anim = 0
+        self.title_fade = -1
         self.show_menu = False
         fonts = (self.font, self.font_selected)
         main_options = [i18n._('start'), i18n._('options'), i18n._('instructions'), i18n._('exit')]
@@ -213,6 +219,15 @@ class MenuScene(scene.Scene):
             if self.title_anim >= 12:
                 self.title_anim = 12
 
+                if self.title_fade == -1:
+                    self.title_fade = 0
+
+            if self.title_anim == 12 and self.title_fade > -1:
+                self.title_fade += 1
+
+                if self.title_fade >= 4:
+                    self.title_fade = 4
+
     def render(self, scr):
 
         self.background.blit(self.menu, (0, 0))
@@ -221,12 +236,15 @@ class MenuScene(scene.Scene):
         self.background.blit(self.sun, (310, 84))
         self.background.blit(self.plant, (377, 125))
 
-        if self.title_anim > 0:
-            tmp_surface = pygame.Surface((self.title.get_width(), self.title_anim)).convert()
+        if self.title_anim > 0 and self.title_anim < 12:
+            tmp_surface = pygame.Surface((self.title_imgs[0].get_width(), self.title_anim)).convert()
             tmp_surface.fill((0, 0, 0, 0))
-            pygame.transform.scale(self.title, (self.title.get_width(), self.title_anim), tmp_surface)
+            pygame.transform.scale(self.title_imgs[0], (self.title_imgs[0].get_width(), self.title_anim), tmp_surface)
             self.background.blit(tmp_surface, (325 - tmp_surface.get_width()/2, 22 - tmp_surface.get_height()/2))
             tmp_surface = None
+
+        if self.title_anim == 12:
+            self.background.blit(self.title_imgs[self.title_fade], (325 - self.title_imgs[self.title_fade].get_width()/2, 22 - self.title_imgs[self.title_fade].get_height()/2))
 
         if self.show_menu:
             self.main_menu.render(self.background, (325 - self.main_menu.panel.surface.get_width()/2, 70))
