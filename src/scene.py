@@ -10,7 +10,7 @@ class Scene(object):
         panel = ['panel0', 'panel1', 'panel2',
                  'panel3', 'panel4', 'panel5',
                  'panel6', 'panel7', 'panel8',
-                 'cursor']
+                 'cursor', 'font_dither']
 
         for p in xrange(0, len(panel)):
             self.panel_imgs.insert(p, context.resourcemanager.get(panel[p]))
