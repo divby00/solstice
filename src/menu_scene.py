@@ -42,6 +42,7 @@ class MenuScene(scene.Scene):
         self.intro_text = []
         self.intro_text.insert(0, self.font.get(i18n._('In a very near place...'), 256))
         self.intro_text.insert(1, self.font.get(i18n._('...a nuclear plant is going to blow!!!'), 256))
+        self.brand_text = self.font.get(i18n._('2015 Love4Retro Games'), 240)
         self.__init_credits()
         self.background = pygame.Surface((self.menu.get_width(), self.menu.get_height())).convert()
         self.background_x_position = 0
@@ -123,12 +124,13 @@ class MenuScene(scene.Scene):
 
         if self.show_menu:
             self.main_menu.render(self.background, (325 - self.main_menu.panel.surface.get_width()/2, 70))
+            self.background.blit(self.brand_text, (325 - self.brand_text.get_width()/2, 172))
 
         scr.virt.blit(self.background, (0, 0), (self.background_x_position, 0,
                                                 scr.WINDOW_SIZE[0],
                                                 scr.WINDOW_SIZE[1]))
         if not self.show_menu:
-            scr.virt.blit(self.skip_text, (128-self.skip_text.get_width()/2, 172))
+            scr.virt.blit(self.skip_text, (128 - self.skip_text.get_width()/2, 172))
 
         if self.background_x_position < 98:
             scr.virt.blit(self.intro_text[0], (128-self.intro_text[0].get_width()/2, 68))

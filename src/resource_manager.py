@@ -57,7 +57,10 @@ class ResourceManager(object):
 
     def __update_load_screen(self, scr):
         scr.virt.fill((0, 0, 0, 0))
-        scr.virt.blit(scr.icon, (128-16, 55))
+
+        if scr.icon:
+            scr.virt.blit(scr.icon, (128-16, 55))
+
         bar_size = (self.actual_resource * 53) / self.total_resources
         pygame.draw.rect(scr.virt, (255, 255, 255), (102, 94, bar_size, 1), 1)
         pygame.draw.rect(scr.virt, (255, 255, 85), (102, 95, bar_size, 1), 1)
