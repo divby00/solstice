@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 from __future__ import division
-import pygame
-import gettext
 import sys
+import gettext
+import pygame
 import i18n
 import config
 import resource_manager
@@ -13,31 +13,37 @@ import menu_scene
 import game_scene
 import screen
 
-cfg = config.Configuration()
+
+class Solstice(object):
+
+    def __init__(self):
+        self.cfg = config.Configuration()
+        gettext.bindtextdomain('solstice', self.cfg.locale_path)
+        gettext.textdomain('solstice')
+        pygame.mixer.pre_init(22050, -16, 2, 4096)
+        pygame.init()
+        self.scr = screen.Screen(self.cfg, i18n._('Solstice'))
+        self.resourcemanager = resource_manager.ResourceManager(self, 'data.zip')
+        self.logoscene = logo_scene.LogoScene(self)
+        self.menuscene = menu_scene.MenuScene(self)
+        self.gamescene = game_scene.GameScene(self)
+        self.scenemanager = scene_manager.SceneManager(self)
+        self.scenemanager.set(self.logoscene)
+        self.scenemanager.run()
+        self.scenemanager.set(self.menuscene)
+        self.scenemanager.run()
+        self.scenemanager.set(self.gamescene)
+        self.scenemanager.run()
+
+    def exit(self, exit_code):
+        self.cfg.save()
+        pygame.quit()
+        sys.exit(exit_code)
+
 
 def main():
-    gettext.bindtextdomain('solstice', cfg.locale_path)
-    gettext.textdomain('solstice')
-    pygame.mixer.pre_init(22050, -16, 2, 4096)
-    pygame.init()
-    scr = screen.Screen(cfg, i18n._('Solstice'))
-    resourcemanager = resource_manager.ResourceManager(scr, cfg, 'data.zip')
-    logoscene = logo_scene.LogoScene(resourcemanager)
-    menuscene = menu_scene.MenuScene(resourcemanager)
-    gamescene = game_scene.GameScene(resourcemanager)
-    scenemanager = scene_manager.SceneManager(scr)
-    scenemanager.set(logoscene)
-    scenemanager.run()
-    scenemanager.set(menuscene)
-    scenemanager.run()
-    scenemanager.set(gamescene)
-    scenemanager.run()
-    exit(0)
-
-def exit(exit_code):
-    cfg.save()
-    pygame.quit()
-    sys.exit(exit_code)
+    solstice = Solstice()
+    solstice.exit(0)
 
 if __name__ == '__main__':
     main()

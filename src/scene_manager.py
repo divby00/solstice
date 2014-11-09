@@ -4,8 +4,8 @@ import scene
 
 class SceneManager(object):
 
-    def __init__(self, screen):
-        self.screen = screen
+    def __init__(self, context):
+        self.screen = context.scr
 
     def set(self, scene):
         self.scene = scene

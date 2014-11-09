@@ -1,10 +1,10 @@
-import pygame
-import random
 import math
+import random
+import pygame
 import scene
 import i18n
 import menu
-import solstice
+
 
 class Star(object):
 
@@ -24,16 +24,20 @@ class Star(object):
 
 class MenuScene(scene.Scene):
 
-    def __init__(self, resourcemanager, scene_speed=15):
-        super(MenuScene, self).__init__(resourcemanager, scene_speed)
-        self.menu = resourcemanager.get('menu')
-        self.planet = resourcemanager.get('planet')
-        self.title = resourcemanager.get('title')
-        self.sun = resourcemanager.get('sun')
-        self.plant = resourcemanager.get('plant')
-        self.cursor = resourcemanager.get('cursor')
-        self.music = resourcemanager.get('menu_song')
-        self.__init_stars(resourcemanager)
+    def __init__(self, context, scene_speed=15):
+        super(MenuScene, self).__init__(context, scene_speed)
+        self.exit = context.exit
+        self.menu = context.resourcemanager.get('menu')
+        self.planet = context.resourcemanager.get('planet')
+        self.title = context.resourcemanager.get('title')
+        self.sun = context.resourcemanager.get('sun')
+        self.plant = context.resourcemanager.get('plant')
+        self.cursor = context.resourcemanager.get('cursor')
+        self.music = context.resourcemanager.get('menu_song')
+        self.blip = pygame.mixer.Sound(context.resourcemanager.get('blip'))
+        self.accept = pygame.mixer.Sound(context.resourcemanager.get('accept'))
+        self.cancel = pygame.mixer.Sound(context.resourcemanager.get('cancel'))
+        self.__init_stars(context.resourcemanager)
         self.skip_text = self.font.get(i18n._('Press ESC to skip'), 256)
         self.intro_text = []
         self.intro_text.insert(0, self.font.get(i18n._('In a very near place...'), 256))
@@ -44,8 +48,10 @@ class MenuScene(scene.Scene):
         self.title_anim = 0
         self.show_menu = False
         fonts = (self.font, self.font_selected)
-        options = [i18n._('start'), i18n._('options'), i18n._('instructions'), i18n._('exit')]
-        self.main_menu = menu.Menu(self.panel_imgs, fonts, options)
+        main_options = [i18n._('start'), i18n._('options'), i18n._('instructions'), i18n._('exit')]
+        options_options = [i18n._('graphics'), i18n._('sound'), i18n._('control')]
+        self.main_menu= menu.Menu(self.panel_imgs, fonts, main_options)
+        self.options_menu = menu.Menu(self.panel_imgs, fonts, options_options)
 
     def run(self):
         if not pygame.mixer.music.get_busy():
@@ -62,25 +68,33 @@ class MenuScene(scene.Scene):
 
         if self.show_menu:
             if keys[pygame.K_RETURN]:
+                self.accept.play()
+
                 if self.main_menu.selected_option == 0:
                     pygame.mixer.music.stop()
                     self.running = False
 
                 if self.main_menu.selected_option == 3:
-                    solstice.exit(0)
+                    pygame.time.delay(1000)
+                    self.exit(0)
 
-        if keys[pygame.K_UP]:
-            self.main_menu.selected_option -= 1
-            if self.main_menu.selected_option == -1:
-                self.main_menu.selected_option = len(self.main_menu.options) - 1
+            if keys[pygame.K_UP]:
+                self.main_menu.selected_option -= 1
+                if self.main_menu.selected_option == -1:
+                    self.main_menu.selected_option = len(self.main_menu.options) - 1
+                self.blip.play()
 
-        if keys[pygame.K_DOWN]:
-            self.main_menu.selected_option += 1
-            if self.main_menu.selected_option == len(self.main_menu.options):
-                self.main_menu.selected_option = 0
+            if keys[pygame.K_DOWN]:
+                self.main_menu.selected_option += 1
+                if self.main_menu.selected_option == len(self.main_menu.options):
+                    self.main_menu.selected_option = 0
+                self.blip.play()
+
+            if keys[pygame.K_ESCAPE]:
+                self.cancel.play()
 
         self.__run_stars()
-        
+
         if self.show_menu:
             self.__run_credits()
 

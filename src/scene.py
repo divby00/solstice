@@ -1,8 +1,9 @@
 class Scene(object):
 
-    def __init__(self, resourcemanager, scene_speed=40):
-        self.font = resourcemanager.get('font')
-        self.font_selected = resourcemanager.get('font_selected')
+    def __init__(self, context, scene_speed=40):
+        self.cfg = context.cfg
+        self.font = context.resourcemanager.get('font')
+        self.font_selected = context.resourcemanager.get('font_selected')
         self.scene_speed = scene_speed
         self.running = False
         self.panel_imgs = []
@@ -12,7 +13,7 @@ class Scene(object):
                  'cursor']
 
         for p in xrange(0, len(panel)):
-            self.panel_imgs.insert(p, resourcemanager.get(panel[p]))
+            self.panel_imgs.insert(p, context.resourcemanager.get(panel[p]))
 
     def render(self, scr):
         raise NotImplementedError('Implement this method')

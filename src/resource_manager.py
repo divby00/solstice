@@ -1,5 +1,5 @@
-import pygame
 import io
+import pygame
 import xml.etree.ElementTree as ElementTree
 import zipfile
 import i18n
@@ -18,8 +18,8 @@ class ResourceNotFoundError(Exception):
 
 class ResourceManager(object):
 
-    def __init__(self, scr, cfg, zipfilename, xmlfilename='resources.xml'):
-        file_path = ''.join([cfg.data_path, zipfilename])
+    def __init__(self, context, zipfilename, xmlfilename='resources.xml'):
+        file_path = ''.join([context.cfg.data_path, zipfilename])
         self.zf = zipfile.ZipFile(file_path)
         xml = self.zf.read(xmlfilename)
         root = ElementTree.fromstring(xml)
@@ -50,9 +50,9 @@ class ResourceManager(object):
             elif resource.get('type') == 'level':
                 self.__load_level(resource)
                 self.actual_resource += 1
-            self.__update_load_screen(scr)
+            self.__update_load_screen(context.scr)
 
-        self.__update_load_screen(scr)
+        self.__update_load_screen(context.scr)
         pygame.time.delay(500)
 
     def __update_load_screen(self, scr):

@@ -1,7 +1,9 @@
+import os
 import ConfigParser
+import i18n
 
 
-class ConfigurationFileError(Exception):
+class ConfigurationError(Exception):
 
     def __init__(self, value):
         self.value = value
@@ -56,12 +58,15 @@ class Configuration(object):
             if len(parsed_file) > 0:
                 self.data_path = self.config_parser.get(Configuration.SECTION[0],
                                                         Configuration.OPT_DATA_PATH)
+                self.__check_correct_values(Configuration.OPT_DATA_PATH, self.data_path)
                 self.locale_path = self.config_parser.get(Configuration.SECTION[0],
                                                           Configuration.OPT_LOCALE_PATH)
                 w = self.config_parser.getint(Configuration.SECTION[1],
                                               Configuration.OPT_SCREEN_WIDTH)
+                self.__check_correct_values(Configuration.OPT_SCREEN_WIDTH, w)
                 h = self.config_parser.getint(Configuration.SECTION[1],
                                               Configuration.OPT_SCREEN_HEIGHT)
+                self.__check_correct_values(Configuration.OPT_SCREEN_HEIGHT, h)
                 self.fullscreen = self.config_parser.getboolean(Configuration.SECTION[1],
                                                                 Configuration.OPT_FULLSCREEN)
                 self.sound = self.config_parser.getboolean(Configuration.SECTION[2],
@@ -70,12 +75,15 @@ class Configuration(object):
                                                            Configuration.OPT_MUSIC)
                 self.sound_vol = self.config_parser.getint(Configuration.SECTION[2],
                                                            Configuration.OPT_SOUND_VOL)
+                self.__check_correct_values(Configuration.OPT_SOUND_VOL, self.sound_vol)
                 self.music_vol = self.config_parser.getint(Configuration.SECTION[2],
                                                            Configuration.OPT_MUSIC_VOL)
+                self.__check_correct_values(Configuration.OPT_MUSIC_VOL, self.music_vol)
                 self.screen_size = (w, h)
 
                 self.control_type = self.config_parser.get(Configuration.SECTION[3],
                                                            Configuration.OPT_CONTROL_TYPE)
+                self.__check_correct_values(Configuration.OPT_CONTROL_TYPE, self.control_type)
                 self.key_up = self.config_parser.get(Configuration.SECTION[3],
                                                      Configuration.OPT_KEY_UP)
                 self.key_down = self.config_parser.get(Configuration.SECTION[3],
@@ -91,6 +99,9 @@ class Configuration(object):
             else:
                 self.__set_default_values()
 
+        except ConfigurationError as e:
+            print(e.value)
+            self.__set_default_values()
         except:
             self.__set_default_values()
 
@@ -168,6 +179,28 @@ class Configuration(object):
         self.key_right = Configuration.KEY_RIGHT
         self.key_act1 = Configuration.KEY_ACTION_1
         self.key_act2 = Configuration.KEY_ACTION_2
+
+    def __check_correct_values(self, option, read_value):
+
+        if option == Configuration.OPT_DATA_PATH:
+            file_path = ''.join([read_value, 'data.zip'])
+            if not os.path.isfile(file_path):
+                raise ConfigurationError(i18n._('Unable to find the data file in the directory specified in the configuration file.'))
+        elif option == Configuration.OPT_SOUND_VOL:
+            if read_value not in list(xrange(11)):
+                raise ConfigurationError(i18n._('Sound volume must be between 0 (min) and 10 (max).'))
+        elif option == Configuration.OPT_MUSIC_VOL:
+            if read_value not in list(xrange(11)):
+                raise ConfigurationError(i18n._('Music volume must be between 0 (min) and 10 (max).'))
+        elif option == Configuration.OPT_CONTROL_TYPE:
+            if read_value not in ['keyboard', 'joystick']:
+                raise ConfigurationError(i18n._('Control must be keyboard or joystick.'))
+        elif option == Configuration.OPT_SCREEN_WIDTH:
+            if read_value not in list(xrange(1, 1441)):
+                raise ConfigurationError(i18n._('Screen width must be between 1 and 1440.'))
+        elif option == Configuration.OPT_SCREEN_HEIGHT:
+            if read_value not in list(xrange(1, 901)):
+                raise ConfigurationError(i18n._('Screen height must be between 1 and 900.'))
 
     def save(self):
         with open(Configuration.CFGFILE_NAME, 'wb') as config_file:

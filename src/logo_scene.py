@@ -1,15 +1,15 @@
-import scene
 import pygame
+import scene
 
 
 class LogoScene(scene.Scene):
 
     LOGO_DELAY = 1500
 
-    def __init__(self, resourcemanager, scene_speed=30):
-        super(LogoScene, self).__init__(resourcemanager, scene_speed)
-        self.logo = resourcemanager.get('logo')
-        self.logo_sound = resourcemanager.get('logo_sound')
+    def __init__(self, context, scene_speed=30):
+        super(LogoScene, self).__init__(context, scene_speed)
+        self.logo = context.resourcemanager.get('logo')
+        self.logo_sound = context.resourcemanager.get('logo_sound')
         self.dither = []
         dither_images = [
             'dither0', 'dither1', 'dither2',
@@ -17,7 +17,7 @@ class LogoScene(scene.Scene):
         ]
 
         for d in xrange(0, len(dither_images)):
-            self.dither.insert(d, resourcemanager.get(dither_images[d]))
+            self.dither.insert(d, context.resourcemanager.get(dither_images[d]))
 
         self.dither_anim = len(self.dither)
         self.fading = 0
