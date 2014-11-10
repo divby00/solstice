@@ -1,5 +1,5 @@
 import pygame
-import i18n
+from gettext import gettext as _
 
 
 class IconNotFoundError(Exception):
@@ -28,7 +28,7 @@ class Screen(object):
             pygame.display.set_icon(self.icon)
         except:
             self.icon = None
-            print(i18n._('Unable to find the file solstice.png needed for the loading screen.'))
+            print(_('Unable to find the file solstice.png needed for the loading screen.'))
 
         self.display = pygame.display.set_mode(self.screen_size,
                                                graphics_params)

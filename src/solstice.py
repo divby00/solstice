@@ -2,8 +2,8 @@
 from __future__ import division
 import sys
 import gettext
+from gettext import gettext as _
 import pygame
-import i18n
 import config
 import resource_manager
 import scene_manager
@@ -22,8 +22,9 @@ class Solstice(object):
         gettext.textdomain('solstice')
         pygame.mixer.pre_init(22050, -16, 2, 4096)
         pygame.init()
-        self.scr = screen.Screen(self.cfg, i18n._('Solstice'))
-        self.resourcemanager = resource_manager.ResourceManager(self, 'data.zip')
+        self.scr = screen.Screen(self.cfg, _('Solstice'))
+        self.resourcemanager = resource_manager.ResourceManager(self,
+                                                                'data.zip')
         self.logoscene = logo_scene.LogoScene(self)
         self.menuscene = menu_scene.MenuScene(self)
         self.gamescene = game_scene.GameScene(self)

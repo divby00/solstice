@@ -2,9 +2,9 @@ import math
 import random
 import pygame
 import scene
-import i18n
 import menu
 import screen
+from gettext import gettext as _
 
 
 class Star(object):
@@ -77,19 +77,20 @@ class Stars(object):
             if img is not None:
                 surface.blit(img, (s.x, s.y))
 
+
 class Credits(object):
 
     def __init__(self, font, font_dither):
         self.credits_text = [
-            i18n._('2015 Love4Retro Games'),
-            i18n._('Solstice is an Equinox remake'),
-            i18n._('Program and graphics by:'),
-            i18n._('Jesus Chicharro'),
-            i18n._('Music by:'),
-            i18n._('Daniel Galan'),
-            i18n._('This is Free Software'),
-            i18n._('Hope you enjoy this game...'),
-            i18n._('...and long life to EGA!!!')
+            _('2015 Love4Retro Games'),
+            _('Solstice is an Equinox remake'),
+            _('Program and graphics by:'),
+            _('Jesus Chicharro'),
+            _('Music by:'),
+            _('Daniel Galan'),
+            _('This is Free Software'),
+            _('Hope you enjoy this game...'),
+            _('...and long life to EGA!!!')
         ]
         self.actual_text = 0
         self.credits_anim = 0
@@ -98,7 +99,8 @@ class Credits(object):
         self.font_dither = font_dither
 
         for i in xrange(0, len(self.credits_text)):
-            self.credits_imgs.insert(i, font.get(self.credits_text[i], screen.Screen.WINDOW_SIZE[0]))
+            self.credits_imgs.insert(i, font.get(self.credits_text[i],
+                                                 screen.Screen.WINDOW_SIZE[0]))
 
     def run(self):
         if self.credits_anim >= 100:
@@ -118,10 +120,14 @@ class Credits(object):
         self.credits_anim += 1
 
     def render(self, surface):
-        surface.blit(self.credits_imgs[self.actual_text], (325 - self.credits_imgs[self.actual_text].get_width()/2, self.text_y))
+        surface.blit(self.credits_imgs[self.actual_text],
+                     (325 - self.credits_imgs[self.actual_text].get_width()/2,
+                      self.text_y))
 
         for i in xrange(196, 196 + screen.Screen.WINDOW_SIZE[0], 8):
-            surface.blit(self.font_dither, (i, screen.Screen.WINDOW_SIZE[1]-self.font_dither.get_height()))
+            surface.blit(self.font_dither,
+                         (i, screen.Screen.WINDOW_SIZE[1] -
+                          self.font_dither.get_height()))
 
 
 class MenuScene(scene.Scene):
@@ -145,21 +151,30 @@ class MenuScene(scene.Scene):
         self.blip = pygame.mixer.Sound(context.resourcemanager.get('blip'))
         self.accept = pygame.mixer.Sound(context.resourcemanager.get('accept'))
         self.cancel = pygame.mixer.Sound(context.resourcemanager.get('cancel'))
-        self.stars = Stars(context.resourcemanager, (self.menu.get_width(), 145))
-        self.skip_text = self.font.get(i18n._('Press ESC to skip'), 256)
+        self.stars = Stars(context.resourcemanager,
+                           (self.menu.get_width(), 145))
+        self.skip_text = self.font.get(_('Press ESC to skip'), 256)
         self.intro_text = []
-        self.intro_text.insert(0, self.font.get(i18n._('In a very near place...'), 256))
-        self.intro_text.insert(1, self.font.get(i18n._('...a nuclear plant is going to blow!!!'), 256))
+        self.intro_text.insert(
+            0, self.font.get(_('In a very near place...'), 256))
+        self.intro_text.insert(
+            1, self.font.get(_('...a nuclear plant is going to blow!!!'), 256))
         self.credits = Credits(self.font, self.font_dither)
-        self.background = pygame.Surface((self.menu.get_width(), self.menu.get_height())).convert()
+        self.background = pygame.Surface(
+            (self.menu.get_width(), self.menu.get_height())).convert()
         self.background_x_position = 0
         self.title_anim = 0
         self.title_fade = -1
         self.show_menu = False
         fonts = (self.font, self.font_selected)
-        main_options = [i18n._('start'), i18n._('options'), i18n._('instructions'), i18n._('exit')]
-        options_options = [i18n._('graphics'), i18n._('sound'), i18n._('control')]
-        self.main_menu= menu.Menu(self.panel_imgs, fonts, main_options)
+        main_options = [
+            _('start'), _('options'),
+            _('instructions'), _('exit')
+        ]
+        options_options = [
+            _('graphics'), _('sound'), _('control')
+        ]
+        self.main_menu = menu.Menu(self.panel_imgs, fonts, main_options)
         self.options_menu = menu.Menu(self.panel_imgs, fonts, options_options)
 
     def run(self):
@@ -237,26 +252,40 @@ class MenuScene(scene.Scene):
         self.background.blit(self.plant, (377, 125))
 
         if self.title_anim > 0 and self.title_anim < 12:
-            tmp_surface = pygame.Surface((self.title_imgs[0].get_width(), self.title_anim)).convert()
+            tmp_surface = pygame.Surface((self.title_imgs[0].get_width(),
+                                         self.title_anim)).convert()
             tmp_surface.fill((0, 0, 0, 0))
-            pygame.transform.scale(self.title_imgs[0], (self.title_imgs[0].get_width(), self.title_anim), tmp_surface)
-            self.background.blit(tmp_surface, (325 - tmp_surface.get_width()/2, 22 - tmp_surface.get_height()/2))
+            pygame.transform.scale(self.title_imgs[0],
+                                   (self.title_imgs[0].get_width(),
+                                    self.title_anim),
+                                   tmp_surface)
+            self.background.blit(tmp_surface,
+                                 (325 - tmp_surface.get_width()/2,
+                                  22 - tmp_surface.get_height()/2))
             tmp_surface = None
 
         if self.title_anim == 12:
-            self.background.blit(self.title_imgs[self.title_fade], (325 - self.title_imgs[self.title_fade].get_width()/2, 22 - self.title_imgs[self.title_fade].get_height()/2))
+            self.background.blit(
+                self.title_imgs[self.title_fade],
+                (325 - self.title_imgs[self.title_fade].get_width()/2,
+                 22 - self.title_imgs[self.title_fade].get_height()/2))
 
         if self.show_menu:
-            self.main_menu.render(self.background, (325 - self.main_menu.panel.surface.get_width()/2, 70))
+            self.main_menu.render(
+                self.background,
+                (325 - self.main_menu.panel.surface.get_width()/2, 70)
+            )
             self.credits.render(self.background)
 
         scr.virt.blit(self.background, (0, 0), (self.background_x_position, 0,
                                                 scr.WINDOW_SIZE[0],
                                                 scr.WINDOW_SIZE[1]))
         if not self.show_menu:
-            scr.virt.blit(self.skip_text, (128 - self.skip_text.get_width()/2, 176))
+            scr.virt.blit(self.skip_text,
+                         (128 - self.skip_text.get_width()/2, 176))
         if self.background_x_position < 98:
-            scr.virt.blit(self.intro_text[0], (128-self.intro_text[0].get_width()/2, 68))
-        elif self.background_x_position >= 98 and self.background_x_position < 196:
-            scr.virt.blit(self.intro_text[1], (128-self.intro_text[1].get_width()/2, 68))
-
+            scr.virt.blit(self.intro_text[0],
+                         (128-self.intro_text[0].get_width()/2, 68))
+        elif self.background_x_position in list(xrange(98, 196)):
+            scr.virt.blit(self.intro_text[1],
+                         (128-self.intro_text[1].get_width()/2, 68))

@@ -1,5 +1,5 @@
-import pygame
 import io
+import pygame
 import zipfile
 import xml.etree.ElementTree as ElementTree
 

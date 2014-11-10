@@ -1,8 +1,8 @@
 import io
 import pygame
 import xml.etree.ElementTree as ElementTree
+from gettext import gettext as _
 import zipfile
-import i18n
 import bitmap_font
 import tiled_tools
 
@@ -164,7 +164,7 @@ class ResourceManager(object):
             elif res_name in self.levels:
                 return self.levels[res_name]
             else:
-                message = i18n._('Resource %s not found.' % res_name)
+                message = _('Resource %s not found.' % res_name)
                 raise ResourceNotFoundError(message)
         except ResourceNotFoundError as e:
             print(e.value)

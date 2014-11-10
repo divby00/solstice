@@ -17,7 +17,8 @@ class LogoScene(scene.Scene):
         ]
 
         for d in xrange(0, len(dither_images)):
-            self.dither.insert(d, context.resourcemanager.get(dither_images[d]))
+            self.dither.insert(d,
+                               context.resourcemanager.get(dither_images[d]))
 
         self.dither_anim = len(self.dither)
         self.fading = 0
