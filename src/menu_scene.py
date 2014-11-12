@@ -167,15 +167,20 @@ class MenuScene(scene.Scene):
         self.title_fade = -1
         self.show_menu = False
         fonts = (self.font, self.font_selected)
-        main_options = [
+        menu_main_options = [
             _('start'), _('options'),
             _('instructions'), _('exit')
         ]
-        options_options = [
+        menu_options_options = [
             _('graphics'), _('sound'), _('control')
         ]
-        self.main_menu = menu.Menu(self.panel_imgs, fonts, main_options)
-        self.options_menu = menu.Menu(self.panel_imgs, fonts, options_options)
+        main_menu = menu.Menu(menu_main_options)
+        options_menu = menu.Menu(menu_options_options)
+        menu_list = [
+            main_menu,
+            options_menu
+        ]
+        self.menu_group = menu.MenuGroup(menu_list, self.panel_imgs, fonts)
 
     def run(self):
         if not pygame.mixer.music.get_busy():
@@ -196,26 +201,29 @@ class MenuScene(scene.Scene):
 
         if self.show_menu:
             if keys[pygame.K_RETURN]:
+                menu = self.menu_group.menu_list[self.menu_group.selected_menu]
                 self.accept.play()
 
-                if self.main_menu.selected_option == 0:
+                if menu.selected_option == 0:
                     pygame.mixer.music.stop()
                     self.running = False
 
-                if self.main_menu.selected_option == 3:
+                if menu.selected_option == 3:
                     pygame.time.delay(1000)
                     self.exit(0)
 
             if keys[pygame.K_UP]:
-                self.main_menu.selected_option -= 1
-                if self.main_menu.selected_option == -1:
-                    self.main_menu.selected_option = len(self.main_menu.options) - 1
+                menu = self.menu_group.menu_list[self.menu_group.selected_menu]
+                menu.selected_option -= 1
+                if menu.selected_option == -1:
+                    menu.selected_option = len(menu.options)-1
                 self.blip.play()
 
             if keys[pygame.K_DOWN]:
-                self.main_menu.selected_option += 1
-                if self.main_menu.selected_option == len(self.main_menu.options):
-                    self.main_menu.selected_option = 0
+                menu = self.menu_group.menu_list[self.menu_group.selected_menu]
+                menu.selected_option += 1
+                if menu.selected_option == len(menu.options):
+                    menu.selected_option = 0
                 self.blip.play()
 
             if keys[pygame.K_ESCAPE]:
@@ -271,10 +279,7 @@ class MenuScene(scene.Scene):
                  22 - self.title_imgs[self.title_fade].get_height()/2))
 
         if self.show_menu:
-            self.main_menu.render(
-                self.background,
-                (325 - self.main_menu.panel.surface.get_width()/2, 70)
-            )
+            self.menu_group.render(self.background, (325, 70))
             self.credits.render(self.background)
 
         scr.virt.blit(self.background, (0, 0), (self.background_x_position, 0,
