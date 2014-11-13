@@ -7,6 +7,7 @@ import gettext
 from gettext import gettext as _
 import pygame
 import config
+import control
 import resource_manager
 import scene_manager
 import scene
@@ -30,8 +31,8 @@ class Solstice(object):
         pygame.mixer.pre_init(22050, -16, 2, 1024)
         pygame.init()
         self.scr = screen.Screen(self.cfg, _('Solstice'))
-        self.resourcemanager = resource_manager.ResourceManager(self,
-                                                                'data.zip')
+        self.resourcemanager = resource_manager.ResourceManager(self, 'data.zip')
+        self.control = control.Control(self)
         self.logoscene = logo_scene.LogoScene(self)
         self.menuscene = menu_scene.MenuScene(self)
         self.gamescene = game_scene.GameScene(self)

@@ -75,6 +75,9 @@ class MenuGroup(object):
                 m.options_images.insert(i, self.fonts[0].get(m.options[i], 256))
                 m.sel_options_images.insert(i, self.fonts[1].get(m.options[i], 256))
 
+    def run(self):
+        pass
+
     def render(self, surface, position):
         menu = self.menu_list[self.selected_menu]
         pos = position[0] - menu.panel.surface.get_width()/2, position[1]

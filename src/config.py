@@ -42,7 +42,7 @@ class Configuration(object):
     SOUND_VOLUME = 10
     MUSIC_VOLUME = 10
     CFGFILE_NAME = 'solstice.cfg'
-    CONTROL_TYPE = 'keyboard'
+    CONTROL_TYPE = 'autodetect'
     KEY_UP = 'a'
     KEY_DOWN = 'b'
     KEY_LEFT = 'c'
@@ -196,8 +196,8 @@ class Configuration(object):
             if read_value not in list(xrange(11)):
                 raise ConfigurationError(_('Music volume must be between 0 (min) and 10 (max).'))
         elif option == Configuration.OPT_CONTROL_TYPE:
-            if read_value not in ['keyboard', 'joystick']:
-                raise ConfigurationError(_('Control must be keyboard or joystick.'))
+            if read_value not in ['keyboard', 'joystick', 'autodetect']:
+                raise ConfigurationError(_('Control must be keyboard, joystick or autodetect.'))
         elif option == Configuration.OPT_SCREEN_WIDTH:
             if read_value not in list(xrange(1, 1441)):
                 raise ConfigurationError(_('Screen width must be between 1 and 1440.'))
