@@ -153,7 +153,7 @@ class MenuScene(scene.Scene):
         self.cancel = pygame.mixer.Sound(context.resourcemanager.get('cancel'))
         self.stars = Stars(context.resourcemanager,
                            (self.menu.get_width(), 145))
-        self.skip_text = self.font.get(_('Press ESC to skip'), 256)
+        self.skip_text = self.font.get(_('Press action 2 to skip'), 256)
         self.intro_text = []
         self.intro_text.insert(
             0, self.font.get(_('In a very near place...'), 256))
@@ -187,9 +187,7 @@ class MenuScene(scene.Scene):
             pygame.mixer.music.load(self.music)
             pygame.mixer.music.play(-1)
 
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_ESCAPE]:
+        if self.control.on('action2'):
             self.title_anim = 12
             self.background_x_position = 196
 
@@ -200,7 +198,7 @@ class MenuScene(scene.Scene):
                 self.show_menu = True
 
         if self.show_menu:
-            if keys[pygame.K_RETURN]:
+            if self.control.on('action1'):
                 menu = self.menu_group.menu_list[self.menu_group.selected_menu]
                 self.accept.play()
 
@@ -212,21 +210,21 @@ class MenuScene(scene.Scene):
                     pygame.time.delay(1000)
                     self.exit(0)
 
-            if keys[pygame.K_UP]:
+            if self.control.on('up'):
                 menu = self.menu_group.menu_list[self.menu_group.selected_menu]
                 menu.selected_option -= 1
                 if menu.selected_option == -1:
                     menu.selected_option = len(menu.options)-1
                 self.blip.play()
 
-            if keys[pygame.K_DOWN]:
+            if self.control.on('down'):
                 menu = self.menu_group.menu_list[self.menu_group.selected_menu]
                 menu.selected_option += 1
                 if menu.selected_option == len(menu.options):
                     menu.selected_option = 0
                 self.blip.play()
 
-            if keys[pygame.K_ESCAPE]:
+            if self.control.on('action2'):
                 self.cancel.play()
 
         self.stars.run()

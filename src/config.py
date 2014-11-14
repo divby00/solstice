@@ -43,12 +43,12 @@ class Configuration(object):
     MUSIC_VOLUME = 10
     CFGFILE_NAME = 'solstice.cfg'
     CONTROL_TYPE = 'autodetect'
-    KEY_UP = 'a'
-    KEY_DOWN = 'b'
-    KEY_LEFT = 'c'
-    KEY_RIGHT = 'd'
-    KEY_ACTION_1 = 'e'
-    KEY_ACTION_2 = 'f'
+    KEY_UP = 119
+    KEY_DOWN = 115
+    KEY_LEFT = 97
+    KEY_RIGHT = 100
+    KEY_ACTION_1 = 117
+    KEY_ACTION_2 = 105
 
     def __init__(self):
         try:
@@ -87,17 +87,17 @@ class Configuration(object):
                     Configuration.SECTION[3], Configuration.OPT_CONTROL_TYPE)
                 self.__check_correct_values(
                     Configuration.OPT_CONTROL_TYPE, self.control_type)
-                self.key_up = self.config_parser.get(
+                self.key_up = self.config_parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_UP)
-                self.key_down = self.config_parser.get(
+                self.key_down = self.config_parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_DOWN)
-                self.key_left = self.config_parser.get(
+                self.key_left = self.config_parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_LEFT)
-                self.key_right = self.config_parser.get(
+                self.key_right = self.config_parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_RIGHT)
-                self.key_act1 = self.config_parser.get(
+                self.key_act1 = self.config_parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_ACTION_1)
-                self.key_act2 = self.config_parser.get(
+                self.key_act2 = self.config_parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_ACTION_2)
             else:
                 self.__set_default_values()

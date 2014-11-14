@@ -50,9 +50,7 @@ class GameScene(scene.Scene):
                     self.current_level.map.height_pixels -
                     self.view_port[1] + (192/4)]
 
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_p]:
+        if self.control.on('right'):
             if not check_right_collision(self.player, self.current_level):
                 if (self.player.x % self.view_port[0]) >= half[0]:
                     if self.cursor[0] < map_size[0]:
@@ -68,7 +66,7 @@ class GameScene(scene.Scene):
                     self.player.x += self.scroll_speed[0]
                     self.player.absolute_x += self.scroll_speed[0]
 
-        if keys[pygame.K_o]:
+        if self.control.on('left'):
             if not check_left_collision(self.player, self.current_level):
                 if (self.player.x % self.view_port[0]) <= half[0]:
                     if self.cursor[0] > 0:
@@ -84,7 +82,7 @@ class GameScene(scene.Scene):
                     self.player.x -= self.scroll_speed[0]
                     self.player.absolute_x -= self.scroll_speed[0]
 
-        if keys[pygame.K_a]:
+        if self.control.on('down'):
             if not check_bottom_collision(self.player, self.current_level):
                 if (self.player.y % self.view_port[1]) >= half[1]:
                     if self.cursor[1] < map_size[1]:
@@ -97,7 +95,7 @@ class GameScene(scene.Scene):
                     self.player.y += self.scroll_speed[1]
                     self.player.absolute_y += self.scroll_speed[1]
 
-        if keys[pygame.K_q]:
+        if self.control.on('up'):
             if not check_upper_collision(self.player, self.current_level):
                 if (self.player.y % self.view_port[1]) <= half[1]:
                     if self.cursor[1] > 0:
@@ -110,10 +108,12 @@ class GameScene(scene.Scene):
                     self.player.y -= self.scroll_speed[1]
                     self.player.absolute_y -= self.scroll_speed[1]
 
-        if keys[pygame.K_SPACE]:
+        '''
+        if self.control.on('action1'):
             self.laser.play()
+        '''
 
-        if keys[pygame.K_ESCAPE]:
+        if self.control.on('action2'):
             self.running = False
 
         self.player.animation += self.player.direction

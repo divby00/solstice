@@ -28,25 +28,32 @@ class KeyboardInput(ControlInput):
 
     def __init__(self, actions):
         super(KeyboardInput, self).__init__(actions)
+        self.actions = actions
+        self.keys = None
 
     def update(self):
-        pass
+        self.keys = pygame.key.get_pressed()
 
-    def on(self):
-        pass
+    def on(self, action_name):
+        for a in self.actions:
+            if a.name == action_name:
+                if self.keys[a.mapping]:
+                    return True
+        return False
 
 
 class JoystickInput(ControlInput):
 
     def __init__(self, actions, joystick):
         super(JoystickInput, self).__init__(actions)
+        self.actions = actions
         self.joystick = joystick
         self.joystick.init()
 
     def update(self):
         pass
 
-    def on(self):
+    def on(self, action_name):
         pass
 
 
@@ -69,19 +76,31 @@ class Control(object):
     def __register_devices(self, joysticks):
         devices = []
         actions = []
-        actions.append(ControlAction('up', 0))
-        actions.append(ControlAction('down', 1))
-        actions.append(ControlAction('left', 2))
-        actions.append(ControlAction('right', 3))
 
         if self.cfg.control_type in ['autodetect', 'keyboard']:
+            actions.append(ControlAction('up', self.cfg.key_up))
+            actions.append(ControlAction('down', self.cfg.key_down))
+            actions.append(ControlAction('left', self.cfg.key_left))
+            actions.append(ControlAction('right', self.cfg.key_right))
+            actions.append(ControlAction('action1', self.cfg.key_act1))
+            actions.append(ControlAction('action2', self.cfg.key_act2))
             devices.append(KeyboardInput(actions))
 
         if self.cfg.control_type in ['autodetect', 'joystick']:
-            for j in range(joysticks):
-                devices.append(JoystickInput(actions, joysticks[j]))
+            for j in joysticks:
+                devices.append(JoystickInput(actions, j))
 
         if len(devices) == 0:
             raise UndefinedDeviceError(_('Unable to set a control device.'))
 
         return devices
+
+    def on(self, action_name):
+        pygame.event.pump()
+
+        for d in self.devices:
+            d.update()
+
+            if d.on(action_name):
+                return True
+        return False
