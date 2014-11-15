@@ -1,6 +1,7 @@
 import pygame
 import scene
 import player
+import control
 
 
 class GameScene(scene.Scene):
@@ -34,7 +35,7 @@ class GameScene(scene.Scene):
         self.half_player = (self.player.w/2, self.player.h/2)
         self.song = context.resourcemanager.get('level01_song')
         self.laser = context.resourcemanager.get('laser')
-        self.music = pygame.mixer.Sound(self.song)
+        self.music = self.song
         self.playing = False
 
     def run(self):
@@ -50,7 +51,7 @@ class GameScene(scene.Scene):
                     self.current_level.map.height_pixels -
                     self.view_port[1] + (192/4)]
 
-        if self.control.on('right'):
+        if self.control.on(control.Control.RIGHT):
             if not check_right_collision(self.player, self.current_level):
                 if (self.player.x % self.view_port[0]) >= half[0]:
                     if self.cursor[0] < map_size[0]:
@@ -66,7 +67,7 @@ class GameScene(scene.Scene):
                     self.player.x += self.scroll_speed[0]
                     self.player.absolute_x += self.scroll_speed[0]
 
-        if self.control.on('left'):
+        if self.control.on(control.Control.LEFT):
             if not check_left_collision(self.player, self.current_level):
                 if (self.player.x % self.view_port[0]) <= half[0]:
                     if self.cursor[0] > 0:
@@ -82,7 +83,7 @@ class GameScene(scene.Scene):
                     self.player.x -= self.scroll_speed[0]
                     self.player.absolute_x -= self.scroll_speed[0]
 
-        if self.control.on('down'):
+        if self.control.on(control.Control.DOWN):
             if not check_bottom_collision(self.player, self.current_level):
                 if (self.player.y % self.view_port[1]) >= half[1]:
                     if self.cursor[1] < map_size[1]:
@@ -95,7 +96,7 @@ class GameScene(scene.Scene):
                     self.player.y += self.scroll_speed[1]
                     self.player.absolute_y += self.scroll_speed[1]
 
-        if self.control.on('up'):
+        if self.control.on(control.Control.UP):
             if not check_upper_collision(self.player, self.current_level):
                 if (self.player.y % self.view_port[1]) <= half[1]:
                     if self.cursor[1] > 0:
@@ -113,7 +114,7 @@ class GameScene(scene.Scene):
             self.laser.play()
         '''
 
-        if self.control.on('action2'):
+        if self.control.on(control.Control.ACTION2):
             self.running = False
 
         self.player.animation += self.player.direction

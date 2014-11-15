@@ -4,6 +4,7 @@ import pygame
 import scene
 import menu
 import screen
+import control
 from gettext import gettext as _
 
 
@@ -145,12 +146,8 @@ class MenuScene(scene.Scene):
 
         self.sun = context.resourcemanager.get('sun')
         self.plant = context.resourcemanager.get('plant')
-        self.cursor = context.resourcemanager.get('cursor')
         self.font_dither = context.resourcemanager.get('font_dither')
         self.music = context.resourcemanager.get('menu_song')
-        self.blip = pygame.mixer.Sound(context.resourcemanager.get('blip'))
-        self.accept = pygame.mixer.Sound(context.resourcemanager.get('accept'))
-        self.cancel = pygame.mixer.Sound(context.resourcemanager.get('cancel'))
         self.stars = Stars(context.resourcemanager,
                            (self.menu.get_width(), 145))
         self.skip_text = self.font.get(_('Press action 2 to skip'), 256)
@@ -167,69 +164,68 @@ class MenuScene(scene.Scene):
         self.title_fade = -1
         self.show_menu = False
         fonts = (self.font, self.font_selected)
-        menu_main_options = [
-            _('start'), _('options'),
-            _('instructions'), _('exit')
-        ]
-        menu_options_options = [
-            _('graphics'), _('sound'), _('control')
-        ]
-        main_menu = menu.Menu(menu_main_options)
-        options_menu = menu.Menu(menu_options_options)
-        menu_list = [
-            main_menu,
-            options_menu
-        ]
-        self.menu_group = menu.MenuGroup(menu_list, self.panel_imgs, fonts)
+        menu_main_options = [_('start'), _('options'), _('instructions'), _('exit')]
+        menu_options_options = [_('graphics'), _('sound'), _('control')]
+        menu_graphics_options = [_('resolution'), _('fullscreen')]
+        menu_resolution_options = [_('256x192'), _('512x384'), _('1024x768')]
+        menu_fullscreen_options = [_('on'), _('off')]
+        menu_sound_options = [_('sound effects'), _('sound effects volume'),
+                              _('music'), _('music volume')]
+        menu_effects_options = [_('on'), _('off')]
+        menu_effects_vol_options = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+        menu_music_options = [_('on'), _('off')]
+        menu_music_vol_options = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+        main_menu = menu.Menu('main', menu_main_options)
+        options_menu = menu.Menu('options', menu_options_options, main_menu)
+        graphics_menu = menu.Menu('graphics', menu_graphics_options, options_menu)
+        sounds_menu = menu.Menu('sounds', menu_sound_options, options_menu)
+        menu_list = [main_menu, options_menu, graphics_menu, sounds_menu]
+        self.menu_group = menu.MenuGroup(menu_list, self.menu_context)
 
     def run(self):
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.load(self.music)
             pygame.mixer.music.play(-1)
 
-        if self.control.on('action2'):
+        self.menu_group.run()
+
+        if self.control.on(control.Control.ACTION2):
             self.title_anim = 12
             self.background_x_position = 196
 
-            if not self.show_menu:
+            if not self.menu_group.visible:
                 self.credits.credits_anim = 0
                 self.credits.text_y = screen.Screen.WINDOW_SIZE[1]
                 self.credits.actual_text = 0
-                self.show_menu = True
+                self.menu_group.visible = True
 
-        if self.show_menu:
-            if self.control.on('action1'):
+        if self.menu_group.visible:
+            if self.menu_group.accept:
+
                 menu = self.menu_group.menu_list[self.menu_group.selected_menu]
-                self.accept.play()
 
-                if menu.selected_option == 0:
-                    pygame.mixer.music.stop()
-                    self.running = False
+                if menu.name == 'main':
+                    if menu.selected_option == 0:
+                        pygame.mixer.music.stop()
+                        self.running = False
 
-                if menu.selected_option == 3:
-                    pygame.time.delay(1000)
-                    self.exit(0)
+                    if menu.selected_option == 1:
+                        self.menu_group.selected_menu = 1
 
-            if self.control.on('up'):
-                menu = self.menu_group.menu_list[self.menu_group.selected_menu]
-                menu.selected_option -= 1
-                if menu.selected_option == -1:
-                    menu.selected_option = len(menu.options)-1
-                self.blip.play()
+                    if menu.selected_option == 3:
+                        pygame.time.delay(1000)
+                        self.exit(0)
 
-            if self.control.on('down'):
-                menu = self.menu_group.menu_list[self.menu_group.selected_menu]
-                menu.selected_option += 1
-                if menu.selected_option == len(menu.options):
-                    menu.selected_option = 0
-                self.blip.play()
+                if menu.name == 'options':
+                    if menu.selected_option == 0:
+                        self.menu_group.selected_menu = 2
+                    if menu.selected_option == 1:
+                        self.menu_group.selected_menu = 3
 
-            if self.control.on('action2'):
-                self.cancel.play()
 
         self.stars.run()
 
-        if self.show_menu:
+        if self.menu_group.visible:
             self.credits.run()
 
         # 196 is the sun position in the menu background image
@@ -276,14 +272,14 @@ class MenuScene(scene.Scene):
                 (325 - self.title_imgs[self.title_fade].get_width()/2,
                  22 - self.title_imgs[self.title_fade].get_height()/2))
 
-        if self.show_menu:
+        if self.menu_group.visible:
             self.menu_group.render(self.background, (325, 70))
             self.credits.render(self.background)
 
         scr.virt.blit(self.background, (0, 0), (self.background_x_position, 0,
                                                 scr.WINDOW_SIZE[0],
                                                 scr.WINDOW_SIZE[1]))
-        if not self.show_menu:
+        if not self.menu_group.visible:
             scr.virt.blit(self.skip_text,
                          (128 - self.skip_text.get_width()/2, 176))
         if self.background_x_position < 98:

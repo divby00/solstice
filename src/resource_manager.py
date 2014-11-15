@@ -120,7 +120,7 @@ class ResourceManager(object):
         sample = io.BytesIO(sample_data)
 
         if sample is not None:
-            self.samples[name] = sample
+            self.samples[name] = pygame.mixer.Sound(sample)
 
     def __load_font(self, resource):
         src, name = self.__get_common_info(resource)

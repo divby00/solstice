@@ -68,6 +68,13 @@ class UndefinedDeviceError(Exception):
 
 class Control(object):
 
+    UP = 'up'
+    DOWN = 'down'
+    LEFT = 'left'
+    RIGHT = 'right'
+    ACTION1 = 'action1'
+    ACTION2 = 'action2'
+
     def __init__(self, context):
         self.cfg = context.cfg
         joysticks = [pygame.joystick.Joystick(j) for j in range(pygame.joystick.get_count())]
@@ -78,12 +85,12 @@ class Control(object):
         actions = []
 
         if self.cfg.control_type in ['autodetect', 'keyboard']:
-            actions.append(ControlAction('up', self.cfg.key_up))
-            actions.append(ControlAction('down', self.cfg.key_down))
-            actions.append(ControlAction('left', self.cfg.key_left))
-            actions.append(ControlAction('right', self.cfg.key_right))
-            actions.append(ControlAction('action1', self.cfg.key_act1))
-            actions.append(ControlAction('action2', self.cfg.key_act2))
+            actions.append(ControlAction(Control.UP, self.cfg.key_up))
+            actions.append(ControlAction(Control.DOWN, self.cfg.key_down))
+            actions.append(ControlAction(Control.LEFT, self.cfg.key_left))
+            actions.append(ControlAction(Control.RIGHT, self.cfg.key_right))
+            actions.append(ControlAction(Control.ACTION1, self.cfg.key_act1))
+            actions.append(ControlAction(Control.ACTION2, self.cfg.key_act2))
             devices.append(KeyboardInput(actions))
 
         if self.cfg.control_type in ['autodetect', 'joystick']:
