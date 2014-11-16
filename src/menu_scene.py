@@ -131,6 +131,12 @@ class Credits(object):
                           self.font_dither.get_height()))
 
 
+class Options(object):
+
+    def __init__(self):
+        pass
+
+
 class MenuScene(scene.Scene):
 
     def __init__(self, context, scene_speed=15):
@@ -163,27 +169,29 @@ class MenuScene(scene.Scene):
         self.title_anim = 0
         self.title_fade = -1
 
+        self.options = Options()
+
         music_volume_options = [
-            menu.MenuItem('music_vol_1_item', _('1'), None, None),
-            menu.MenuItem('music_vol_2_item', _('2'), None, None),
-            menu.MenuItem('music_vol_3_item', _('3'), None, None),
-            menu.MenuItem('music_vol_4_item', _('4'), None, None),
-            menu.MenuItem('music_vol_5_item', _('5'), None, None)
+            menu.MenuItem('music_vol_1_item', _('1'), self.music_vol_selected, None),
+            menu.MenuItem('music_vol_2_item', _('2'), self.music_vol_selected, None),
+            menu.MenuItem('music_vol_3_item', _('3'), self.music_vol_selected, None),
+            menu.MenuItem('music_vol_4_item', _('4'), self.music_vol_selected, None),
+            menu.MenuItem('music_vol_5_item', _('5'), self.music_vol_selected, None)
         ]
         music_active_options = [
-            menu.MenuItem('music_active_on_item', _('music on'), None, None),
-            menu.MenuItem('music_active_off_item', _('music off'), None, None)
+            menu.MenuItem('music_active_on_item', _('music on'), self.music_active_selected, None),
+            menu.MenuItem('music_active_off_item', _('music off'), self.music_active_selected, None)
         ]
         sound_volume_options = [
-            menu.MenuItem('sound_vol_1_item', _('1'), None, None),
-            menu.MenuItem('sound_vol_2_item', _('2'), None, None),
-            menu.MenuItem('sound_vol_3_item', _('3'), None, None),
-            menu.MenuItem('sound_vol_4_item', _('4'), None, None),
-            menu.MenuItem('sound_vol_5_item', _('5'), None, None)
+            menu.MenuItem('sound_vol_1_item', _('1'), self.sound_vol_selected, None),
+            menu.MenuItem('sound_vol_2_item', _('2'), self.sound_vol_selected, None),
+            menu.MenuItem('sound_vol_3_item', _('3'), self.sound_vol_selected, None),
+            menu.MenuItem('sound_vol_4_item', _('4'), self.sound_vol_selected, None),
+            menu.MenuItem('sound_vol_5_item', _('5'), self.sound_vol_selected, None)
         ]
         sound_active_options = [
-            menu.MenuItem('sound_active_on_item', _('sound effects on'), None, None),
-            menu.MenuItem('sound_active_off_item', _('sound effects off'), None, None)
+            menu.MenuItem('sound_active_on_item', _('sound effects on'), self.sound_active_selected, None),
+            menu.MenuItem('sound_active_off_item', _('sound effects off'), self.sound_active_selected, None)
         ]
         sound_options = [
             menu.MenuItem('sound_active_item', _('sound active'), None, 'sound_active_menu'),
@@ -338,3 +346,23 @@ class MenuScene(scene.Scene):
     def quit_game(self):
         pygame.time.delay(1000)
         self.exit(0)
+
+    def sound_vol_selected(self):
+        self.options.sound_volume = self.menu_group.selected_menu.selected_option + 1
+
+    def music_vol_selected(self):
+        self.options.music_volume = self.menu_group.selected_menu.selected_option + 1
+
+    def sound_active_selected(self):
+        self.options.sound = True
+        option = self.menu_group.selected_menu.selected_option
+
+        if option == 0:
+            self.options.sound = False
+
+    def music_active_selected(self):
+        self.options.music = True
+        option = self.menu_group.selected_menu.selected_option
+
+        if option == 0:
+            self.options.music = False
