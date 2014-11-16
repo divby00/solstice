@@ -162,25 +162,89 @@ class MenuScene(scene.Scene):
         self.background_x_position = 0
         self.title_anim = 0
         self.title_fade = -1
-        self.show_menu = False
-        fonts = (self.font, self.font_selected)
-        menu_main_options = [_('start'), _('options'), _('instructions'), _('exit')]
-        menu_options_options = [_('graphics'), _('sound'), _('control')]
-        menu_graphics_options = [_('resolution'), _('fullscreen')]
-        menu_resolution_options = [_('256x192'), _('512x384'), _('1024x768')]
-        menu_fullscreen_options = [_('on'), _('off')]
-        menu_sound_options = [_('sound effects'), _('sound effects volume'),
-                              _('music'), _('music volume')]
-        menu_effects_options = [_('on'), _('off')]
-        menu_effects_vol_options = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-        menu_music_options = [_('on'), _('off')]
-        menu_music_vol_options = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-        main_menu = menu.Menu('main', menu_main_options)
-        options_menu = menu.Menu('options', menu_options_options, main_menu)
-        graphics_menu = menu.Menu('graphics', menu_graphics_options, options_menu)
-        sounds_menu = menu.Menu('sounds', menu_sound_options, options_menu)
-        menu_list = [main_menu, options_menu, graphics_menu, sounds_menu]
-        self.menu_group = menu.MenuGroup(menu_list, self.menu_context)
+
+        music_volume_options = [
+            menu.MenuItem('music_vol_1_item', _('1'), None, None),
+            menu.MenuItem('music_vol_2_item', _('2'), None, None),
+            menu.MenuItem('music_vol_3_item', _('3'), None, None),
+            menu.MenuItem('music_vol_4_item', _('4'), None, None),
+            menu.MenuItem('music_vol_5_item', _('5'), None, None)
+        ]
+        music_active_options = [
+            menu.MenuItem('music_active_on_item', _('music on'), None, None),
+            menu.MenuItem('music_active_off_item', _('music off'), None, None)
+        ]
+        sound_volume_options = [
+            menu.MenuItem('sound_vol_1_item', _('1'), None, None),
+            menu.MenuItem('sound_vol_2_item', _('2'), None, None),
+            menu.MenuItem('sound_vol_3_item', _('3'), None, None),
+            menu.MenuItem('sound_vol_4_item', _('4'), None, None),
+            menu.MenuItem('sound_vol_5_item', _('5'), None, None)
+        ]
+        sound_active_options = [
+            menu.MenuItem('sound_active_on_item', _('sound effects on'), None, None),
+            menu.MenuItem('sound_active_off_item', _('sound effects off'), None, None)
+        ]
+        sound_options = [
+            menu.MenuItem('sound_active_item', _('sound active'), None, 'sound_active_menu'),
+            menu.MenuItem('sound_volume_item', _('sound volume'), None, 'sound_volume_menu'),
+            menu.MenuItem('music_active_item', _('music active'), None, 'music_active_menu'),
+            menu.MenuItem('music_volume_item', _('music volume'), None, 'music_volume_menu')
+        ]
+        control_options = [
+            menu.MenuItem('control_type_item', _('control type'), None, None),
+            menu.MenuItem('define_keys_item', _('define keys'), None, None)
+        ]
+        fullscreen_options = [
+            menu.MenuItem('fullscreen_item', _('fullscreen'), None, None),
+            menu.MenuItem('window_item', _('windowed'), None, None)
+        ]
+        resolution_options = [
+            menu.MenuItem('small_item', _('256 x 192'), None, None),
+            menu.MenuItem('medium_item', _('512 x 384'), None, None),
+            menu.MenuItem('large_item', _('1024 x 768'), None, None)
+        ]
+        graphics_options = [
+            menu.MenuItem('resolution_item', _('resolution'), None, 'resolution_menu'),
+            menu.MenuItem('fullscreen_item', _('fullscreen'), None, 'fullscreen_menu')
+        ]
+        options_options = [
+            menu.MenuItem('graphics_item', _('graphics'), None, 'graphics_menu'),
+            menu.MenuItem('sound_item', _('sound'), None, 'sound_menu'),
+            menu.MenuItem('control_item', _('control'), None, 'control_menu')
+        ]
+        main_options = [
+            menu.MenuItem('start_item', _('start'), self.enter_game, None),
+            menu.MenuItem('options_item', _('options'), None, 'options_menu'),
+            menu.MenuItem('exit_item', _('exit'), self.quit_game, None)
+        ]
+
+        main_menu = menu.Menu('main_menu', main_options)
+        graphics_menu = menu.Menu('graphics_menu', graphics_options, 'options_menu')
+        fullscreen_menu = menu.Menu('fullscreen_menu', fullscreen_options, 'graphics_menu')
+        resolution_menu = menu.Menu('resolution_menu', resolution_options, 'graphics_menu')
+        sound_menu = menu.Menu('sound_menu', sound_options, 'options_menu')
+        sound_active_menu = menu.Menu('sound_active_menu', sound_active_options, 'sound_menu')
+        music_active_menu = menu.Menu('music_active_menu', music_active_options, 'sound_menu')
+        sound_volume_menu = menu.Menu('sound_volume_menu', sound_volume_options, 'sound_menu')
+        music_volume_menu = menu.Menu('music_volume_menu', music_volume_options, 'sound_menu')
+        control_menu = menu.Menu('control_menu', control_options, 'options_menu')
+        options_menu = menu.Menu('options_menu', options_options, 'main_menu')
+
+        menu_list = []
+        menu_list.append(main_menu)
+        menu_list.append(options_menu)
+        menu_list.append(graphics_menu)
+        menu_list.append(sound_menu)
+        menu_list.append(sound_active_menu)
+        menu_list.append(sound_volume_menu)
+        menu_list.append(music_active_menu)
+        menu_list.append(music_volume_menu)
+        menu_list.append(control_menu)
+        menu_list.append(resolution_menu)
+        menu_list.append(fullscreen_menu)
+
+        self.menu_group = menu.MenuGroup(menu_list, 'main_menu', self.menu_context)
 
     def run(self):
         if not pygame.mixer.music.get_busy():
@@ -198,30 +262,6 @@ class MenuScene(scene.Scene):
                 self.credits.text_y = screen.Screen.WINDOW_SIZE[1]
                 self.credits.actual_text = 0
                 self.menu_group.visible = True
-
-        if self.menu_group.visible:
-            if self.menu_group.accept:
-
-                menu = self.menu_group.menu_list[self.menu_group.selected_menu]
-
-                if menu.name == 'main':
-                    if menu.selected_option == 0:
-                        pygame.mixer.music.stop()
-                        self.running = False
-
-                    if menu.selected_option == 1:
-                        self.menu_group.selected_menu = 1
-
-                    if menu.selected_option == 3:
-                        pygame.time.delay(1000)
-                        self.exit(0)
-
-                if menu.name == 'options':
-                    if menu.selected_option == 0:
-                        self.menu_group.selected_menu = 2
-                    if menu.selected_option == 1:
-                        self.menu_group.selected_menu = 3
-
 
         self.stars.run()
 
@@ -279,12 +319,22 @@ class MenuScene(scene.Scene):
         scr.virt.blit(self.background, (0, 0), (self.background_x_position, 0,
                                                 scr.WINDOW_SIZE[0],
                                                 scr.WINDOW_SIZE[1]))
-        if not self.menu_group.visible:
-            scr.virt.blit(self.skip_text,
-                         (128 - self.skip_text.get_width()/2, 176))
         if self.background_x_position < 98:
             scr.virt.blit(self.intro_text[0],
                          (128-self.intro_text[0].get_width()/2, 68))
         elif self.background_x_position in list(xrange(98, 196)):
             scr.virt.blit(self.intro_text[1],
                          (128-self.intro_text[1].get_width()/2, 68))
+
+        if not self.menu_group.visible:
+            scr.virt.blit(self.skip_text,
+                         (128 - self.skip_text.get_width()/2, 176))
+
+
+    def enter_game(self):
+        pygame.mixer.music.stop()
+        self.running = False
+
+    def quit_game(self):
+        pygame.time.delay(1000)
+        self.exit(0)
