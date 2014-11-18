@@ -143,6 +143,7 @@ class MenuScene(scene.Scene):
         super(MenuScene, self).__init__(context, scene_speed)
         self.exit = context.exit
         self.menu = context.resourcemanager.get('menu')
+        self.screen = context.scr
         self.planet = context.resourcemanager.get('planet')
         title = ['title0', 'title1', 'title2', 'title3', 'title4']
         self.title_imgs = []
@@ -156,13 +157,13 @@ class MenuScene(scene.Scene):
         self.music = context.resourcemanager.get('menu_song')
         self.stars = Stars(context.resourcemanager,
                            (self.menu.get_width(), 145))
-        self.skip_text = self.font.get(_('Press action 2 to skip'), 256)
+        self.skip_text = self.font_white.get(_('Press action 2 to skip'), 256)
         self.intro_text = []
         self.intro_text.insert(
-            0, self.font.get(_('In a very near place...'), 256))
+            0, self.font_white.get(_('In a very near place...'), 256))
         self.intro_text.insert(
-            1, self.font.get(_('...a nuclear plant is going to blow!!!'), 256))
-        self.credits = Credits(self.font, self.font_dither)
+            1, self.font_white.get(_('...a nuclear plant is going to blow!!!'), 256))
+        self.credits = Credits(self.font_white, self.font_dither)
         self.background = pygame.Surface(
             (self.menu.get_width(), self.menu.get_height())).convert()
         self.background_x_position = 0
@@ -204,8 +205,8 @@ class MenuScene(scene.Scene):
             menu.MenuItem('define_keys_item', _('define keys'), None, None)
         ]
         fullscreen_options = [
-            menu.MenuItem('fullscreen_item', _('fullscreen'), None, None),
-            menu.MenuItem('window_item', _('windowed'), None, None)
+            menu.MenuItem('fullscreen_item', _('fullscreen'), self.fullscreen_mode_selected, None),
+            menu.MenuItem('window_item', _('windowed'), self.fullscreen_mode_selected, None)
         ]
         resolution_options = [
             menu.MenuItem('small_item', _('256 x 192'), None, None),
@@ -366,3 +367,13 @@ class MenuScene(scene.Scene):
 
         if option == 0:
             self.options.music = False
+
+    def fullscreen_mode_selected(self):
+        option = self.menu_group.selected_menu.selected_option
+
+        if option == 0:
+            self.screen.toggle_fullscreen(True)
+            self.options.fullscreen = True
+        else:
+            self.screen.toggle_fullscreen(False)
+            self.options.fullscreen = False

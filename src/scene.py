@@ -8,8 +8,9 @@ class Scene(object):
         self.running = False
         self.cfg = context.cfg
         self.control = context.control
-        self.font = context.resourcemanager.get('font')
-        self.font_selected = context.resourcemanager.get('font_selected')
+        self.font_white = context.resourcemanager.get('font_white')
+        self.font_blue = context.resourcemanager.get('font_blue')
+        self.font_yellow = context.resourcemanager.get('font_yellow')
         self.blip = context.resourcemanager.get('blip')
         self.accept = context.resourcemanager.get('accept')
         self.cancel = context.resourcemanager.get('cancel')
@@ -23,7 +24,7 @@ class Scene(object):
             self.panel_imgs.insert(p, context.resourcemanager.get(panel[p]))
 
         self.menu_context = (self.panel_imgs,
-                             (self.font, self.font_selected),
+                             (self.font_white, self.font_blue, self.font_yellow),
                              (self.blip, self.accept, self.cancel),
                              self.control)
 

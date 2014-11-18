@@ -78,6 +78,7 @@ class MenuGroup(object):
         self.accept = False
         self.cancel = False
         self.selected_menu = self.__get_menu(first_menu)
+        self.seloption = 0
         self.previous_menu = None
 
         for m in self.menu_list:
@@ -93,10 +94,12 @@ class MenuGroup(object):
             m.panel = Panel(self.panel_imgs, (option_max_length, panel_height))
             m.options_images = []
             m.sel_options_images = []
+            m.prev_options_images = []
 
             for i in xrange(0, len(m.items)):
                 m.options_images.insert(i, self.fonts[0].get(m.items[i].text, 256))
                 m.sel_options_images.insert(i, self.fonts[1].get(m.items[i].text, 256))
+                m.prev_options_images.insert(i, self.fonts[2].get(m.items[i].text, 256))
 
     def run(self):
 
@@ -131,6 +134,9 @@ class MenuGroup(object):
                 if item.next_menu is not None:
                     self.previous_menu = self.selected_menu
                     self.selected_menu = self.__get_menu(item.next_menu)
+                    self.seloption = self.selected_menu.selected_option
+                else:
+                    self.seloption = self.selected_menu.selected_option
 
             if self.control.on(control.Control.ACTION2):
                 self.sounds[2].play()
@@ -139,6 +145,8 @@ class MenuGroup(object):
                 if parent:
                     self.selected_menu = parent
                     self.previous_menu = self.__get_menu(parent.parent_menu_name)
+                    self.seloption = self.selected_menu.selected_option
+
                 self.cancel = True
 
     def render(self, surface, position):
@@ -151,7 +159,9 @@ class MenuGroup(object):
             surface.blit(o, (16 + pos[0], y + pos[1]))
             y += 8
 
-        surface.blit(menu.sel_options_images[menu.selected_option], (16 + pos[0], (menu.selected_option * 8) + 8 + pos[1]))
+        pygame.draw.rect(surface, (0, 0, 0), (pos[0] + 4, (menu.selected_option * 8) + 7 + pos[1], menu.panel.surface.get_width() - 7, 9), 0)
+        surface.blit(menu.options_images[menu.selected_option], (16 + pos[0], (menu.selected_option * 8) + 8 + pos[1]))
+        surface.blit(menu.sel_options_images[self.seloption], (16 + pos[0], (self.seloption * 8) + 8 + pos[1]))
         surface.blit(self.panel_imgs[9], (8 + pos[0], (menu.selected_option * 8) + 8 + pos[1]))
 
     def __get_menu(self, menu_name):
