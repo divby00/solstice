@@ -53,7 +53,7 @@ class ResourceManager(object):
             self.__update_load_screen(context.scr)
 
         self.__update_load_screen(context.scr)
-        pygame.time.delay(500)
+        pygame.time.delay(200)
 
     def __update_load_screen(self, scr):
         scr.virt.fill((0, 0, 0, 0))

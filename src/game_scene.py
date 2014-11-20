@@ -11,7 +11,7 @@ class GameScene(scene.Scene):
         self.marcador = context.resourcemanager.get('marcador')
         self.level01 = context.resourcemanager.get('level01')
         self.level02 = context.resourcemanager.get('level02')
-        self.current_level = self.level01
+        self.current_level = self.level02
         self.player = player.Player(context.resourcemanager,
                                     self.current_level)
 

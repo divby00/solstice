@@ -5,6 +5,7 @@ import scene
 import menu
 import screen
 import control
+import config
 from gettext import gettext as _
 
 
@@ -144,6 +145,7 @@ class MenuScene(scene.Scene):
         self.exit = context.exit
         self.menu = context.resourcemanager.get('menu')
         self.screen = context.scr
+        self.cfg = context.cfg
         self.planet = context.resourcemanager.get('planet')
         title = ['title0', 'title1', 'title2', 'title3', 'title4']
         self.title_imgs = []
@@ -349,31 +351,52 @@ class MenuScene(scene.Scene):
         self.exit(0)
 
     def sound_vol_selected(self):
-        self.options.sound_volume = self.menu_group.selected_menu.selected_option + 1
+        self.cfg.parser.set(config.Configuration.SECTION[2],
+                            config.Configuration.OPT_SOUND_VOL,
+                            self.menu_group.selected_menu.selected_option + 1)
+        self.cfg.sound_vol = self.menu_group.selected_menu.selected_option + 1
+
 
     def music_vol_selected(self):
-        self.options.music_volume = self.menu_group.selected_menu.selected_option + 1
+        self.cfg.parser.set(config.Configuration.SECTION[2],
+                            config.Configuration.OPT_MUSIC_VOL,
+                            self.menu_group.selected_menu.selected_option + 1)
+        self.cfg.music_vol = self.menu_group.selected_menu.selected_option + 1
 
     def sound_active_selected(self):
-        self.options.sound = True
+        self.cfg.parser.set(config.Configuration.SECTION[2],
+                            config.Configuration.OPT_SOUND,
+                            False)
+        self.cfg.sound = False
         option = self.menu_group.selected_menu.selected_option
 
         if option == 0:
-            self.options.sound = False
+            self.cfg.parser.set(config.Configuration.SECTION[2],
+                                config.Configuration.OPT_SOUND,
+                                True)
+            self.cfg.sound = True
 
     def music_active_selected(self):
-        self.options.music = True
+        self.cfg.parser.set(config.Configuration.SECTION[2],
+                            config.Configuration.OPT_MUSIC,
+                            False)
+        self.cfg.music = False
         option = self.menu_group.selected_menu.selected_option
 
         if option == 0:
-            self.options.music = False
+            self.cfg.parser.set(config.Configuration.SECTION[2],
+                                config.Configuration.OPT_MUSIC,
+                                True)
+            self.cfg.music = True
 
     def fullscreen_mode_selected(self):
         option = self.menu_group.selected_menu.selected_option
 
         if option == 0:
             self.screen.toggle_fullscreen(True)
-            self.options.fullscreen = True
+            self.cfg.parser.set(Configuration.SECTION[1], Configuration.OPT_FULLSCREEN, True)
+            self.cfg.fullscreen = True
         else:
             self.screen.toggle_fullscreen(False)
-            self.options.fullscreen = False
+            self.cfg.parser.set(Configuration.SECTION[1], Configuration.OPT_FULLSCREEN, False)
+            self.cfg.fullscreen = False

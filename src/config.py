@@ -39,8 +39,8 @@ class Configuration(object):
     FULLSCREEN = False
     SOUND = True
     MUSIC = True
-    SOUND_VOLUME = 10
-    MUSIC_VOLUME = 10
+    SOUND_VOLUME = 5
+    MUSIC_VOLUME = 5
     CFGFILE_NAME = 'solstice.cfg'
     CONTROL_TYPE = 'autodetect'
     KEY_UP = 119
@@ -51,53 +51,54 @@ class Configuration(object):
     KEY_ACTION_2 = 105
 
     def __init__(self):
+        self.parser = ConfigParser.ConfigParser()
+
         try:
-            self.config_parser = ConfigParser.ConfigParser()
-            parsed_file = self.config_parser.read([Configuration.CFGFILE_NAME])
+            parsed_file = self.parser.read([Configuration.CFGFILE_NAME])
 
             if len(parsed_file) > 0:
-                self.data_path = self.config_parser.get(
+                self.data_path = self.parser.get(
                     Configuration.SECTION[0], Configuration.OPT_DATA_PATH)
                 self.__check_correct_values(
                     Configuration.OPT_DATA_PATH, self.data_path)
-                self.locale_path = self.config_parser.get(
+                self.locale_path = self.parser.get(
                     Configuration.SECTION[0], Configuration.OPT_LOCALE_PATH)
-                w = self.config_parser.getint(Configuration.SECTION[1],
+                w = self.parser.getint(Configuration.SECTION[1],
                                               Configuration.OPT_SCREEN_WIDTH)
                 self.__check_correct_values(Configuration.OPT_SCREEN_WIDTH, w)
-                h = self.config_parser.getint(Configuration.SECTION[1],
+                h = self.parser.getint(Configuration.SECTION[1],
                                               Configuration.OPT_SCREEN_HEIGHT)
                 self.__check_correct_values(Configuration.OPT_SCREEN_HEIGHT, h)
-                self.fullscreen = self.config_parser.getboolean(
+                self.fullscreen = self.parser.getboolean(
                     Configuration.SECTION[1], Configuration.OPT_FULLSCREEN)
-                self.sound = self.config_parser.getboolean(
+                self.sound = self.parser.getboolean(
                     Configuration.SECTION[2], Configuration.OPT_SOUND)
-                self.music = self.config_parser.getboolean(
+                self.music = self.parser.getboolean(
                     Configuration.SECTION[2], Configuration.OPT_MUSIC)
-                self.sound_vol = self.config_parser.getint(
+                self.sound_vol = self.parser.getint(
                     Configuration.SECTION[2], Configuration.OPT_SOUND_VOL)
                 self.__check_correct_values(
                     Configuration.OPT_SOUND_VOL, self.sound_vol)
-                self.music_vol = self.config_parser.getint(
+                self.music_vol = self.parser.getint(
                     Configuration.SECTION[2], Configuration.OPT_MUSIC_VOL)
                 self.__check_correct_values(
                     Configuration.OPT_MUSIC_VOL, self.music_vol)
                 self.screen_size = (w, h)
-                self.control_type = self.config_parser.get(
+                self.control_type = self.parser.get(
                     Configuration.SECTION[3], Configuration.OPT_CONTROL_TYPE)
                 self.__check_correct_values(
                     Configuration.OPT_CONTROL_TYPE, self.control_type)
-                self.key_up = self.config_parser.getint(
+                self.key_up = self.parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_UP)
-                self.key_down = self.config_parser.getint(
+                self.key_down = self.parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_DOWN)
-                self.key_left = self.config_parser.getint(
+                self.key_left = self.parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_LEFT)
-                self.key_right = self.config_parser.getint(
+                self.key_right = self.parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_RIGHT)
-                self.key_act1 = self.config_parser.getint(
+                self.key_act1 = self.parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_ACTION_1)
-                self.key_act2 = self.config_parser.getint(
+                self.key_act2 = self.parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_ACTION_2)
             else:
                 self.__set_default_values()
@@ -110,59 +111,59 @@ class Configuration(object):
 
     def __set_default_values(self):
         for section in Configuration.SECTION:
-            if not self.config_parser.has_section(section):
-                self.config_parser.add_section(section)
+            if not self.parser.has_section(section):
+                self.parser.add_section(section)
 
         ''' Paths '''
-        self.config_parser.set(Configuration.SECTION[0],
+        self.parser.set(Configuration.SECTION[0],
                                Configuration.OPT_DATA_PATH,
                                Configuration.DATA_PATH)
-        self.config_parser.set(Configuration.SECTION[0],
+        self.parser.set(Configuration.SECTION[0],
                                Configuration.OPT_LOCALE_PATH,
                                Configuration.LOCALE_PATH)
         ''' Graphics'''
-        self.config_parser.set(Configuration.SECTION[1],
+        self.parser.set(Configuration.SECTION[1],
                                Configuration.OPT_SCREEN_WIDTH,
                                Configuration.SCREEN_SIZE[0])
-        self.config_parser.set(Configuration.SECTION[1],
+        self.parser.set(Configuration.SECTION[1],
                                Configuration.OPT_SCREEN_HEIGHT,
                                Configuration.SCREEN_SIZE[1])
-        self.config_parser.set(Configuration.SECTION[1],
+        self.parser.set(Configuration.SECTION[1],
                                Configuration.OPT_FULLSCREEN,
                                Configuration.FULLSCREEN)
         ''' Sound '''
-        self.config_parser.set(Configuration.SECTION[2],
+        self.parser.set(Configuration.SECTION[2],
                                Configuration.OPT_SOUND,
                                Configuration.SOUND)
-        self.config_parser.set(Configuration.SECTION[2],
+        self.parser.set(Configuration.SECTION[2],
                                Configuration.OPT_MUSIC,
                                Configuration.MUSIC)
-        self.config_parser.set(Configuration.SECTION[2],
+        self.parser.set(Configuration.SECTION[2],
                                Configuration.OPT_SOUND_VOL,
                                Configuration.SOUND_VOLUME)
-        self.config_parser.set(Configuration.SECTION[2],
+        self.parser.set(Configuration.SECTION[2],
                                Configuration.OPT_MUSIC_VOL,
                                Configuration.MUSIC_VOLUME)
         ''' Control '''
-        self.config_parser.set(Configuration.SECTION[3],
+        self.parser.set(Configuration.SECTION[3],
                                Configuration.OPT_CONTROL_TYPE,
                                Configuration.CONTROL_TYPE),
-        self.config_parser.set(Configuration.SECTION[3],
+        self.parser.set(Configuration.SECTION[3],
                                Configuration.OPT_KEY_UP,
                                Configuration.KEY_UP),
-        self.config_parser.set(Configuration.SECTION[3],
+        self.parser.set(Configuration.SECTION[3],
                                Configuration.OPT_KEY_DOWN,
                                Configuration.KEY_DOWN),
-        self.config_parser.set(Configuration.SECTION[3],
+        self.parser.set(Configuration.SECTION[3],
                                Configuration.OPT_KEY_LEFT,
                                Configuration.KEY_LEFT),
-        self.config_parser.set(Configuration.SECTION[3],
+        self.parser.set(Configuration.SECTION[3],
                                Configuration.OPT_KEY_RIGHT,
                                Configuration.KEY_RIGHT),
-        self.config_parser.set(Configuration.SECTION[3],
+        self.parser.set(Configuration.SECTION[3],
                                Configuration.OPT_KEY_ACTION_1,
                                Configuration.KEY_ACTION_1),
-        self.config_parser.set(Configuration.SECTION[3],
+        self.parser.set(Configuration.SECTION[3],
                                Configuration.OPT_KEY_ACTION_2,
                                Configuration.KEY_ACTION_2)
         self.save()
@@ -190,11 +191,11 @@ class Configuration(object):
             if not os.path.isfile(file_path):
                 raise ConfigurationError(_('Unable to find the data file in the directory specified in the configuration file.'))
         elif option == Configuration.OPT_SOUND_VOL:
-            if read_value not in list(xrange(11)):
-                raise ConfigurationError(_('Sound volume must be between 0 (min) and 10 (max).'))
+            if read_value not in list(xrange(Configuration.SOUND_VOLUME + 1)):
+                raise ConfigurationError(_('Sound volume must be between 0 (min) and 5 (max).'))
         elif option == Configuration.OPT_MUSIC_VOL:
-            if read_value not in list(xrange(11)):
-                raise ConfigurationError(_('Music volume must be between 0 (min) and 10 (max).'))
+            if read_value not in list(xrange(Configuration.MUSIC_VOLUME + 1)):
+                raise ConfigurationError(_('Music volume must be between 0 (min) and 5 (max).'))
         elif option == Configuration.OPT_CONTROL_TYPE:
             if read_value not in ['keyboard', 'joystick', 'autodetect']:
                 raise ConfigurationError(_('Control must be keyboard, joystick or autodetect.'))
@@ -207,4 +208,4 @@ class Configuration(object):
 
     def save(self):
         with open(Configuration.CFGFILE_NAME, 'wb') as config_file:
-            self.config_parser.write(config_file)
+            self.parser.write(config_file)

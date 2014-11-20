@@ -7,6 +7,8 @@ class BitmapFont(object):
 
     def __init__(self, surface, rows, columns):
 
+        assert(surface is not None)
+
         w = surface.get_width()
         h = surface.get_height()
 
