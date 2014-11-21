@@ -1,4 +1,7 @@
+from gettext import gettext as _
 import pygame
+import menu
+import config
 
 
 class Scene(object):
@@ -33,3 +36,196 @@ class Scene(object):
 
     def run(self):
         raise NotImplementedError('Implement this method')
+
+    def get_menu(self):
+        music_volume_options = [
+            menu.MenuItem('music_vol_1_item', _('1'),
+                          self.music_vol_selected, None),
+            menu.MenuItem('music_vol_2_item', _('2'),
+                          self.music_vol_selected, None),
+            menu.MenuItem('music_vol_3_item', _('3'),
+                          self.music_vol_selected, None),
+            menu.MenuItem('music_vol_4_item', _('4'),
+                          self.music_vol_selected, None),
+            menu.MenuItem('music_vol_5_item', _('5'),
+                          self.music_vol_selected, None)
+        ]
+        music_active_options = [
+            menu.MenuItem('music_active_on_item', _('music on'),
+                          self.music_active_selected, None),
+            menu.MenuItem('music_active_off_item', _('music off'),
+                          self.music_active_selected, None)
+        ]
+        sound_volume_options = [
+            menu.MenuItem('sound_vol_1_item', _('1'),
+                          self.sound_vol_selected, None),
+            menu.MenuItem('sound_vol_2_item', _('2'),
+                          self.sound_vol_selected, None),
+            menu.MenuItem('sound_vol_3_item', _('3'),
+                          self.sound_vol_selected, None),
+            menu.MenuItem('sound_vol_4_item', _('4'),
+                          self.sound_vol_selected, None),
+            menu.MenuItem('sound_vol_5_item', _('5'),
+                          self.sound_vol_selected, None)
+        ]
+        sound_active_options = [
+            menu.MenuItem('sound_active_on_item', _('sound effects on'),
+                          self.sound_active_selected, None),
+            menu.MenuItem('sound_active_off_item', _('sound effects off'),
+                          self.sound_active_selected, None)
+        ]
+        sound_options = [
+            menu.MenuItem('sound_active_item', _('sound active'),
+                          None, 'sound_active_menu'),
+            menu.MenuItem('sound_volume_item', _('sound volume'),
+                          None, 'sound_volume_menu'),
+            menu.MenuItem('music_active_item', _('music active'),
+                          None, 'music_active_menu'),
+            menu.MenuItem('music_volume_item', _('music volume'),
+                          None, 'music_volume_menu')
+        ]
+        control_options = [
+            menu.MenuItem('control_type_item', _('control type'),
+                          None, None),
+            menu.MenuItem('define_keys_item', _('define keys'),
+                          None, None)
+        ]
+        fullscreen_options = [
+            menu.MenuItem('fullscreen_item', _('fullscreen'),
+                          self.fullscreen_mode_selected, None),
+            menu.MenuItem('window_item', _('windowed'),
+                          self.fullscreen_mode_selected, None)
+        ]
+        resolution_options = [
+            menu.MenuItem('small_item', _('256 x 192'), None, None),
+            menu.MenuItem('medium_item', _('512 x 384'), None, None),
+            menu.MenuItem('large_item', _('1024 x 768'), None, None)
+        ]
+        graphics_options = [
+            menu.MenuItem('resolution_item', _('resolution'),
+                          None, 'resolution_menu'),
+            menu.MenuItem('fullscreen_item', _('fullscreen'),
+                          None, 'fullscreen_menu')
+        ]
+        options_options = [
+            menu.MenuItem('graphics_item', _('graphics'),
+                          None, 'graphics_menu'),
+            menu.MenuItem('sound_item', _('sound'), None, 'sound_menu'),
+            menu.MenuItem('control_item', _('control'), None, 'control_menu')
+        ]
+        main_options = [
+            menu.MenuItem('start_item', _('start'), self.enter_game, None),
+            menu.MenuItem('options_item', _('options'), None, 'options_menu'),
+            menu.MenuItem('exit_item', _('exit'), self.quit_game, None)
+        ]
+
+        main_menu = menu.Menu('main_menu', main_options)
+        graphics_menu = menu.Menu('graphics_menu',
+                                  graphics_options,
+                                  'options_menu')
+        fullscreen_menu = menu.Menu('fullscreen_menu',
+                                    fullscreen_options,
+                                    'graphics_menu')
+        resolution_menu = menu.Menu('resolution_menu',
+                                    resolution_options,
+                                    'graphics_menu')
+        sound_menu = menu.Menu('sound_menu',
+                               sound_options,
+                               'options_menu')
+        sound_active_menu = menu.Menu('sound_active_menu',
+                                      sound_active_options,
+                                      'sound_menu')
+        music_active_menu = menu.Menu('music_active_menu',
+                                      music_active_options,
+                                      'sound_menu')
+        sound_volume_menu = menu.Menu('sound_volume_menu',
+                                      sound_volume_options,
+                                      'sound_menu')
+        music_volume_menu = menu.Menu('music_volume_menu',
+                                      music_volume_options,
+                                      'sound_menu')
+        control_menu = menu.Menu('control_menu',
+                                 control_options,
+                                 'options_menu')
+        options_menu = menu.Menu('options_menu',
+                                 options_options,
+                                 'main_menu')
+
+        menu_list = []
+        menu_list.append(main_menu)
+        menu_list.append(options_menu)
+        menu_list.append(graphics_menu)
+        menu_list.append(sound_menu)
+        menu_list.append(sound_active_menu)
+        menu_list.append(sound_volume_menu)
+        menu_list.append(music_active_menu)
+        menu_list.append(music_volume_menu)
+        menu_list.append(control_menu)
+        menu_list.append(resolution_menu)
+        menu_list.append(fullscreen_menu)
+
+        self.menu_group = menu.MenuGroup(menu_list,
+                                         'main_menu',
+                                         self.menu_context)
+
+    def enter_game(self):
+        pygame.mixer.music.stop()
+        self.running = False
+
+    def quit_game(self):
+        pygame.time.delay(1000)
+        self.exit(0)
+
+    def sound_vol_selected(self):
+        self.cfg.parser.set(config.Configuration.SECTION[2],
+                            config.Configuration.OPT_SOUND_VOL,
+                            self.menu_group.selected_menu.selected_option + 1)
+        self.cfg.sound_vol = self.menu_group.selected_menu.selected_option + 1
+
+    def music_vol_selected(self):
+        self.cfg.parser.set(config.Configuration.SECTION[2],
+                            config.Configuration.OPT_MUSIC_VOL,
+                            self.menu_group.selected_menu.selected_option + 1)
+        self.cfg.music_vol = self.menu_group.selected_menu.selected_option + 1
+
+    def sound_active_selected(self):
+        self.cfg.parser.set(config.Configuration.SECTION[2],
+                            config.Configuration.OPT_SOUND,
+                            False)
+        self.cfg.sound = False
+        option = self.menu_group.selected_menu.selected_option
+
+        if option == 0:
+            self.cfg.parser.set(config.Configuration.SECTION[2],
+                                config.Configuration.OPT_SOUND,
+                                True)
+            self.cfg.sound = True
+
+    def music_active_selected(self):
+        self.cfg.parser.set(config.Configuration.SECTION[2],
+                            config.Configuration.OPT_MUSIC,
+                            False)
+        self.cfg.music = False
+        option = self.menu_group.selected_menu.selected_option
+
+        if option == 0:
+            self.cfg.parser.set(config.Configuration.SECTION[2],
+                                config.Configuration.OPT_MUSIC,
+                                True)
+            self.cfg.music = True
+
+    def fullscreen_mode_selected(self):
+        option = self.menu_group.selected_menu.selected_option
+
+        if option == 0:
+            self.screen.toggle_fullscreen(True)
+            self.cfg.parser.set(config.Configuration.SECTION[1],
+                                config.Configuration.OPT_FULLSCREEN,
+                                True)
+            self.cfg.fullscreen = True
+        else:
+            self.screen.toggle_fullscreen(False)
+            self.cfg.parser.set(config.Configuration.SECTION[1],
+                                config.Configuration.OPT_FULLSCREEN,
+                                False)
+            self.cfg.fullscreen = False

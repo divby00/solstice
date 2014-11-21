@@ -1,7 +1,9 @@
+from gettext import gettext as _
+import control
+import menu
+import player
 import pygame
 import scene
-import player
-import control
 
 
 class GameScene(scene.Scene):
@@ -37,6 +39,7 @@ class GameScene(scene.Scene):
         self.laser = context.resourcemanager.get('laser')
         self.music = self.song
         self.playing = False
+        self.get_menu()
 
     def run(self):
 
@@ -44,78 +47,81 @@ class GameScene(scene.Scene):
             self.playing = True
             self.music.play(-1)
 
-        half = [self.half_view_port[0] - self.half_player[0],
-                self.half_view_port[1] - self.half_player[1]]
+        if self.menu_group.visible:
+            self.menu_group.run()
+        else:
+            half = [self.half_view_port[0] - self.half_player[0],
+                    self.half_view_port[1] - self.half_player[1]]
 
-        map_size = [self.current_level.map.width_pixels - self.view_port[0],
-                    self.current_level.map.height_pixels -
-                    self.view_port[1] + (192/4)]
+            map_size = [self.current_level.map.width_pixels - self.view_port[0],
+                        self.current_level.map.height_pixels -
+                        self.view_port[1] + (192/4)]
 
-        if self.control.on(control.Control.RIGHT):
-            if not check_right_collision(self.player, self.current_level):
-                if (self.player.x % self.view_port[0]) >= half[0]:
-                    if self.cursor[0] < map_size[0]:
-                        self.player.direction = 1
-                        self.cursor[0] += self.scroll_speed[0]
-                        self.player.absolute_x += self.scroll_speed[0]
+            if self.control.on(control.Control.RIGHT):
+                if not check_right_collision(self.player, self.current_level):
+                    if (self.player.x % self.view_port[0]) >= half[0]:
+                        if self.cursor[0] < map_size[0]:
+                            self.player.direction = 1
+                            self.cursor[0] += self.scroll_speed[0]
+                            self.player.absolute_x += self.scroll_speed[0]
+                        else:
+                            self.player.direction = 1
+                            self.player.x += self.scroll_speed[0]
+                            self.player.absolute_x += self.scroll_speed[0]
                     else:
                         self.player.direction = 1
                         self.player.x += self.scroll_speed[0]
                         self.player.absolute_x += self.scroll_speed[0]
-                else:
-                    self.player.direction = 1
-                    self.player.x += self.scroll_speed[0]
-                    self.player.absolute_x += self.scroll_speed[0]
 
-        if self.control.on(control.Control.LEFT):
-            if not check_left_collision(self.player, self.current_level):
-                if (self.player.x % self.view_port[0]) <= half[0]:
-                    if self.cursor[0] > 0:
-                        self.player.direction = -1
-                        self.cursor[0] -= self.scroll_speed[0]
-                        self.player.absolute_x -= self.scroll_speed[0]
+            if self.control.on(control.Control.LEFT):
+                if not check_left_collision(self.player, self.current_level):
+                    if (self.player.x % self.view_port[0]) <= half[0]:
+                        if self.cursor[0] > 0:
+                            self.player.direction = -1
+                            self.cursor[0] -= self.scroll_speed[0]
+                            self.player.absolute_x -= self.scroll_speed[0]
+                        else:
+                            self.player.direction = -1
+                            self.player.x -= self.scroll_speed[0]
+                            self.player.absolute_x -= self.scroll_speed[0]
                     else:
                         self.player.direction = -1
                         self.player.x -= self.scroll_speed[0]
                         self.player.absolute_x -= self.scroll_speed[0]
-                else:
-                    self.player.direction = -1
-                    self.player.x -= self.scroll_speed[0]
-                    self.player.absolute_x -= self.scroll_speed[0]
 
-        if self.control.on(control.Control.DOWN):
-            if not check_bottom_collision(self.player, self.current_level):
-                if (self.player.y % self.view_port[1]) >= half[1]:
-                    if self.cursor[1] < map_size[1]:
-                        self.cursor[1] += self.scroll_speed[1]
-                        self.player.absolute_y += self.scroll_speed[1]
+            if self.control.on(control.Control.DOWN):
+                if not check_bottom_collision(self.player, self.current_level):
+                    if (self.player.y % self.view_port[1]) >= half[1]:
+                        if self.cursor[1] < map_size[1]:
+                            self.cursor[1] += self.scroll_speed[1]
+                            self.player.absolute_y += self.scroll_speed[1]
+                        else:
+                            self.player.y += self.scroll_speed[1]
+                            self.player.absolute_y += self.scroll_speed[1]
                     else:
                         self.player.y += self.scroll_speed[1]
                         self.player.absolute_y += self.scroll_speed[1]
-                else:
-                    self.player.y += self.scroll_speed[1]
-                    self.player.absolute_y += self.scroll_speed[1]
 
-        if self.control.on(control.Control.UP):
-            if not check_upper_collision(self.player, self.current_level):
-                if (self.player.y % self.view_port[1]) <= half[1]:
-                    if self.cursor[1] > 0:
-                        self.cursor[1] -= self.scroll_speed[1]
-                        self.player.absolute_y -= self.scroll_speed[1]
+            if self.control.on(control.Control.UP):
+                if not check_upper_collision(self.player, self.current_level):
+                    if (self.player.y % self.view_port[1]) <= half[1]:
+                        if self.cursor[1] > 0:
+                            self.cursor[1] -= self.scroll_speed[1]
+                            self.player.absolute_y -= self.scroll_speed[1]
+                        else:
+                            self.player.y -= self.scroll_speed[1]
+                            self.player.absolute_y -= self.scroll_speed[1]
                     else:
                         self.player.y -= self.scroll_speed[1]
                         self.player.absolute_y -= self.scroll_speed[1]
-                else:
-                    self.player.y -= self.scroll_speed[1]
-                    self.player.absolute_y -= self.scroll_speed[1]
 
-        '''
-        if self.control.on('action1'):
-            self.laser.play()
-        '''
+            '''
+            if self.control.on('action1'):
+                self.laser.play()
+            '''
 
-        if self.control.on(control.Control.ACTION2):
-            self.running = False
+            if self.control.on(control.Control.ACTION2):
+                self.menu_group.visible = True
 
         self.player.animation += self.player.direction
 
@@ -126,8 +132,6 @@ class GameScene(scene.Scene):
 
     def render(self, scr):
         posx = posy = 0
-
-        #Draw background
         backx = 0
         backy = 0
         backw = self.current_level.background.get_width()
@@ -138,7 +142,7 @@ class GameScene(scene.Scene):
                 backx = backw - (self.cursor[0] % backw)
                 backy = backh - (self.cursor[1] % backh)
                 scr.virt.blit(self.current_level.background,
-                             (backx + (x * backw), backy + (y * backh)))
+                              (backx + (x * backw), backy + (y * backh)))
 
         offset_pixels = (self.cursor[0] % self.current_level.map.tilewidth,
                          self.cursor[1] % self.current_level.map.tileheight)
@@ -178,8 +182,8 @@ class GameScene(scene.Scene):
                         posy += self.current_level.tiles[gid-1].size[1]
 
                 scr.virt.blit(self.player.sprites[self.player.animation],
-                             (self.player.x % self.view_port[0],
-                              self.player.y % self.view_port[1]))
+                              (self.player.x % self.view_port[0],
+                               self.player.y % self.view_port[1]))
 
                 if l.name == 'forepatterns':
                     posy = posx = 0
@@ -199,6 +203,9 @@ class GameScene(scene.Scene):
 
                         posx = 0
                         posy += self.current_level.tiles[gid-1].size[1]
+
+        if self.menu_group.visible:
+            self.menu_group.render(scr.virt, (128, 70))
 
         scr.virt.blit(self.marcador, (0, self.view_port[1]))
 

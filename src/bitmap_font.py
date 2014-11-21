@@ -31,7 +31,7 @@ class BitmapFont(object):
                     dst_surface = dst_surface.convert_alpha()
                     dst_surface.fill(self.blank)
                     dst_surface.blit(surface, (0, 0),
-                                    (i, a, self.gl_width, self.gl_height), 0)
+                                     (i, a, self.gl_width, self.gl_height), 0)
                     self.glyph.append(dst_surface)
 
     def get(self, text, max_width=None):

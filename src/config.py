@@ -1,6 +1,6 @@
+from gettext import gettext as _
 import os
 import ConfigParser
-from gettext import gettext as _
 
 
 class ConfigurationError(Exception):
@@ -64,10 +64,10 @@ class Configuration(object):
                 self.locale_path = self.parser.get(
                     Configuration.SECTION[0], Configuration.OPT_LOCALE_PATH)
                 w = self.parser.getint(Configuration.SECTION[1],
-                                              Configuration.OPT_SCREEN_WIDTH)
+                                       Configuration.OPT_SCREEN_WIDTH)
                 self.__check_correct_values(Configuration.OPT_SCREEN_WIDTH, w)
                 h = self.parser.getint(Configuration.SECTION[1],
-                                              Configuration.OPT_SCREEN_HEIGHT)
+                                       Configuration.OPT_SCREEN_HEIGHT)
                 self.__check_correct_values(Configuration.OPT_SCREEN_HEIGHT, h)
                 self.fullscreen = self.parser.getboolean(
                     Configuration.SECTION[1], Configuration.OPT_FULLSCREEN)
@@ -116,56 +116,56 @@ class Configuration(object):
 
         ''' Paths '''
         self.parser.set(Configuration.SECTION[0],
-                               Configuration.OPT_DATA_PATH,
-                               Configuration.DATA_PATH)
+                        Configuration.OPT_DATA_PATH,
+                        Configuration.DATA_PATH)
         self.parser.set(Configuration.SECTION[0],
-                               Configuration.OPT_LOCALE_PATH,
-                               Configuration.LOCALE_PATH)
+                        Configuration.OPT_LOCALE_PATH,
+                        Configuration.LOCALE_PATH)
         ''' Graphics'''
         self.parser.set(Configuration.SECTION[1],
-                               Configuration.OPT_SCREEN_WIDTH,
-                               Configuration.SCREEN_SIZE[0])
+                        Configuration.OPT_SCREEN_WIDTH,
+                        Configuration.SCREEN_SIZE[0])
         self.parser.set(Configuration.SECTION[1],
-                               Configuration.OPT_SCREEN_HEIGHT,
-                               Configuration.SCREEN_SIZE[1])
+                        Configuration.OPT_SCREEN_HEIGHT,
+                        Configuration.SCREEN_SIZE[1])
         self.parser.set(Configuration.SECTION[1],
-                               Configuration.OPT_FULLSCREEN,
-                               Configuration.FULLSCREEN)
+                        Configuration.OPT_FULLSCREEN,
+                        Configuration.FULLSCREEN)
         ''' Sound '''
         self.parser.set(Configuration.SECTION[2],
-                               Configuration.OPT_SOUND,
-                               Configuration.SOUND)
+                        Configuration.OPT_SOUND,
+                        Configuration.SOUND)
         self.parser.set(Configuration.SECTION[2],
-                               Configuration.OPT_MUSIC,
-                               Configuration.MUSIC)
+                        Configuration.OPT_MUSIC,
+                        Configuration.MUSIC)
         self.parser.set(Configuration.SECTION[2],
-                               Configuration.OPT_SOUND_VOL,
-                               Configuration.SOUND_VOLUME)
+                        Configuration.OPT_SOUND_VOL,
+                        Configuration.SOUND_VOLUME)
         self.parser.set(Configuration.SECTION[2],
-                               Configuration.OPT_MUSIC_VOL,
-                               Configuration.MUSIC_VOLUME)
+                        Configuration.OPT_MUSIC_VOL,
+                        Configuration.MUSIC_VOLUME)
         ''' Control '''
         self.parser.set(Configuration.SECTION[3],
-                               Configuration.OPT_CONTROL_TYPE,
-                               Configuration.CONTROL_TYPE),
+                        Configuration.OPT_CONTROL_TYPE,
+                        Configuration.CONTROL_TYPE),
         self.parser.set(Configuration.SECTION[3],
-                               Configuration.OPT_KEY_UP,
-                               Configuration.KEY_UP),
+                        Configuration.OPT_KEY_UP,
+                        Configuration.KEY_UP),
         self.parser.set(Configuration.SECTION[3],
-                               Configuration.OPT_KEY_DOWN,
-                               Configuration.KEY_DOWN),
+                        Configuration.OPT_KEY_DOWN,
+                        Configuration.KEY_DOWN),
         self.parser.set(Configuration.SECTION[3],
-                               Configuration.OPT_KEY_LEFT,
-                               Configuration.KEY_LEFT),
+                        Configuration.OPT_KEY_LEFT,
+                        Configuration.KEY_LEFT),
         self.parser.set(Configuration.SECTION[3],
-                               Configuration.OPT_KEY_RIGHT,
-                               Configuration.KEY_RIGHT),
+                        Configuration.OPT_KEY_RIGHT,
+                        Configuration.KEY_RIGHT),
         self.parser.set(Configuration.SECTION[3],
-                               Configuration.OPT_KEY_ACTION_1,
-                               Configuration.KEY_ACTION_1),
+                        Configuration.OPT_KEY_ACTION_1,
+                        Configuration.KEY_ACTION_1),
         self.parser.set(Configuration.SECTION[3],
-                               Configuration.OPT_KEY_ACTION_2,
-                               Configuration.KEY_ACTION_2)
+                        Configuration.OPT_KEY_ACTION_2,
+                        Configuration.KEY_ACTION_2)
         self.save()
         self.data_path = Configuration.DATA_PATH
         self.locale_path = Configuration.LOCALE_PATH

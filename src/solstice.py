@@ -12,7 +12,7 @@ import resource_manager
 import scene_manager
 import scene
 import logo_scene
-import menu_scene
+import intro_scene
 import game_scene
 import screen
 
@@ -31,15 +31,16 @@ class Solstice(object):
         pygame.mixer.pre_init(22050, -16, 2, 1024)
         pygame.init()
         self.scr = screen.Screen(self.cfg, _('Solstice'))
-        self.resourcemanager = resource_manager.ResourceManager(self, 'data.zip')
+        self.resourcemanager = resource_manager.ResourceManager(self,
+                                                                'data.zip')
         self.control = control.Control(self)
         self.logoscene = logo_scene.LogoScene(self)
-        self.menuscene = menu_scene.MenuScene(self)
+        self.introscene = intro_scene.IntroScene(self)
         self.gamescene = game_scene.GameScene(self)
         self.scenemanager = scene_manager.SceneManager(self)
         self.scenemanager.set(self.logoscene)
         self.scenemanager.run()
-        self.scenemanager.set(self.menuscene)
+        self.scenemanager.set(self.introscene)
         self.scenemanager.run()
         self.scenemanager.set(self.gamescene)
         self.scenemanager.run()

@@ -1,6 +1,7 @@
-import pygame
-import control
 from gettext import gettext as _
+import config
+import control
+import pygame
 
 
 class Panel(object):
@@ -54,7 +55,7 @@ class Menu(object):
         assert(len(items) > 0)
         self.name = name
         self.parent_menu_name = parent_menu_name
-        self.items =items
+        self.items = items
         self.selected_option = 0
         self.panel = None
 
@@ -97,9 +98,14 @@ class MenuGroup(object):
             m.prev_options_images = []
 
             for i in xrange(0, len(m.items)):
-                m.options_images.insert(i, self.fonts[0].get(m.items[i].text, 256))
-                m.sel_options_images.insert(i, self.fonts[1].get(m.items[i].text, 256))
-                m.prev_options_images.insert(i, self.fonts[2].get(m.items[i].text, 256))
+                m.options_images.insert(i, self.fonts[0].get(m.items[i].text,
+                                                             256))
+                m.sel_options_images.insert(i,
+                                            self.fonts[1].get(m.items[i].text,
+                                                              256))
+                m.prev_options_images.insert(i,
+                                             self.fonts[2].get(m.items[i].text,
+                                                               256))
 
     def run(self):
 

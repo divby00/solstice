@@ -69,4 +69,3 @@ class Screen(object):
         pygame.display.set_caption(self.caption)
         pygame.mouse.set_visible(False)
         pygame.event.set_allowed([pygame.QUIT])
-

@@ -1,7 +1,7 @@
 import io
 import pygame
-import zipfile
 import xml.etree.ElementTree as ElementTree
+import zipfile
 
 
 class Tileset(object):
@@ -103,11 +103,13 @@ class TiledLevel(object):
         tilesets = []
         root = ElementTree.fromstring(xml_data)
 
-        #Read basic map info
-        self.map = Map(int(root.get(TiledLevel.WIDTH)), int(root.get(TiledLevel.HEIGHT)),
-                       int(root.get(TiledLevel.TILEWIDTH)), int(root.get(TiledLevel.TILEHEIGHT)))
+        # Read basic map info
+        self.map = Map(int(root.get(TiledLevel.WIDTH)),
+                       int(root.get(TiledLevel.HEIGHT)),
+                       int(root.get(TiledLevel.TILEWIDTH)),
+                       int(root.get(TiledLevel.TILEHEIGHT)))
 
-        #Read tileset info
+        # Read tileset info
         animated_tiles = []
 
         for tileset in root.findall(TiledLevel.TILESET):
@@ -137,7 +139,7 @@ class TiledLevel(object):
 
         tilesets.sort(key=lambda obj: obj.firstgid)
 
-        #Read background info
+        # Read background info
         source = None
 
         for imagelayer in root.findall(TiledLevel.IMAGELAYER):
@@ -151,7 +153,7 @@ class TiledLevel(object):
             if byte_data is not None:
                 self.background = pygame.image.load(byte_data)
 
-        #Read layer info
+        # Read layer info
         layerwidth = layerheight = layername = gid = None
 
         for layer in root.findall(TiledLevel.LAYER):
