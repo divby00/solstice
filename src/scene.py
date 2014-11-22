@@ -103,9 +103,9 @@ class Scene(object):
                           self.fullscreen_mode_selected, None)
         ]
         resolution_options = [
-            menu.MenuItem('small_item', _('256 x 192'), None, None),
-            menu.MenuItem('medium_item', _('512 x 384'), None, None),
-            menu.MenuItem('large_item', _('1024 x 768'), None, None)
+            menu.MenuItem('small_item', _('256 x 192'), self.resolution_selected, None),
+            menu.MenuItem('medium_item', _('512 x 384'), self.resolution_selected, None),
+            menu.MenuItem('large_item', _('1024 x 768'), self.resolution_selected, None)
         ]
         graphics_options = [
             menu.MenuItem('resolution_item', _('resolution'),
@@ -182,8 +182,6 @@ class Scene(object):
             self.menu_group.visible = False
 
     def quit_game(self):
-        pygame.time.delay(1000)
-
         if self.name == 'intro':
             self.exit(0)
         else:
@@ -242,3 +240,13 @@ class Scene(object):
                                 config.Configuration.OPT_FULLSCREEN,
                                 False)
             self.cfg.fullscreen = False
+
+    def resolution_selected(self):
+        option = self.menu_group.selected_menu.selected_option
+        new_resolution = self.screen.change_resolution(option)
+        self.cfg.parser.set(config.Configuration.SECTION[1],
+                            config.Configuration.OPT_SCREEN_WIDTH,
+                            new_resolution[0])
+        self.cfg.parser.set(config.Configuration.SECTION[1],
+                            config.Configuration.OPT_SCREEN_HEIGHT,
+                            new_resolution[1])

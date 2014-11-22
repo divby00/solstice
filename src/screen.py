@@ -15,13 +15,15 @@ class Screen(object):
 
     WINDOW_SIZE = [256, 192]
 
-
     def __init__(self, cfg, caption):
         graphics_params = pygame.DOUBLEBUF
         self.caption = caption
 
         if cfg.fullscreen:
             graphics_params |= pygame.FULLSCREEN
+            self.fullscreen = True
+        else:
+            self.fullscreen = False
 
         self.screen_size = cfg.screen_size
 
@@ -42,10 +44,12 @@ class Screen(object):
 
     def toggle_fullscreen(self, fullscreen):
 
+        self.fullscreen = False
         graphics_params = pygame.DOUBLEBUF
 
         if fullscreen:
             graphics_params |= pygame.FULLSCREEN
+            self.fullscreen = True
 
         self.display = pygame.display.set_mode(self.screen_size,
                                                graphics_params)
@@ -55,11 +59,18 @@ class Screen(object):
         pygame.mouse.set_visible(False)
         pygame.event.set_allowed([pygame.QUIT])
 
-    def change_resolution(self, resolution):
+    def change_resolution(self, resolution_index):
 
+        resolutions = [
+            (256, 192),
+            (512, 384),
+            (1024, 768)
+        ]
+
+        self.screen_size = resolutions[resolution_index]
         graphics_params = pygame.DOUBLEBUF
 
-        if fullscreen:
+        if self.fullscreen:
             graphics_params |= pygame.FULLSCREEN
 
         self.display = pygame.display.set_mode(self.screen_size,
@@ -69,3 +80,4 @@ class Screen(object):
         pygame.display.set_caption(self.caption)
         pygame.mouse.set_visible(False)
         pygame.event.set_allowed([pygame.QUIT])
+        return resolutions[resolution_index]

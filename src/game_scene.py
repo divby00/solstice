@@ -10,6 +10,7 @@ class GameScene(scene.Scene):
 
     def __init__(self, context, name, scene_speed=25):
         super(GameScene, self).__init__(context, name, scene_speed)
+        self.screen = context.scr
         self.marcador = context.resourcemanager.get('marcador')
         self.level01 = context.resourcemanager.get('level01')
         self.level02 = context.resourcemanager.get('level02')
