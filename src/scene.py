@@ -8,6 +8,7 @@ class Scene(object):
 
     def __init__(self, context, scene_speed=40):
         self.scene_speed = scene_speed
+        self.scenemanager = None
         self.running = False
         self.cfg = context.cfg
         self.control = context.control
@@ -30,6 +31,9 @@ class Scene(object):
                              (self.font_white, self.font_blue, self.font_yellow),
                              (self.blip, self.accept, self.cancel),
                              self.control)
+
+    def on_start(self):
+        raise NotImplementedError('Implement this method')
 
     def render(self, scr):
         raise NotImplementedError('Implement this method')
@@ -170,11 +174,11 @@ class Scene(object):
 
     def enter_game(self):
         pygame.mixer.music.stop()
-        self.running = False
+        self.scenemanager.set('game')
 
     def quit_game(self):
         pygame.time.delay(1000)
-        self.exit(0)
+        self.scenemanager.set('intro')
 
     def sound_vol_selected(self):
         self.cfg.parser.set(config.Configuration.SECTION[2],

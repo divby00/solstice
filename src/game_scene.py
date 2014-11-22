@@ -13,11 +13,15 @@ class GameScene(scene.Scene):
         self.marcador = context.resourcemanager.get('marcador')
         self.level01 = context.resourcemanager.get('level01')
         self.level02 = context.resourcemanager.get('level02')
-        self.current_level = self.level02
         self.player = player.Player(context.resourcemanager,
-                                    self.current_level)
+                                    self.level01)
+        self.laser = context.resourcemanager.get('laser')
+        self.song = context.resourcemanager.get('level01_song')
+        self.music = self.song
+        self.get_menu()
 
-        ''' Scroll related variables '''
+    def on_start(self):
+        self.player.on_start()
         self.scroll_speed = [4, 4]
         self.view_port = [256, 144]
         self.cursor = [0, 0]
@@ -35,11 +39,12 @@ class GameScene(scene.Scene):
         self.player.y = self.view_port[1] / 2 - (self.player.h / 2)
         self.half_view_port = (self.view_port[0]/2, self.view_port[1]/2)
         self.half_player = (self.player.w/2, self.player.h/2)
-        self.song = context.resourcemanager.get('level01_song')
-        self.laser = context.resourcemanager.get('laser')
-        self.music = self.song
         self.playing = False
-        self.get_menu()
+        self.menu_group.visible = False
+        self.current_level = self.level01
+
+    def on_quit(self):
+        self.music.stop()
 
     def run(self):
 

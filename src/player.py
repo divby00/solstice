@@ -12,10 +12,13 @@ class Player(object):
         for p in xrange(0, len(player)):
             self.sprites.insert(p, rmngr.get(player[p]))
 
+        self.current_level = current_level
+
+    def on_start(self):
         self.w = self.sprites[0].get_width()
         self.h = self.sprites[0].get_height()
-        self.x = current_level.start_point[0] * current_level.map.tilewidth
-        self.y = current_level.start_point[1] * current_level.map.tileheight
+        self.x = self.current_level.start_point[0] * self.current_level.map.tilewidth
+        self.y = self.current_level.start_point[1] * self.current_level.map.tileheight
         self.absolute_x = self.x
         self.absolute_y = self.y
         self.animation = 0

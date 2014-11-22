@@ -19,9 +19,13 @@ class LogoScene(scene.Scene):
         for d in xrange(0, len(dither_images)):
             self.dither.insert(d, context.resourcemanager.get(dither_images[d]))
 
+    def on_start(self):
         self.dither_anim = len(self.dither)
         self.fading = 0
         self.playing = False
+
+    def on_quit(self):
+        pass
 
     def run(self):
 
@@ -42,14 +46,14 @@ class LogoScene(scene.Scene):
 
         #Exit condition
         if self.dither_anim == len(self.dither) and self.fading == 1:
-            self.running = False
+            self.scenemanager.set('intro')
 
     def render(self, scr):
 
         if self.dither_anim < len(self.dither):
             scr.virt.blit(self.logo,
-                         (128-(self.logo.get_width()/2),
-                          96-(self.logo.get_height()/2)))
+                          (128-(self.logo.get_width()/2),
+                           96-(self.logo.get_height()/2)))
 
         for a in xrange(0, 192, 8):
             for i in xrange(0, 256, 8):

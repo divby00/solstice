@@ -15,6 +15,7 @@ class Star(object):
         self.x = x
         self.y = y
         self.star_type = star_type
+        self.frame = 0
         self.frame_incrementor = random.triangular()
 
         if self.star_type in [0, 1, 3, 4]:
@@ -75,7 +76,7 @@ class Stars(object):
             if s.star_type == 3:
                 img = self.star_sprites[int(8 + s.frame)]
             if s.star_type == 4:
-                img = self.star_sprites[int(10 + s.frame)]
+                img = self.star_sprites[int(10)]
             if img is not None:
                 surface.blit(img, (s.x, s.y))
 
@@ -94,15 +95,17 @@ class Credits(object):
             _('Hope you enjoy this game...'),
             _('...and long life to EGA!!!')
         ]
-        self.actual_text = 0
-        self.credits_anim = 0
-        self.text_y = screen.Screen.WINDOW_SIZE[1]
         self.credits_imgs = []
         self.font_dither = font_dither
 
         for i in xrange(0, len(self.credits_text)):
             self.credits_imgs.insert(i, font.get(self.credits_text[i],
                                      screen.Screen.WINDOW_SIZE[0]))
+
+    def on_start(self):
+        self.actual_text = 0
+        self.credits_anim = 0
+        self.text_y = screen.Screen.WINDOW_SIZE[1]
 
     def run(self):
         if self.credits_anim >= 100:
@@ -159,10 +162,17 @@ class IntroScene(scene.Scene):
         self.intro_text.insert(1, self.font_white.get(_('...a nuclear plant is going to blow!!!'), 256))
         self.credits = Credits(self.font_white, self.font_dither)
         self.background = pygame.Surface((self.menu_image.get_width(), self.menu_image.get_height())).convert()
+        self.get_menu()
+
+    def on_start(self):
         self.background_x_position = 0
         self.title_anim = 0
         self.title_fade = -1
-        self.get_menu()
+        self.credits.on_start()
+        self.menu_group.visible = False
+
+    def on_quit(self):
+        pass
 
     def run(self):
         '''
@@ -206,7 +216,6 @@ class IntroScene(scene.Scene):
                     self.title_fade = 4
 
     def render(self, scr):
-
         self.background.blit(self.menu_image, (0, 0))
         self.stars.render(self.background)
         self.background.blit(self.planet, (325 - self.planet.get_width()/2, 0))
