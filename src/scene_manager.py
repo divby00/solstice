@@ -17,6 +17,7 @@ class SceneManager(object):
                 self.set(start_scene)
 
     def set(self, scene_name):
+        self.name = scene_name
         self.current_scene.on_quit()
         self.scene = self.scenes[scene_name]
         self.current_scene = self.scene

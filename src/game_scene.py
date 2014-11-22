@@ -8,8 +8,8 @@ import scene
 
 class GameScene(scene.Scene):
 
-    def __init__(self, context, scene_speed=25):
-        super(GameScene, self).__init__(context, scene_speed)
+    def __init__(self, context, name, scene_speed=25):
+        super(GameScene, self).__init__(context, name, scene_speed)
         self.marcador = context.resourcemanager.get('marcador')
         self.level01 = context.resourcemanager.get('level01')
         self.level02 = context.resourcemanager.get('level02')
@@ -39,19 +39,14 @@ class GameScene(scene.Scene):
         self.player.y = self.view_port[1] / 2 - (self.player.h / 2)
         self.half_view_port = (self.view_port[0]/2, self.view_port[1]/2)
         self.half_player = (self.player.w/2, self.player.h/2)
-        self.playing = False
         self.menu_group.visible = False
         self.current_level = self.level01
+        self.music.play(-1)
 
     def on_quit(self):
         self.music.stop()
 
     def run(self):
-
-        if not self.playing:
-            self.playing = True
-            self.music.play(-1)
-
         if self.menu_group.visible:
             self.menu_group.run()
         else:

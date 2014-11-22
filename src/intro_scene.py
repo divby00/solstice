@@ -137,8 +137,8 @@ class Credits(object):
 
 class IntroScene(scene.Scene):
 
-    def __init__(self, context, scene_speed=15):
-        super(IntroScene, self).__init__(context, scene_speed)
+    def __init__(self, context, name, scene_speed=15):
+        super(IntroScene, self).__init__(context, name, scene_speed)
         self.exit = context.exit
         self.menu_image = context.resourcemanager.get('menu')
         self.screen = context.scr
@@ -154,6 +154,7 @@ class IntroScene(scene.Scene):
         self.plant = context.resourcemanager.get('plant')
         self.font_dither = context.resourcemanager.get('font_dither')
         self.music = context.resourcemanager.get('menu_song')
+        pygame.mixer.music.load(self.music)
         self.stars = Stars(context.resourcemanager,
                            (self.menu_image.get_width(), 145))
         self.skip_text = self.font_white.get(_('Press action 2 to skip'), 256)
@@ -170,9 +171,10 @@ class IntroScene(scene.Scene):
         self.title_fade = -1
         self.credits.on_start()
         self.menu_group.visible = False
+        pygame.mixer.music.play(-1)
 
     def on_quit(self):
-        pass
+        pygame.mixer.music.stop()
 
     def run(self):
         '''

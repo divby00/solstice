@@ -6,7 +6,9 @@ import config
 
 class Scene(object):
 
-    def __init__(self, context, scene_speed=40):
+    def __init__(self, context, name, scene_speed=40):
+        self.name = name
+        self.exit = context.exit
         self.scene_speed = scene_speed
         self.scenemanager = None
         self.running = False
@@ -173,12 +175,19 @@ class Scene(object):
                                          self.menu_context)
 
     def enter_game(self):
-        pygame.mixer.music.stop()
-        self.scenemanager.set('game')
+        if self.name == 'intro':
+            pygame.mixer.music.stop()
+            self.scenemanager.set('game')
+        else:
+            self.menu_group.visible = False
 
     def quit_game(self):
         pygame.time.delay(1000)
-        self.scenemanager.set('intro')
+
+        if self.name == 'intro':
+            self.exit(0)
+        else:
+            self.scenemanager.set('intro')
 
     def sound_vol_selected(self):
         self.cfg.parser.set(config.Configuration.SECTION[2],
