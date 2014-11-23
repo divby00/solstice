@@ -130,9 +130,9 @@ class Player(actor.Actor):
         calculated_y = []
         calculated_y.insert(0, int(self.absolute_y / level.map.tilewidth))
         calculated_y.insert(1, int((self.absolute_y + ((self.h / 2) - 1)) /
-                                level.map.tilewidth))
+                            level.map.tilewidth))
         calculated_y.insert(2, int((self.absolute_y + (self.h - 1)) /
-                                level.map.tilewidth))
+                            level.map.tilewidth))
 
         for l in level.layers:
             if l.name == 'special':
@@ -142,16 +142,14 @@ class Player(actor.Actor):
 
         return False
 
-
     def check_left_collision(self, level):
-
         calculated_x = int((self.absolute_x - 1) / level.map.tilewidth)
         calculated_y = []
         calculated_y.insert(0, int(self.absolute_y / level.map.tileheight))
         calculated_y.insert(1, int((self.absolute_y + ((self.h / 2) - 1)) /
-                                level.map.tileheight))
+                            level.map.tileheight))
         calculated_y.insert(2, int((self.absolute_y + (self.h - 1)) /
-                                level.map.tileheight))
+                            level.map.tileheight))
 
         for l in level.layers:
             if l.name == 'special':
@@ -161,16 +159,14 @@ class Player(actor.Actor):
 
         return False
 
-
     def check_upper_collision(self, level):
-
         calculated_y = int((self.absolute_y - 1) / level.map.tileheight)
         calculated_x = []
         calculated_x.insert(0, int(self.absolute_x / level.map.tilewidth))
         calculated_x.insert(1, int((self.absolute_x + ((self.w / 2) - 1)) /
-                                level.map.tilewidth))
+                            level.map.tilewidth))
         calculated_x.insert(2, int((self.absolute_x + (self.w - 1)) /
-                                level.map.tilewidth))
+                            level.map.tilewidth))
 
         for l in level.layers:
             if l.name == 'special':
@@ -180,16 +176,15 @@ class Player(actor.Actor):
 
         return False
 
-
     def check_bottom_collision(self, level):
 
         calculated_y = int((self.absolute_y + self.h) / level.map.tileheight)
         calculated_x = []
         calculated_x.insert(0, int(self.absolute_x / level.map.tilewidth))
         calculated_x.insert(1, int((self.absolute_x + ((self.w / 2) - 1)) /
-                                level.map.tilewidth))
+                            level.map.tilewidth))
         calculated_x.insert(2, int((self.absolute_x + (self.w - 1)) /
-                                level.map.tilewidth))
+                            level.map.tilewidth))
 
         for l in level.layers:
             if l.name == 'special':

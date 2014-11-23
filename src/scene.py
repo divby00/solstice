@@ -1,5 +1,6 @@
 from gettext import gettext as _
 import pygame
+
 import menu
 import config
 
@@ -11,6 +12,7 @@ class Scene(object):
         self.exit = context.exit
         self.scene_speed = scene_speed
         self.scenemanager = None
+        self.screen = None
         self.running = False
         self.cfg = context.cfg
         self.control = context.control
@@ -157,18 +159,12 @@ class Scene(object):
                                  options_options,
                                  'main_menu')
 
-        menu_list = []
-        menu_list.append(main_menu)
-        menu_list.append(options_menu)
-        menu_list.append(graphics_menu)
-        menu_list.append(sound_menu)
-        menu_list.append(sound_active_menu)
-        menu_list.append(sound_volume_menu)
-        menu_list.append(music_active_menu)
-        menu_list.append(music_volume_menu)
-        menu_list.append(control_menu)
-        menu_list.append(resolution_menu)
-        menu_list.append(fullscreen_menu)
+        menu_list = [
+            main_menu, options_menu, graphics_menu,
+            sound_menu, sound_active_menu, sound_volume_menu,
+            music_active_menu, music_volume_menu, control_menu,
+            resolution_menu, fullscreen_menu
+        ]
 
         self.menu_group = menu.MenuGroup(menu_list,
                                          'main_menu',

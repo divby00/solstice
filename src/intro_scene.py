@@ -1,10 +1,8 @@
 from gettext import gettext as _
-import math
 import pygame
 import random
-import config
+
 import control
-import menu
 import scene
 import screen
 
@@ -173,16 +171,11 @@ class IntroScene(scene.Scene):
         self.menu_group.visible = False
         pygame.mixer.music.play(-1)
 
-    def on_quit(self):
+    @staticmethod
+    def on_quit():
         pygame.mixer.music.stop()
 
     def run(self):
-        '''
-        if not pygame.mixer.music.get_busy():
-            pygame.mixer.music.load(self.music)
-            pygame.mixer.music.play(-1)
-        '''
-
         self.menu_group.run()
 
         if self.control.on(control.Control.ACTION2):
@@ -224,7 +217,7 @@ class IntroScene(scene.Scene):
         self.background.blit(self.sun, (310, 84))
         self.background.blit(self.plant, (377, 125))
 
-        if self.title_anim > 0 and self.title_anim < 12:
+        if 0 < self.title_anim < 12:
             tmp_surface = pygame.Surface((self.title_imgs[0].get_width(),
                                          self.title_anim)).convert()
             tmp_surface.fill((0, 0, 0, 0))

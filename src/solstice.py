@@ -6,11 +6,11 @@ import os
 import platform
 import pygame
 import sys
+
 import config
 import control
 import resource_manager
 import scene_manager
-import scene
 import logo_scene
 import intro_scene
 import game_scene
@@ -44,7 +44,8 @@ class Solstice(object):
         pygame.quit()
         sys.exit(exit_code)
 
-    def __platform_specific_inits(self):
+    @staticmethod
+    def __platform_specific_inits():
         if platform.system() == 'Windows':
             os.environ['SDL_AUDIODRIVER'] = 'dsound'
 

@@ -1,4 +1,5 @@
 import pygame
+
 import scene
 
 
@@ -44,7 +45,7 @@ class LogoScene(scene.Scene):
         if self.dither_anim < len(self.dither) and self.fading == 1:
             self.dither_anim += 1
 
-        #Exit condition
+        # Exit condition
         if self.dither_anim == len(self.dither) and self.fading == 1:
             self.scenemanager.set('intro')
 

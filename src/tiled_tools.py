@@ -1,7 +1,6 @@
 import io
 import pygame
 import xml.etree.ElementTree as ElementTree
-import zipfile
 
 
 class Tileset(object):
@@ -95,6 +94,7 @@ class TiledLevel(object):
         self.__load(xml_data)
 
     def __load(self, xml_data):
+        global source
         imgwidth = 0
         imgheight = 0
         tilewidth = 0
@@ -127,11 +127,11 @@ class TiledLevel(object):
                 tileid = int(tile.get(TiledLevel.ID))
 
                 for properties in tile.findall(TiledLevel.PROPERTIES):
-                    for property in properties:
-                        name = property.get(TiledLevel.NAME)
+                    for prop in properties:
+                        name = prop.get(TiledLevel.NAME)
 
                         if name == TiledLevel.ANIMATED:
-                            if property.get(TiledLevel.VALUE) == 'True':
+                            if prop.get(TiledLevel.VALUE) == 'True':
                                 animated_tiles.append(tileid)
 
             tilesets.append(Tileset(name, imgwidth, imgheight, tilewidth,
@@ -163,14 +163,14 @@ class TiledLevel(object):
             l = Layer(layername, (layerwidth, layerheight))
 
             for properties in layer.findall(TiledLevel.PROPERTIES):
-                for property in properties.findall(TiledLevel.PROPERTY):
-                    prop = property.get(TiledLevel.NAME)
+                for this_property in properties.findall(TiledLevel.PROPERTY):
+                    prop = this_property.get(TiledLevel.NAME)
 
                     if prop == TiledLevel.ZINDEX:
-                        l.zindex = int(property.get(TiledLevel.VALUE))
+                        l.zindex = int(this_property.get(TiledLevel.VALUE))
 
                     if prop == TiledLevel.VISIBLE:
-                        l.visible = (property.get(TiledLevel.VALUE) == 'True')
+                        l.visible = (this_property.get(TiledLevel.VALUE) == 'True')
 
             for data in layer.findall(TiledLevel.DATA):
                 for tile in data.findall(TiledLevel.TILE):

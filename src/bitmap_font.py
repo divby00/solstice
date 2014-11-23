@@ -1,6 +1,4 @@
-import io
 import pygame
-import zipfile
 
 
 class BitmapFont(object):

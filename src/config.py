@@ -184,7 +184,8 @@ class Configuration(object):
         self.key_act1 = Configuration.KEY_ACTION_1
         self.key_act2 = Configuration.KEY_ACTION_2
 
-    def __check_correct_values(self, option, read_value):
+    @staticmethod
+    def __check_correct_values(option, read_value):
 
         if option == Configuration.OPT_DATA_PATH:
             file_path = ''.join([read_value, 'data.zip'])

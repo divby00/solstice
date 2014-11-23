@@ -1,42 +1,6 @@
-from gettext import gettext as _
-import config
-import control
 import pygame
 
-
-class Panel(object):
-
-    def __init__(self, panel_imgs, size):
-        assert(size[0] > 0 and size[1] > 0)
-        assert(panel_imgs is not None)
-        self.panel_imgs = panel_imgs
-        self.size = size
-        self.surface = pygame.Surface(size).convert_alpha()
-        self.surface.fill((0, 0, 0, 0))
-        img = -1
-
-        for a in xrange(0, self.size[1], 8):
-            for i in xrange(0, self.size[0], 8):
-                if a == 0 and i == 0:
-                    img = 0
-                if a == 0 and i > 0 and i < self.size[0] - 8:
-                    img = 1
-                if a == 0 and i == self.size[0] - 8:
-                    img = 2
-                if a > 0 and a < self.size[1] - 8 and i == 0:
-                    img = 3
-                if a > 0 and a < self.size[1] - 8 and i > 0 and i < self.size[0] - 8:
-                    img = 4
-                if a > 0 and a < self.size[1] - 8 and i == self.size[0] - 8:
-                    img = 5
-                if a == self.size[1] - 8 and i == 0:
-                    img = 6
-                if a == self.size[1] - 8 and i > 0 and i < self.size[0] - 8:
-                    img = 7
-                if a == self.size[1] - 8 and i == self.size[0] - 8:
-                    img = 8
-
-                self.surface.blit(self.panel_imgs[img], (i, a))
+import control
 
 
 class MenuItem(object):
@@ -64,6 +28,41 @@ class Menu(object):
 
     def __repr__(self):
         return self.name
+
+
+class Panel(object):
+
+    def __init__(self, panel_imgs, size):
+        assert(size[0] > 0 and size[1] > 0)
+        assert(panel_imgs is not None)
+        self.panel_imgs = panel_imgs
+        self.size = size
+        self.surface = pygame.Surface(size).convert_alpha()
+        self.surface.fill((0, 0, 0, 0))
+        img = -1
+
+        for a in xrange(0, self.size[1], 8):
+            for i in xrange(0, self.size[0], 8):
+                if a == 0 and i == 0:
+                    img = 0
+                if a == 0 and 0 < i < self.size[0] - 8:
+                    img = 1
+                if a == 0 and i == self.size[0] - 8:
+                    img = 2
+                if self.size[1] - 8 > a > 0 == i:
+                    img = 3
+                if 0 < a < self.size[1] - 8 and 0 < i < self.size[0] - 8:
+                    img = 4
+                if 0 < a < self.size[1] - 8 and i == self.size[0] - 8:
+                    img = 5
+                if a == self.size[1] - 8 and i == 0:
+                    img = 6
+                if a == self.size[1] - 8 and 0 < i < self.size[0] - 8:
+                    img = 7
+                if a == self.size[1] - 8 and i == self.size[0] - 8:
+                    img = 8
+
+                self.surface.blit(self.panel_imgs[img], (i, a))
 
 
 class MenuGroup(object):

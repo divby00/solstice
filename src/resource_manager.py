@@ -3,6 +3,7 @@ import pygame
 import xml.etree.ElementTree as ElementTree
 from gettext import gettext as _
 import zipfile
+
 import bitmap_font
 import tiled_tools
 
@@ -146,7 +147,8 @@ class ResourceManager(object):
             if level is not None:
                 self.levels[name] = level
 
-    def __get_common_info(self, resource):
+    @staticmethod
+    def __get_common_info(resource):
         src = resource.get('src')
         name = resource.get('name')
         return src, name

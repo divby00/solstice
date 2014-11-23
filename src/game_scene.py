@@ -1,8 +1,5 @@
-from gettext import gettext as _
 import control
-import menu
 import player
-import pygame
 import scene
 
 
