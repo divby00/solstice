@@ -199,5 +199,3 @@ class GameScene(scene.Scene):
             self.menu_group.render(scr.virt, (128, 70))
 
         scr.virt.blit(self.marcador, (0, self.view_port[1]))
-
-
