@@ -14,8 +14,8 @@ class GameScene(scene.Scene):
         self.marcador = context.resourcemanager.get('marcador')
         self.level01 = context.resourcemanager.get('level01')
         self.level02 = context.resourcemanager.get('level02')
-        self.player = player.Player(context.resourcemanager,
-                                    self.level01)
+        self.player = player.Player(context,
+                                    self.level02)
         self.laser = context.resourcemanager.get('laser')
         self.song = context.resourcemanager.get('level01_song')
         self.music = self.song
@@ -41,7 +41,12 @@ class GameScene(scene.Scene):
         self.half_view_port = (self.view_port[0]/2, self.view_port[1]/2)
         self.half_player = (self.player.w/2, self.player.h/2)
         self.menu_group.visible = False
-        self.current_level = self.level01
+        self.current_level = self.level02
+        self.map_size = [self.current_level.map.width_pixels - self.view_port[0],
+                         self.current_level.map.height_pixels - self.view_port[1] + (192/4)]
+        self.half = [self.half_view_port[0] - self.half_player[0],
+                     self.half_view_port[1] - self.half_player[1]]
+
         self.music.play(-1)
 
     def on_quit(self):
@@ -51,17 +56,10 @@ class GameScene(scene.Scene):
         if self.menu_group.visible:
             self.menu_group.run()
         else:
-            half = [self.half_view_port[0] - self.half_player[0],
-                    self.half_view_port[1] - self.half_player[1]]
-
-            map_size = [self.current_level.map.width_pixels - self.view_port[0],
-                        self.current_level.map.height_pixels -
-                        self.view_port[1] + (192/4)]
-
             if self.control.on(control.Control.RIGHT):
-                if not check_right_collision(self.player, self.current_level):
-                    if (self.player.x % self.view_port[0]) >= half[0]:
-                        if self.cursor[0] < map_size[0]:
+                if not self.player.check_right_collision(self.current_level):
+                    if (self.player.x % self.view_port[0]) >= self.half[0]:
+                        if self.cursor[0] < self.map_size[0]:
                             self.player.direction = 1
                             self.cursor[0] += self.scroll_speed[0]
                             self.player.absolute_x += self.scroll_speed[0]
@@ -75,8 +73,8 @@ class GameScene(scene.Scene):
                         self.player.absolute_x += self.scroll_speed[0]
 
             if self.control.on(control.Control.LEFT):
-                if not check_left_collision(self.player, self.current_level):
-                    if (self.player.x % self.view_port[0]) <= half[0]:
+                if not self.player.check_left_collision(self.current_level):
+                    if (self.player.x % self.view_port[0]) <= self.half[0]:
                         if self.cursor[0] > 0:
                             self.player.direction = -1
                             self.cursor[0] -= self.scroll_speed[0]
@@ -91,9 +89,9 @@ class GameScene(scene.Scene):
                         self.player.absolute_x -= self.scroll_speed[0]
 
             if self.control.on(control.Control.DOWN):
-                if not check_bottom_collision(self.player, self.current_level):
-                    if (self.player.y % self.view_port[1]) >= half[1]:
-                        if self.cursor[1] < map_size[1]:
+                if not self.player.check_bottom_collision(self.current_level):
+                    if (self.player.y % self.view_port[1]) >= self.half[1]:
+                        if self.cursor[1] < self.map_size[1]:
                             self.cursor[1] += self.scroll_speed[1]
                             self.player.absolute_y += self.scroll_speed[1]
                         else:
@@ -104,8 +102,8 @@ class GameScene(scene.Scene):
                         self.player.absolute_y += self.scroll_speed[1]
 
             if self.control.on(control.Control.UP):
-                if not check_upper_collision(self.player, self.current_level):
-                    if (self.player.y % self.view_port[1]) <= half[1]:
+                if not self.player.check_upper_collision(self.current_level):
+                    if (self.player.y % self.view_port[1]) <= self.half[1]:
                         if self.cursor[1] > 0:
                             self.cursor[1] -= self.scroll_speed[1]
                             self.player.absolute_y -= self.scroll_speed[1]
@@ -116,20 +114,14 @@ class GameScene(scene.Scene):
                         self.player.y -= self.scroll_speed[1]
                         self.player.absolute_y -= self.scroll_speed[1]
 
-            '''
             if self.control.on('action1'):
                 self.laser.play()
-            '''
+                self.player.firing = True
 
             if self.control.on(control.Control.ACTION2):
                 self.menu_group.visible = True
 
-        self.player.animation += self.player.direction
-
-        if self.player.animation == 15:
-            self.player.animation = 0
-        if self.player.animation < 0:
-            self.player.animation = 14
+        self.player.run()
 
     def render(self, scr):
         posx = posy = 0
@@ -182,9 +174,7 @@ class GameScene(scene.Scene):
                         posx = 0
                         posy += self.current_level.tiles[gid-1].size[1]
 
-                scr.virt.blit(self.player.sprites[self.player.animation],
-                              (self.player.x % self.view_port[0],
-                               self.player.y % self.view_port[1]))
+                self.player.render()
 
                 if l.name == 'forepatterns':
                     posy = posx = 0
@@ -211,77 +201,3 @@ class GameScene(scene.Scene):
         scr.virt.blit(self.marcador, (0, self.view_port[1]))
 
 
-def check_right_collision(player, level):
-
-    calculated_x = int((player.absolute_x + player.w) / level.map.tilewidth)
-    calculated_y = []
-    calculated_y.insert(0, int(player.absolute_y / level.map.tilewidth))
-    calculated_y.insert(1, int((player.absolute_y + ((player.h / 2) - 1)) /
-                               level.map.tilewidth))
-    calculated_y.insert(2, int((player.absolute_y + (player.h - 1)) /
-                               level.map.tilewidth))
-
-    for l in level.layers:
-        if l.name == 'special':
-            for a in calculated_y:
-                if l.get_gid(calculated_x, a) == 520:
-                    return True
-
-    return False
-
-
-def check_left_collision(player, level):
-
-    calculated_x = int((player.absolute_x - 1) / level.map.tilewidth)
-    calculated_y = []
-    calculated_y.insert(0, int(player.absolute_y / level.map.tileheight))
-    calculated_y.insert(1, int((player.absolute_y + ((player.h / 2) - 1)) /
-                               level.map.tileheight))
-    calculated_y.insert(2, int((player.absolute_y + (player.h - 1)) /
-                               level.map.tileheight))
-
-    for l in level.layers:
-        if l.name == 'special':
-            for a in calculated_y:
-                if l.get_gid(calculated_x, a) == 520:
-                    return True
-
-    return False
-
-
-def check_upper_collision(player, level):
-
-    calculated_y = int((player.absolute_y - 1) / level.map.tileheight)
-    calculated_x = []
-    calculated_x.insert(0, int(player.absolute_x / level.map.tilewidth))
-    calculated_x.insert(1, int((player.absolute_x + ((player.w / 2) - 1)) /
-                               level.map.tilewidth))
-    calculated_x.insert(2, int((player.absolute_x + (player.w - 1)) /
-                               level.map.tilewidth))
-
-    for l in level.layers:
-        if l.name == 'special':
-            for i in calculated_x:
-                if l.get_gid(i, calculated_y) == 520:
-                    return True
-
-    return False
-
-
-def check_bottom_collision(player, level):
-
-    calculated_y = int((player.absolute_y + player.h) / level.map.tileheight)
-    calculated_x = []
-    calculated_x.insert(0, int(player.absolute_x / level.map.tilewidth))
-    calculated_x.insert(1, int((player.absolute_x + ((player.w / 2) - 1)) /
-                               level.map.tilewidth))
-    calculated_x.insert(2, int((player.absolute_x + (player.w - 1)) /
-                               level.map.tilewidth))
-
-    for l in level.layers:
-        if l.name == 'special':
-            for i in calculated_x:
-                if l.get_gid(i, calculated_y) == 520:
-                    return True
-
-    return False

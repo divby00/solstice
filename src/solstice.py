@@ -30,10 +30,12 @@ class Solstice(object):
         self.control = control.Control(self)
         self.resourcemanager = resource_manager.ResourceManager(self,
                                                                 'data.zip')
-        self.scenes = {}
-        self.scenes['logo'] = logo_scene.LogoScene(self, 'logo')
-        self.scenes['intro'] = intro_scene.IntroScene(self, 'intro')
-        self.scenes['game'] = game_scene.GameScene(self, 'game')
+        self.scenes = {
+            'logo': logo_scene.LogoScene(self, 'logo'),
+            'intro': intro_scene.IntroScene(self, 'intro'),
+            'game': game_scene.GameScene(self, 'game')
+        }
+
         self.scenemanager = scene_manager.SceneManager(self, 'logo')
         self.scenemanager.run()
 
