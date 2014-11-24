@@ -4,7 +4,6 @@ import scene
 
 
 class GameScene(scene.Scene):
-
     def __init__(self, context, name, scene_speed=25):
         super(GameScene, self).__init__(context, name, scene_speed)
         self.screen = context.scr
@@ -24,9 +23,9 @@ class GameScene(scene.Scene):
         self.view_port = [256, 144]
         self.cursor = [0, 0]
         self.cursor[0] = self.player.x - (self.view_port[0] / 2) + \
-            (self.player.w / 2)
+                         (self.player.w / 2)
         self.cursor[1] = self.player.y - (self.view_port[1] / 2) + \
-            (self.player.h / 2)
+                         (self.player.h / 2)
 
         if self.cursor[0] < 0:
             self.cursor[0] = 0
@@ -35,12 +34,12 @@ class GameScene(scene.Scene):
             self.cursor[1] = 0
 
         self.player.y = self.view_port[1] / 2 - (self.player.h / 2)
-        self.half_view_port = (self.view_port[0]/2, self.view_port[1]/2)
-        self.half_player = (self.player.w/2, self.player.h/2)
+        self.half_view_port = (self.view_port[0] / 2, self.view_port[1] / 2)
+        self.half_player = (self.player.w / 2, self.player.h / 2)
         self.menu_group.visible = False
         self.current_level = self.level02
         self.map_size = [self.current_level.map.width_pixels - self.view_port[0],
-                         self.current_level.map.height_pixels - self.view_port[1] + (192/4)]
+                         self.current_level.map.height_pixels - self.view_port[1] + (192 / 4)]
         self.half = [self.half_view_port[0] - self.half_player[0],
                      self.half_view_port[1] - self.half_player[1]]
 
@@ -145,12 +144,12 @@ class GameScene(scene.Scene):
             if l.visible:
 
                 range_limit_y = int(offset_tiles[1]) + \
-                    int((self.view_port[1] /
-                         self.current_level.map.tileheight)+1)
+                                int((self.view_port[1] /
+                                     self.current_level.map.tileheight) + 1)
 
                 range_limit_x = int(offset_tiles[0]) + \
-                    int((self.view_port[0] /
-                         self.current_level.map.tilewidth)+1)
+                                int((self.view_port[0] /
+                                     self.current_level.map.tilewidth) + 1)
 
                 if l.name == 'backpatterns':
                     posy = posx = 0
@@ -161,7 +160,7 @@ class GameScene(scene.Scene):
 
                             if gid > 0:
                                 scr.virt.blit(
-                                    self.current_level.tiles[gid-1].srfc,
+                                    self.current_level.tiles[gid - 1].srfc,
                                     (posx - offset_pixels[0],
                                      posy - offset_pixels[1]),
                                     (0, 0, l.size[0], l.size[1]))
@@ -169,7 +168,7 @@ class GameScene(scene.Scene):
                             posx += self.current_level.tiles[gid - 1].size[0]
 
                         posx = 0
-                        posy += self.current_level.tiles[gid-1].size[1]
+                        posy += self.current_level.tiles[gid - 1].size[1]
 
                 self.player.render()
 
@@ -182,15 +181,15 @@ class GameScene(scene.Scene):
 
                             if gid > 0:
                                 scr.virt.blit(
-                                    self.current_level.tiles[gid-1].srfc,
+                                    self.current_level.tiles[gid - 1].srfc,
                                     (posx - offset_pixels[0],
                                      posy - offset_pixels[1]),
                                     (0, 0, l.size[0], l.size[1]))
 
-                            posx += self.current_level.tiles[gid-1].size[0]
+                            posx += self.current_level.tiles[gid - 1].size[0]
 
                         posx = 0
-                        posy += self.current_level.tiles[gid-1].size[1]
+                        posy += self.current_level.tiles[gid - 1].size[1]
 
         if self.menu_group.visible:
             self.menu_group.render(scr.virt, (128, 70))

@@ -2,7 +2,6 @@ import actor
 
 
 class Laser(actor.Actor):
-
     def __init__(self, context, position, direction):
         super(Laser, self).__init__(context)
         self.position = position
@@ -18,33 +17,32 @@ class Laser(actor.Actor):
         if self.direction == 1:
             if self.animation >= 3:
                 self.context.scr.virt.blit(self.context.laser_spr[0], (self.position[0], self.position[1]))
-                for i in xrange(self.position[0]+8, 256, 8):
+                for i in xrange(self.position[0] + 8, 256, 8):
                     self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.position[1]))
             if self.animation == 2:
                 self.context.scr.virt.blit(self.context.laser_spr[1], (self.position[0], self.position[1]))
-                for i in xrange(self.position[0]+8, 256, 8):
+                for i in xrange(self.position[0] + 8, 256, 8):
                     self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.position[1]))
             if self.animation == 1:
                 self.context.scr.virt.blit(self.context.laser_spr[2], (self.position[0], self.position[1]))
-                for i in xrange(self.position[0]+8, 256, 8):
+                for i in xrange(self.position[0] + 8, 256, 8):
                     self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.position[1]))
         else:
             if self.animation >= 3:
-                self.context.scr.virt.blit(self.context.laser_spr[8], (self.position[0]-24, self.position[1]))
-                for i in xrange(0, self.position[0]-24, 8):
+                self.context.scr.virt.blit(self.context.laser_spr[8], (self.position[0] - 24, self.position[1]))
+                for i in xrange(0, self.position[0] - 24, 8):
                     self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.position[1]))
             if self.animation == 2:
-                self.context.scr.virt.blit(self.context.laser_spr[7], (self.position[0]-24, self.position[1]))
-                for i in xrange(0, self.position[0]-24, 8):
+                self.context.scr.virt.blit(self.context.laser_spr[7], (self.position[0] - 24, self.position[1]))
+                for i in xrange(0, self.position[0] - 24, 8):
                     self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.position[1]))
             if self.animation == 1:
-                self.context.scr.virt.blit(self.context.laser_spr[6], (self.position[0]-24, self.position[1]))
-                for i in xrange(0, self.position[0]-24, 8):
+                self.context.scr.virt.blit(self.context.laser_spr[6], (self.position[0] - 24, self.position[1]))
+                for i in xrange(0, self.position[0] - 24, 8):
                     self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.position[1]))
 
 
 class Player(actor.Actor):
-
     def __init__(self, context, current_level):
         super(Player, self).__init__(context)
         self.x = 0
@@ -130,9 +128,9 @@ class Player(actor.Actor):
         calculated_y = []
         calculated_y.insert(0, int(self.absolute_y / level.map.tilewidth))
         calculated_y.insert(1, int((self.absolute_y + ((self.h / 2) - 1)) /
-                            level.map.tilewidth))
+                                   level.map.tilewidth))
         calculated_y.insert(2, int((self.absolute_y + (self.h - 1)) /
-                            level.map.tilewidth))
+                                   level.map.tilewidth))
 
         for l in level.layers:
             if l.name == 'special':
@@ -147,9 +145,9 @@ class Player(actor.Actor):
         calculated_y = []
         calculated_y.insert(0, int(self.absolute_y / level.map.tileheight))
         calculated_y.insert(1, int((self.absolute_y + ((self.h / 2) - 1)) /
-                            level.map.tileheight))
+                                   level.map.tileheight))
         calculated_y.insert(2, int((self.absolute_y + (self.h - 1)) /
-                            level.map.tileheight))
+                                   level.map.tileheight))
 
         for l in level.layers:
             if l.name == 'special':
@@ -164,9 +162,9 @@ class Player(actor.Actor):
         calculated_x = []
         calculated_x.insert(0, int(self.absolute_x / level.map.tilewidth))
         calculated_x.insert(1, int((self.absolute_x + ((self.w / 2) - 1)) /
-                            level.map.tilewidth))
+                                   level.map.tilewidth))
         calculated_x.insert(2, int((self.absolute_x + (self.w - 1)) /
-                            level.map.tilewidth))
+                                   level.map.tilewidth))
 
         for l in level.layers:
             if l.name == 'special':
@@ -182,9 +180,9 @@ class Player(actor.Actor):
         calculated_x = []
         calculated_x.insert(0, int(self.absolute_x / level.map.tilewidth))
         calculated_x.insert(1, int((self.absolute_x + ((self.w / 2) - 1)) /
-                            level.map.tilewidth))
+                                   level.map.tilewidth))
         calculated_x.insert(2, int((self.absolute_x + (self.w - 1)) /
-                            level.map.tilewidth))
+                                   level.map.tilewidth))
 
         for l in level.layers:
             if l.name == 'special':

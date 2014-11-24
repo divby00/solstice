@@ -4,7 +4,6 @@ import ConfigParser
 
 
 class ConfigurationError(Exception):
-
     def __init__(self, value):
         self.value = value
 
@@ -13,7 +12,6 @@ class ConfigurationError(Exception):
 
 
 class Configuration(object):
-
     OPT_DATA_PATH = 'data path'
     OPT_LOCALE_PATH = 'locale path'
     OPT_SCREEN_WIDTH = 'screen width'
@@ -190,7 +188,8 @@ class Configuration(object):
         if option == Configuration.OPT_DATA_PATH:
             file_path = ''.join([read_value, 'data.zip'])
             if not os.path.isfile(file_path):
-                raise ConfigurationError(_('Unable to find the data file in the directory specified in the configuration file.'))
+                raise ConfigurationError(
+                    _('Unable to find the data file in the directory specified in the configuration file.'))
         elif option == Configuration.OPT_SOUND_VOL:
             if read_value not in list(xrange(Configuration.SOUND_VOLUME + 1)):
                 raise ConfigurationError(_('Sound volume must be between 0 (min) and 5 (max).'))

@@ -4,7 +4,6 @@ import control
 
 
 class MenuItem(object):
-
     def __init__(self, name, text, function, next_menu):
         self.name = name
         self.text = text
@@ -13,10 +12,9 @@ class MenuItem(object):
 
 
 class Menu(object):
-
     def __init__(self, name, items, parent_menu_name=None):
-        assert(items is not None)
-        assert(len(items) > 0)
+        assert (items is not None)
+        assert (len(items) > 0)
         self.name = name
         self.parent_menu_name = parent_menu_name
         self.items = items
@@ -31,10 +29,9 @@ class Menu(object):
 
 
 class Panel(object):
-
     def __init__(self, panel_imgs, size):
-        assert(size[0] > 0 and size[1] > 0)
-        assert(panel_imgs is not None)
+        assert (size[0] > 0 and size[1] > 0)
+        assert (panel_imgs is not None)
         self.panel_imgs = panel_imgs
         self.size = size
         self.surface = pygame.Surface(size).convert_alpha()
@@ -66,9 +63,8 @@ class Panel(object):
 
 
 class MenuGroup(object):
-
     def __init__(self, menu_list, first_menu, menu_context):
-        assert(len(menu_list) > 0)
+        assert (len(menu_list) > 0)
         self.menu_list = menu_list
         self.panel_imgs = menu_context[0]
         self.fonts = menu_context[1]
@@ -119,7 +115,7 @@ class MenuGroup(object):
                 self.sounds[0].play()
 
                 if menu.selected_option == -1:
-                    menu.selected_option = len(menu.items)-1
+                    menu.selected_option = len(menu.items) - 1
 
             if self.control.on(control.Control.DOWN):
                 menu.selected_option += 1
@@ -156,7 +152,7 @@ class MenuGroup(object):
 
     def render(self, surface, position):
         menu = self.selected_menu
-        pos = position[0] - menu.panel.surface.get_width()/2, position[1]
+        pos = position[0] - menu.panel.surface.get_width() / 2, position[1]
         surface.blit(menu.panel.surface, pos)
 
         y = 8
@@ -164,7 +160,9 @@ class MenuGroup(object):
             surface.blit(o, (16 + pos[0], y + pos[1]))
             y += 8
 
-        pygame.draw.rect(surface, (0, 0, 0), (pos[0] + 4, (menu.selected_option * 8) + 7 + pos[1], menu.panel.surface.get_width() - 7, 9), 0)
+        pygame.draw.rect(surface, (0, 0, 0),
+                         (pos[0] + 4, (menu.selected_option * 8) + 7 + pos[1], menu.panel.surface.get_width() - 7, 9),
+                         0)
         surface.blit(menu.options_images[menu.selected_option], (16 + pos[0], (menu.selected_option * 8) + 8 + pos[1]))
         surface.blit(menu.sel_options_images[self.seloption], (16 + pos[0], (self.seloption * 8) + 8 + pos[1]))
         surface.blit(self.panel_imgs[9], (8 + pos[0], (menu.selected_option * 8) + 8 + pos[1]))

@@ -18,7 +18,6 @@ import screen
 
 
 class Solstice(object):
-
     def __init__(self):
         self.__platform_specific_inits()
         self.cfg = config.Configuration()
@@ -55,6 +54,7 @@ class Solstice(object):
 def main():
     solstice = Solstice()
     solstice.exit(0)
+
 
 if __name__ == '__main__':
     main()

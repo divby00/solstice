@@ -8,7 +8,6 @@ import screen
 
 
 class Star(object):
-
     def __init__(self, x, y, star_type):
         self.x = x
         self.y = y
@@ -25,7 +24,6 @@ class Star(object):
 
 
 class Stars(object):
-
     def __init__(self, resourcemanager, position, amount=200):
         self.stars = []
         stars_imgs = ['star0', 'star1', 'star2',
@@ -80,7 +78,6 @@ class Stars(object):
 
 
 class Credits(object):
-
     def __init__(self, font, font_dither):
         self.credits_text = [
             _('2015 Love4Retro Games'),
@@ -98,7 +95,7 @@ class Credits(object):
 
         for i in xrange(0, len(self.credits_text)):
             self.credits_imgs.insert(i, font.get(self.credits_text[i],
-                                     screen.Screen.WINDOW_SIZE[0]))
+                                                 screen.Screen.WINDOW_SIZE[0]))
 
     def on_start(self):
         self.actual_text = 0
@@ -124,7 +121,7 @@ class Credits(object):
 
     def render(self, surface):
         surface.blit(self.credits_imgs[self.actual_text],
-                     (325 - self.credits_imgs[self.actual_text].get_width()/2,
+                     (325 - self.credits_imgs[self.actual_text].get_width() / 2,
                       self.text_y))
 
         for i in xrange(196, 196 + screen.Screen.WINDOW_SIZE[0], 8):
@@ -134,7 +131,6 @@ class Credits(object):
 
 
 class IntroScene(scene.Scene):
-
     def __init__(self, context, name, scene_speed=15):
         super(IntroScene, self).__init__(context, name, scene_speed)
         self.exit = context.exit
@@ -213,28 +209,28 @@ class IntroScene(scene.Scene):
     def render(self, scr):
         self.background.blit(self.menu_image, (0, 0))
         self.stars.render(self.background)
-        self.background.blit(self.planet, (325 - self.planet.get_width()/2, 0))
+        self.background.blit(self.planet, (325 - self.planet.get_width() / 2, 0))
         self.background.blit(self.sun, (310, 84))
         self.background.blit(self.plant, (377, 125))
 
         if 0 < self.title_anim < 12:
             tmp_surface = pygame.Surface((self.title_imgs[0].get_width(),
-                                         self.title_anim)).convert()
+                                          self.title_anim)).convert()
             tmp_surface.fill((0, 0, 0, 0))
             pygame.transform.scale(self.title_imgs[0],
                                    (self.title_imgs[0].get_width(),
                                     self.title_anim),
                                    tmp_surface)
             self.background.blit(tmp_surface,
-                                 (325 - tmp_surface.get_width()/2,
-                                  22 - tmp_surface.get_height()/2))
+                                 (325 - tmp_surface.get_width() / 2,
+                                  22 - tmp_surface.get_height() / 2))
             tmp_surface = None
 
         if self.title_anim == 12:
             self.background.blit(
                 self.title_imgs[self.title_fade],
-                (325 - self.title_imgs[self.title_fade].get_width()/2,
-                 22 - self.title_imgs[self.title_fade].get_height()/2))
+                (325 - self.title_imgs[self.title_fade].get_width() / 2,
+                 22 - self.title_imgs[self.title_fade].get_height() / 2))
 
         if self.menu_group.visible:
             self.menu_group.render(self.background, (325, 70))
@@ -245,11 +241,11 @@ class IntroScene(scene.Scene):
                                                 scr.WINDOW_SIZE[1]))
         if self.background_x_position < 98:
             scr.virt.blit(self.intro_text[0],
-                          (128-self.intro_text[0].get_width()/2, 68))
+                          (128 - self.intro_text[0].get_width() / 2, 68))
         elif self.background_x_position in list(xrange(98, 196)):
             scr.virt.blit(self.intro_text[1],
-                          (128-self.intro_text[1].get_width()/2, 68))
+                          (128 - self.intro_text[1].get_width() / 2, 68))
 
         if not self.menu_group.visible:
             scr.virt.blit(self.skip_text,
-                          (128 - self.skip_text.get_width()/2, 176))
+                          (128 - self.skip_text.get_width() / 2, 176))
