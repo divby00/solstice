@@ -57,18 +57,14 @@ class Player(actor.Actor):
         self.laser_spr = []
         self.view_port = [256, 144]
 
-        player = [
-            'player0', 'player1', 'player2', 'player3',
-            'player4', 'player5', 'player6', 'player7',
-            'player8', 'player9', 'player10', 'player11',
-            'player12', 'player13', 'player14'
-        ]
+        player = ['player0', 'player1', 'player2', 'player3',
+                  'player4', 'player5', 'player6', 'player7',
+                  'player8', 'player9', 'player10', 'player11',
+                  'player12', 'player13', 'player14']
 
-        laser = [
-            'shoot0', 'shoot1', 'shoot2',
-            'shoot3', 'shoot4', 'shoot5',
-            'shoot6', 'shoot7', 'shoot8'
-        ]
+        laser = ['shoot0', 'shoot1', 'shoot2',
+                 'shoot3', 'shoot4', 'shoot5',
+                 'shoot6', 'shoot7', 'shoot8']
 
         self.lasers = []
 
