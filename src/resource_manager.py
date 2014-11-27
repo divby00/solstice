@@ -153,6 +153,16 @@ class ResourceManager(object):
         name = resource.get('name')
         return src, name
 
+    def exists(self, res_name):
+        if res_name in self.images or \
+           res_name in self.songs or \
+           res_name in self.fonts or \
+           res_name in self.samples or \
+           res_name in self.levels:
+            return True
+        else:
+            return False
+
     def get(self, res_name):
         try:
             if res_name in self.images:

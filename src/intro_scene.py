@@ -3,6 +3,9 @@ import pygame
 import random
 
 import control
+import particles
+import smoke_particles
+import particles_manager
 import scene
 import screen
 
@@ -162,6 +165,9 @@ class IntroScene(scene.Scene):
         self.credits = Credits(self.font_white, self.font_dither)
         self.background = pygame.Surface((self.menu_image.get_width(), self.menu_image.get_height())).convert()
         self.get_menu()
+        self.particlesmanager = particles_manager.ParticlesManager()
+        smoke = smoke_particles.SmokeParticles(context, 'smoke')
+        self.particlesmanager.register_particles(smoke)
 
     def on_start(self):
         self.background_x_position = 0
@@ -209,6 +215,8 @@ class IntroScene(scene.Scene):
 
                 if self.title_fade >= 4:
                     self.title_fade = 4
+
+        self.particlesmanager.run()
 
     def render(self, scr):
         self.background.blit(self.menu_image, (0, 0))
