@@ -2,7 +2,6 @@ import pygame
 
 
 class SceneManager(object):
-
     def __init__(self, context, start_scene):
         self.screen = context.scr
         self.scenes = context.scenes

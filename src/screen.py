@@ -3,7 +3,6 @@ from gettext import gettext as _
 
 
 class IconNotFoundError(Exception):
-
     def __init__(self, value):
         self.value = value
 
@@ -12,7 +11,6 @@ class IconNotFoundError(Exception):
 
 
 class Screen(object):
-
     WINDOW_SIZE = [256, 192]
 
     def __init__(self, cfg, caption):

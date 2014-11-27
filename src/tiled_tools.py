@@ -4,7 +4,6 @@ import xml.etree.ElementTree as ElementTree
 
 
 class Tileset(object):
-
     def __init__(self, name, w, h, tilew, tileh, src, firstgid):
         self.name = name
         self.w = w
@@ -19,14 +18,12 @@ class Tileset(object):
 
 
 class Tile(object):
-
     def __init__(self, srfc, size):
         self.srfc = srfc
         self.size = size
 
 
 class Map(object):
-
     def __init__(self, width, height, tilewidth, tileheight):
         self.width = width
         self.height = height
@@ -37,7 +34,6 @@ class Map(object):
 
 
 class Layer(object):
-
     def __init__(self, name, size):
         self.name = name
         self.size = size
@@ -61,7 +57,6 @@ class Layer(object):
 
 
 class TiledLevel(object):
-
     LEVELS = 'levels/'
     GFX = 'gfx/'
     WIDTH = 'width'

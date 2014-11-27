@@ -3,14 +3,12 @@ import pygame
 
 
 class ControlAction(object):
-
     def __init__(self, name, mapping):
         self.name = name
         self.mapping = mapping
 
 
 class ControlInput(object):
-
     def __init__(self, actions):
         self.__register_actions(actions)
 
@@ -25,7 +23,6 @@ class ControlInput(object):
 
 
 class KeyboardInput(ControlInput):
-
     def __init__(self, actions):
         super(KeyboardInput, self).__init__(actions)
         self.actions = actions
@@ -43,7 +40,6 @@ class KeyboardInput(ControlInput):
 
 
 class JoystickInput(ControlInput):
-
     def __init__(self, actions, joystick):
         super(JoystickInput, self).__init__(actions)
         self.actions = actions
@@ -58,7 +54,6 @@ class JoystickInput(ControlInput):
 
 
 class UndefinedDeviceError(Exception):
-
     def __init__(self, value):
         self.value = value
 
@@ -67,7 +62,6 @@ class UndefinedDeviceError(Exception):
 
 
 class Control(object):
-
     UP = 'up'
     DOWN = 'down'
     LEFT = 'left'

@@ -6,7 +6,6 @@ import config
 
 
 class Scene(object):
-
     def __init__(self, context, name, scene_speed=40):
         self.name = name
         self.exit = context.exit

@@ -9,7 +9,6 @@ import tiled_tools
 
 
 class ResourceNotFoundError(Exception):
-
     def __init__(self, value):
         self.value = value
 
@@ -18,7 +17,6 @@ class ResourceNotFoundError(Exception):
 
 
 class ResourceManager(object):
-
     def __init__(self, context, zipfilename, xmlfilename='resources.xml'):
         file_path = ''.join([context.cfg.data_path, zipfilename])
         self.zf = zipfile.ZipFile(file_path)
@@ -60,7 +58,7 @@ class ResourceManager(object):
         scr.virt.fill((0, 0, 0, 0))
 
         if scr.icon:
-            scr.virt.blit(scr.icon, (128-16, 55))
+            scr.virt.blit(scr.icon, (128 - 16, 55))
 
         bar_size = (self.actual_resource * 53) / self.total_resources
         pygame.draw.rect(scr.virt, (255, 255, 255), (102, 94, bar_size, 1), 1)

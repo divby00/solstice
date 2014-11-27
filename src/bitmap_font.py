@@ -2,16 +2,15 @@ import pygame
 
 
 class BitmapFont(object):
-
     def __init__(self, surface, rows, columns):
 
-        assert(surface is not None)
+        assert (surface is not None)
 
         w = surface.get_width()
         h = surface.get_height()
 
-        assert(w > 0)
-        assert(h > 0)
+        assert (w > 0)
+        assert (h > 0)
 
         self.gl_width = w / columns
         self.gl_height = h / rows
@@ -33,8 +32,8 @@ class BitmapFont(object):
                     self.glyph.append(dst_surface)
 
     def get(self, text, max_width=None):
-        assert(text is not None)
-        assert(len(text) > 0)
+        assert (text is not None)
+        assert (len(text) > 0)
 
         if text in self.glyphs.keys():
             return self.glyphs[text]
@@ -60,7 +59,7 @@ class BitmapFont(object):
                 texto = t + ' '
 
         texts.insert(actual_text, texto.strip())
-        texts.pop(len(texts)-1)
+        texts.pop(len(texts) - 1)
         max_len = 0
 
         for t in texts:

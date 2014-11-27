@@ -4,7 +4,6 @@ import scene
 
 
 class LogoScene(scene.Scene):
-
     LOGO_DELAY = 1500
 
     def __init__(self, context, name, scene_speed=30):
@@ -53,8 +52,8 @@ class LogoScene(scene.Scene):
 
         if self.dither_anim < len(self.dither):
             scr.virt.blit(self.logo,
-                          (128-(self.logo.get_width()/2),
-                           96-(self.logo.get_height()/2)))
+                          (128 - (self.logo.get_width() / 2),
+                           96 - (self.logo.get_height() / 2)))
 
         for a in xrange(0, 192, 8):
             for i in xrange(0, 256, 8):
