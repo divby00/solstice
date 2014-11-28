@@ -12,6 +12,6 @@ class ParticlesManager(object):
         for key in self.particles:
             self.particles[key].run()
 
-    def render(self):
+    def render(self, screen):
         for key in self.particles:
-            self.particles[key].render()
+            self.particles[key].render(screen)

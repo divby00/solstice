@@ -10,7 +10,6 @@ class Particles(object):
     def __init__(self, context, name):
         self.spr = []
         self.context = context
-        self.screen = context.scr
         self.name = name
         self.resourcemanager = context.resourcemanager
         self.particle_list = []
@@ -25,7 +24,7 @@ class Particles(object):
             else:
                 break
 
-    def render(self):
+    def render(self, screen):
         raise NotImplementedError('Implement this method')
 
     def run(self):
