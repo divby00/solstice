@@ -3,7 +3,6 @@ import pygame
 import random
 
 import control
-import particles
 import smoke_particles
 import particles_manager
 import scene

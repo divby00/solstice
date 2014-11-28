@@ -13,8 +13,7 @@ class LogoScene(scene.Scene):
         self.dither = []
         dither_images = [
             'dither0', 'dither1', 'dither2',
-            'dither3', 'dither4', 'dither5'
-        ]
+            'dither3', 'dither4', 'dither5']
 
         for d in xrange(0, len(dither_images)):
             self.dither.insert(d, context.resourcemanager.get(dither_images[d]))

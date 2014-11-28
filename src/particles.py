@@ -1,5 +1,4 @@
 class Particles(object):
-
     def __init__(self, context, name):
         self.spr = []
         self.context = context

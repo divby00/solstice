@@ -1,5 +1,4 @@
 class ParticlesManager(object):
-
     def __init__(self):
         self.particles = {}
 
@@ -7,7 +6,7 @@ class ParticlesManager(object):
         self.particles[particle.name] = particle
 
     def unregister_particles(self, name):
-        del(self.particles[name])
+        del (self.particles[name])
 
     def run(self):
         for key in self.particles:
