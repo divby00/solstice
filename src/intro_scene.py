@@ -193,6 +193,7 @@ class IntroScene(scene.Scene):
 
         if self.menu_group.visible:
             self.credits.run()
+            self.particlesmanager.run()
 
         # 196 is the sun position in the menu background image
         if self.background_x_position < 196:
@@ -211,7 +212,6 @@ class IntroScene(scene.Scene):
                 if self.title_fade >= 4:
                     self.title_fade = 4
 
-        self.particlesmanager.run()
 
     def render(self, scr):
         self.background.blit(self.menu_image, (0, 0))
@@ -246,6 +246,8 @@ class IntroScene(scene.Scene):
         scr.virt.blit(self.background, (0, 0), (self.background_x_position, 0,
                                                 scr.WINDOW_SIZE[0],
                                                 scr.WINDOW_SIZE[1]))
+        if self.menu_group.visible:
+            self.particlesmanager.render()
         if self.background_x_position < 98:
             scr.virt.blit(self.intro_text[0],
                           (128 - self.intro_text[0].get_width() / 2, 68))
@@ -256,3 +258,4 @@ class IntroScene(scene.Scene):
         if not self.menu_group.visible:
             scr.virt.blit(self.skip_text,
                           (128 - self.skip_text.get_width() / 2, 176))
+
