@@ -5,6 +5,7 @@ class Particle(object):
         self.active = active
         self.frame = frame
 
+
 class Particles(object):
     def __init__(self, context, name):
         self.spr = []

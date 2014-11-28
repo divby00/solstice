@@ -1,4 +1,5 @@
 import random
+
 import particles
 
 
@@ -6,7 +7,7 @@ class SmokeParticles(particles.Particles):
     def __init__(self, context, name):
         super(SmokeParticles, self).__init__(context, name)
         for x in xrange(0, 70):
-            particle = particles.Particle(random.randint(180, 212), random.randint(70, 116), True, random.randint(0,7))
+            particle = particles.Particle(random.randint(180, 212), random.randint(70, 116), True, random.randint(0, 7))
             self.particle_list.append(particle)
 
     def run(self):
