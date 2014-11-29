@@ -2,44 +2,52 @@ import actor
 
 
 class Laser(actor.Actor):
-    def __init__(self, context, position, direction):
+    def __init__(self, context, relative_position, absolute_position, direction):
         super(Laser, self).__init__(context)
-        self.position = position
+        self.active = True
         self.animation = 4
         self.direction = direction
+        self.limit = [0, 0]
+        self.relative_position = relative_position
+        self.absolute_position = absolute_position
 
     def run(self):
         if self.animation > 0:
             self.animation -= 1
 
     def render(self):
-
         if self.direction == 1:
             if self.animation >= 3:
-                self.context.scr.virt.blit(self.context.laser_spr[0], (self.position[0], self.position[1]))
-                for i in xrange(self.position[0] + 8, 256, 8):
-                    self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.position[1]))
+                self.context.scr.virt.blit(self.context.laser_spr[0],
+                                           (self.relative_position[0], self.relative_position[1]))
+                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 8):
+                    self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.relative_position[1]))
             if self.animation == 2:
-                self.context.scr.virt.blit(self.context.laser_spr[1], (self.position[0], self.position[1]))
-                for i in xrange(self.position[0] + 8, 256, 8):
-                    self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.position[1]))
+                self.context.scr.virt.blit(self.context.laser_spr[1],
+                                           (self.relative_position[0], self.relative_position[1]))
+                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 8):
+                    self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.relative_position[1]))
             if self.animation == 1:
-                self.context.scr.virt.blit(self.context.laser_spr[2], (self.position[0], self.position[1]))
-                for i in xrange(self.position[0] + 8, 256, 8):
-                    self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.position[1]))
+                self.context.scr.virt.blit(self.context.laser_spr[2],
+                                           (self.relative_position[0], self.relative_position[1]))
+                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 8):
+                    self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.relative_position[1]))
         else:
             if self.animation >= 3:
-                self.context.scr.virt.blit(self.context.laser_spr[8], (self.position[0] - 24, self.position[1]))
-                for i in xrange(0, self.position[0] - 24, 8):
-                    self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.position[1]))
+                self.context.scr.virt.blit(self.context.laser_spr[8],
+                                           (self.relative_position[0], self.relative_position[1]))
+                for i in xrange(0, self.relative_position[0], 8):
+                    self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.relative_position[1]))
             if self.animation == 2:
-                self.context.scr.virt.blit(self.context.laser_spr[7], (self.position[0] - 24, self.position[1]))
-                for i in xrange(0, self.position[0] - 24, 8):
-                    self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.position[1]))
+                self.context.scr.virt.blit(self.context.laser_spr[7],
+                                           (self.relative_position[0], self.relative_position[1]))
+                for i in xrange(0, self.relative_position[0], 8):
+                    self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.relative_position[1]))
             if self.animation == 1:
-                self.context.scr.virt.blit(self.context.laser_spr[6], (self.position[0] - 24, self.position[1]))
-                for i in xrange(0, self.position[0] - 24, 8):
-                    self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.position[1]))
+                self.context.scr.virt.blit(self.context.laser_spr[6],
+                                           (self.relative_position[0], self.relative_position[1]))
+                for i in xrange(0, self.relative_position[0], 8):
+                    self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.relative_position[1]))
 
 
 class Player(actor.Actor):
@@ -115,11 +123,38 @@ class Player(actor.Actor):
             l.render()
 
     def shoot(self):
-        laser = Laser(self.context, (self.x + 16, self.y, 256), self.direction)
+        laser = None
+        if self.direction == 1:
+            colision_x = self.get_laser_right_collision()
+            laser = Laser(self.context, (self.x + 16, self.y, self.x + 16 + colision_x),
+                          (self.absolute_x, self.absolute_y), self.direction)
+        else:
+            colision_x = self.get_laser_left_collision((self.x, self.y))
+            laser = Laser(self.context, (self.x - 8, self.y, 256), (self.absolute_x, self.absolute_y), self.direction)
+
         self.lasers.append(laser)
 
-    def check_right_collision(self, level):
+    def get_laser_left_collision(self, position):
+        pass
 
+    def get_laser_right_collision(self):
+        for l in self.current_level.layers:
+            if l.name == 'special':
+                calculated_x = int((self.absolute_x + self.w) / self.current_level.map.tilewidth)
+                calculated_x_limit = int((self.absolute_x + self.w + 256) / self.current_level.map.tilewidth)
+                calculated_y = self.absolute_y / self.current_level.map.tileheight
+                for x in xrange(calculated_x, calculated_x_limit):
+                    if l.get_gid(x, calculated_y) == 520:
+                        a = abs(x - calculated_x)
+                        a *= 8
+                        '''
+                        if self.x >= 120:
+                            a -= 120
+                        '''
+                        return a
+        return 256
+
+    def check_right_collision(self, level):
         calculated_x = int((self.absolute_x + self.w) / level.map.tilewidth)
         calculated_y = []
         calculated_y.insert(0, int(self.absolute_y / level.map.tilewidth))
@@ -127,13 +162,11 @@ class Player(actor.Actor):
                                    level.map.tilewidth))
         calculated_y.insert(2, int((self.absolute_y + (self.h - 1)) /
                                    level.map.tilewidth))
-
         for l in level.layers:
             if l.name == 'special':
                 for a in calculated_y:
                     if l.get_gid(calculated_x, a) == 520:
                         return True
-
         return False
 
     def check_left_collision(self, level):
@@ -144,13 +177,11 @@ class Player(actor.Actor):
                                    level.map.tileheight))
         calculated_y.insert(2, int((self.absolute_y + (self.h - 1)) /
                                    level.map.tileheight))
-
         for l in level.layers:
             if l.name == 'special':
                 for a in calculated_y:
                     if l.get_gid(calculated_x, a) == 520:
                         return True
-
         return False
 
     def check_upper_collision(self, level):
@@ -187,3 +218,4 @@ class Player(actor.Actor):
                         return True
 
         return False
+

@@ -6,7 +6,7 @@ import scene
 class LogoScene(scene.Scene):
     LOGO_DELAY = 1500
 
-    def __init__(self, context, name, scene_speed=30):
+    def __init__(self, context, name='logo', scene_speed=30):
         super(LogoScene, self).__init__(context, name, scene_speed)
         self.logo = context.resourcemanager.get('logo')
         self.logo_sound = context.resourcemanager.get('logo_sound')

@@ -133,7 +133,7 @@ class Credits(object):
 
 
 class IntroScene(scene.Scene):
-    def __init__(self, context, name, scene_speed=15):
+    def __init__(self, context, name='intro', scene_speed=15):
         super(IntroScene, self).__init__(context, name, scene_speed)
         self.exit = context.exit
         self.menu_image = context.resourcemanager.get('menu')
