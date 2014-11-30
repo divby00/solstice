@@ -36,7 +36,7 @@ class Laser(actor.Actor):
             if self.animation >= 3:
                 self.context.scr.virt.blit(self.context.laser_spr[8],
                                            (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(0, self.relative_position[0], 8):
+                for i in xrange(self.relative_position[0], self.relative_position[2], 8):
                     self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.relative_position[1]))
             if self.animation == 2:
                 self.context.scr.virt.blit(self.context.laser_spr[7],
@@ -129,13 +129,11 @@ class Player(actor.Actor):
             laser = Laser(self.context, (self.x + 16, self.y, self.x + 16 + colision_x),
                           (self.absolute_x, self.absolute_y), self.direction)
         else:
-            colision_x = self.get_laser_left_collision((self.x, self.y))
-            laser = Laser(self.context, (self.x - 8, self.y, 256), (self.absolute_x, self.absolute_y), self.direction)
+            colision_x = self.get_laser_left_collision()
+            laser = Laser(self.context, (self.x - 8, self.y, colision_x), (self.absolute_x, self.absolute_y),
+                          self.direction)
 
         self.lasers.append(laser)
-
-    def get_laser_left_collision(self, position):
-        pass
 
     def get_laser_right_collision(self):
         for l in self.current_level.layers:
@@ -145,14 +143,21 @@ class Player(actor.Actor):
                 calculated_y = self.absolute_y / self.current_level.map.tileheight
                 for x in xrange(calculated_x, calculated_x_limit):
                     if l.get_gid(x, calculated_y) == 520:
-                        a = abs(x - calculated_x)
-                        a *= 8
-                        '''
-                        if self.x >= 120:
-                            a -= 120
-                        '''
+                        a = abs(x - calculated_x) * 8
                         return a
         return 256
+
+    def get_laser_left_collision(self):
+        for l in self.current_level.layers:
+            if l.name == 'special':
+                calculated_x = int((self.absolute_x - 8) / self.current_level.map.tilewidth)
+                calculated_x_limit = int((self.absolute_x + - 8 - 256) / self.current_level.map.tilewidth)
+                calculated_y = self.absolute_y / self.current_level.map.tileheight
+                for x in xrange(calculated_x, calculated_x_limit, -8):
+                    if l.get_gid(x, calculated_y) == 520:
+                        a = abs(x - calculated_x) * 8
+                        return a
+        return 0
 
     def check_right_collision(self, level):
         calculated_x = int((self.absolute_x + self.w) / level.map.tilewidth)

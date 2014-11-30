@@ -213,7 +213,6 @@ class IntroScene(scene.Scene):
                 if self.title_fade >= 4:
                     self.title_fade = 4
 
-
     def render(self, scr):
         self.background.blit(self.menu_image, (0, 0))
         self.stars.render(self.background)
