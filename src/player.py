@@ -37,17 +37,17 @@ class Laser(actor.Actor):
             if self.animation >= 3:
                 self.context.scr.virt.blit(self.context.laser_spr[8],
                                            (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0], self.relative_position[2], 8):
+                for i in xrange(self.relative_position[0] - 8, self.relative_position[2], -8):
                     self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.relative_position[1]))
             if self.animation == 2:
                 self.context.scr.virt.blit(self.context.laser_spr[7],
                                            (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(0, self.relative_position[0], 8):
+                for i in xrange(self.relative_position[0] - 8, self.relative_position[2], -8):
                     self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.relative_position[1]))
             if self.animation == 1:
                 self.context.scr.virt.blit(self.context.laser_spr[6],
                                            (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(0, self.relative_position[0], 8):
+                for i in xrange(self.relative_position[0] - 8, self.relative_position[2], -8):
                     self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.relative_position[1]))
 
 
@@ -136,7 +136,11 @@ class Player(actor.Actor):
                           (self.absolute_x, self.absolute_y), self.direction)
         else:
             colision_x = self.get_laser_left_collision()
-            laser = Laser(self.context, (self.x - 8, self.y, colision_x), (self.absolute_x, self.absolute_y),
+            rays = ray_particles.RayParticles(self.context, 'hit',
+                                              (self.x - 12 - colision_x, self.x - 4 - colision_x, self.y, self.y + 8))
+            self.particlesmanager.register_particles(rays)
+            laser = Laser(self.context, (self.x - 8, self.y, self.x - 8 - colision_x),
+                          (self.absolute_x, self.absolute_y),
                           self.direction)
 
         self.lasers.append(laser)
@@ -146,7 +150,7 @@ class Player(actor.Actor):
             if l.name == 'special':
                 calculated_x = int((self.absolute_x + self.w) / self.current_level.map.tilewidth)
                 calculated_x_limit = int((self.absolute_x + self.w + 256) / self.current_level.map.tilewidth)
-                calculated_y = self.absolute_y / self.current_level.map.tileheight
+                calculated_y = (self.absolute_y + 8) / self.current_level.map.tileheight
                 for x in xrange(calculated_x, calculated_x_limit):
                     if l.get_gid(x, calculated_y) == 520:
                         a = abs(x - calculated_x) * 8
@@ -158,8 +162,8 @@ class Player(actor.Actor):
             if l.name == 'special':
                 calculated_x = int((self.absolute_x - 8) / self.current_level.map.tilewidth)
                 calculated_x_limit = int((self.absolute_x + - 8 - 256) / self.current_level.map.tilewidth)
-                calculated_y = self.absolute_y / self.current_level.map.tileheight
-                for x in xrange(calculated_x, calculated_x_limit, -8):
+                calculated_y = (self.absolute_y + 8) / self.current_level.map.tileheight
+                for x in xrange(calculated_x, calculated_x_limit, -1):
                     if l.get_gid(x, calculated_y) == 520:
                         a = abs(x - calculated_x) * 8
                         return a
