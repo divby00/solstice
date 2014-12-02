@@ -167,7 +167,7 @@ class Player(actor.Actor):
                     if l.get_gid(x, calculated_y) == 520:
                         a = abs(x - calculated_x) * 8
                         return a
-        return 0
+        return 256
 
     def check_right_collision(self, level):
         calculated_x = int((self.absolute_x + self.w) / level.map.tilewidth)

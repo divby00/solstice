@@ -14,7 +14,7 @@ class GameScene(scene.Scene):
         self.particlesmanager = particles_manager.ParticlesManager()
         context.particlesmanager = self.particlesmanager
         self.player = player.Player(context,
-                                    self.level01)
+                                    self.level02)
         self.laser = context.resourcemanager.get('laser')
         self.song = context.resourcemanager.get('level01_song')
         self.music = self.song
@@ -40,7 +40,7 @@ class GameScene(scene.Scene):
         self.half_view_port = (self.view_port[0] / 2, self.view_port[1] / 2)
         self.half_player = (self.player.w / 2, self.player.h / 2)
         self.menu_group.visible = False
-        self.current_level = self.level01
+        self.current_level = self.level02
         self.map_size = [self.current_level.map.width_pixels - self.view_port[0],
                          self.current_level.map.height_pixels - self.view_port[1] + (192 / 4)]
         self.half = [self.half_view_port[0] - self.half_player[0],
