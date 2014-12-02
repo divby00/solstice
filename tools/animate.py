@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 #title              :animate.py
 #description        :Animates some bitmaps. Useful when making some animations for a videogame and want to test them.
@@ -102,7 +102,7 @@ def main():
     x_speed = results.zoom
     y_speed = results.zoom
 
-    while(True):
+    while (True):
         display.fill(colors[selected_color])
         img_size = images[counter].get_size()
 

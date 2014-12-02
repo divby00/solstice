@@ -1,4 +1,5 @@
 import actor
+import ray_particles
 
 
 class Laser(actor.Actor):
@@ -64,6 +65,7 @@ class Player(actor.Actor):
         self.sprites = []
         self.laser_spr = []
         self.view_port = [256, 144]
+        self.particlesmanager = context.particlesmanager
 
         player = ['player0', 'player1', 'player2', 'player3',
                   'player4', 'player5', 'player6', 'player7',
@@ -126,6 +128,10 @@ class Player(actor.Actor):
         laser = None
         if self.direction == 1:
             colision_x = self.get_laser_right_collision()
+            rays = ray_particles.RayParticles(self.context, 'hit',
+                                              (self.x + 12 + colision_x, self.x + 20 + colision_x, self.y, self.y + 8))
+            self.particlesmanager.register_particles(rays)
+
             laser = Laser(self.context, (self.x + 16, self.y, self.x + 16 + colision_x),
                           (self.absolute_x, self.absolute_y), self.direction)
         else:

@@ -14,7 +14,6 @@ class Particles(object):
         self.resourcemanager = context.resourcemanager
         self.particle_list = []
         id = 0
-
         while True:
             if self.resourcemanager.exists(''.join([name, str(id)])):
                 particle = self.resourcemanager.get(''.join([name, str(id)]))

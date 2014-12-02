@@ -1,6 +1,7 @@
 import control
 import player
 import scene
+import particles_manager
 
 
 class GameScene(scene.Scene):
@@ -10,6 +11,8 @@ class GameScene(scene.Scene):
         self.marcador = context.resourcemanager.get('marcador')
         self.level01 = context.resourcemanager.get('level01')
         self.level02 = context.resourcemanager.get('level02')
+        self.particlesmanager = particles_manager.ParticlesManager()
+        context.particlesmanager = self.particlesmanager
         self.player = player.Player(context,
                                     self.level01)
         self.laser = context.resourcemanager.get('laser')
@@ -117,6 +120,8 @@ class GameScene(scene.Scene):
             if self.control.on(control.Control.ACTION2):
                 self.menu_group.visible = True
 
+            self.particlesmanager.run()
+
         self.player.run()
 
     def render(self, scr):
@@ -190,6 +195,8 @@ class GameScene(scene.Scene):
 
                         posx = 0
                         posy += self.current_level.tiles[gid - 1].size[1]
+
+                self.particlesmanager.render(scr.virt)
 
         if self.menu_group.visible:
             self.menu_group.render(scr.virt, (128, 70))

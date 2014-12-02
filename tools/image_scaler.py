@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 #title              :image_scaler.py
 #description        :asks the user for a horizontal and vertical value and scales all\
@@ -9,7 +9,6 @@
 #version            :0.2
 
 import os
-import sys
 import argparse
 import pygame as pg
 
@@ -22,8 +21,10 @@ PNG = '.png'
 def check_params():
     parser = argparse.ArgumentParser(description='Image scaler.')
     parser.add_argument('path', action="store", help='path to the images (PNG)')
-    parser.add_argument('--vertical', action="store", dest='vertical', type=int, default=2, help='vertical scale factor')
-    parser.add_argument('--horizontal', action="store", dest='horizontal', type=int, default=2, help='horizontal scale factor')
+    parser.add_argument('--vertical', action="store", dest='vertical', type=int, default=2,
+                        help='vertical scale factor')
+    parser.add_argument('--horizontal', action="store", dest='horizontal', type=int, default=2,
+                        help='horizontal scale factor')
     results = parser.parse_args()
     return results
 
@@ -82,9 +83,9 @@ def main():
     for k in image_map.items():
         src_srfc = k[1]
         dst_srfc = pg.Surface((
-            src_srfc.get_size()[0] * results.horizontal,
-            src_srfc.get_size()[1] * results.vertical
-        ), pg.SRCALPHA)
+                                  src_srfc.get_size()[0] * results.horizontal,
+                                  src_srfc.get_size()[1] * results.vertical
+                              ), pg.SRCALPHA)
         dst_srfc.fill((0, 0, 0, 0))
         dst_srfc = pg.transform.scale(src_srfc, (
             src_srfc.get_size()[0] * results.horizontal,
