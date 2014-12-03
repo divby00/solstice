@@ -21,33 +21,33 @@ class Laser(actor.Actor):
             if self.animation >= 3:
                 self.context.scr.virt.blit(self.context.laser_spr[0],
                                            (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 8):
+                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 4):
                     self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.relative_position[1]))
             if self.animation == 2:
                 self.context.scr.virt.blit(self.context.laser_spr[1],
                                            (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 8):
+                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 4):
                     self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.relative_position[1]))
             if self.animation == 1:
                 self.context.scr.virt.blit(self.context.laser_spr[2],
                                            (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 8):
+                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 4):
                     self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.relative_position[1]))
         else:
             if self.animation >= 3:
                 self.context.scr.virt.blit(self.context.laser_spr[8],
                                            (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] - 8, self.relative_position[2], -8):
+                for i in xrange(self.relative_position[0] - 4, self.relative_position[2], -4):
                     self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.relative_position[1]))
             if self.animation == 2:
                 self.context.scr.virt.blit(self.context.laser_spr[7],
                                            (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] - 8, self.relative_position[2], -8):
+                for i in xrange(self.relative_position[0] - 4, self.relative_position[2], -4):
                     self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.relative_position[1]))
             if self.animation == 1:
                 self.context.scr.virt.blit(self.context.laser_spr[6],
                                            (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] - 8, self.relative_position[2], -8):
+                for i in xrange(self.relative_position[0] - 4, self.relative_position[2], -4):
                     self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.relative_position[1]))
 
 
@@ -140,8 +140,7 @@ class Player(actor.Actor):
                                               (self.x - 12 - colision_x, self.x - 4 - colision_x, self.y, self.y + 8))
             self.particlesmanager.register_particles(rays)
             laser = Laser(self.context, (self.x - 8, self.y, self.x - 8 - colision_x),
-                          (self.absolute_x, self.absolute_y),
-                          self.direction)
+                          (self.absolute_x, self.absolute_y), self.direction)
 
         self.lasers.append(laser)
 
@@ -154,6 +153,8 @@ class Player(actor.Actor):
                 for x in xrange(calculated_x, calculated_x_limit):
                     if l.get_gid(x, calculated_y) == 520:
                         a = abs(x - calculated_x) * 8
+                        if self.absolute_x % 8 is not 0:
+                            a -= 4
                         return a
         return 256
 
@@ -166,6 +167,8 @@ class Player(actor.Actor):
                 for x in xrange(calculated_x, calculated_x_limit, -1):
                     if l.get_gid(x, calculated_y) == 520:
                         a = abs(x - calculated_x) * 8
+                        if self.absolute_x % 8 is 0:
+                            a -= 4
                         return a
         return 256
 
