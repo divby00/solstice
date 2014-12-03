@@ -3,7 +3,7 @@ import pygame
 import random
 
 import control
-import smoke_particles
+import particles
 import particles_manager
 import scene
 import screen
@@ -161,7 +161,7 @@ class IntroScene(scene.Scene):
         self.background = pygame.Surface((self.menu_image.get_width(), self.menu_image.get_height())).convert()
         self.get_menu()
         self.particlesmanager = particles_manager.ParticlesManager()
-        smoke = smoke_particles.SmokeParticles(context, 'smoke')
+        smoke = particles.SmokeParticles(context, 'smoke')
         self.particlesmanager.register_particles(smoke)
 
     def on_start(self):

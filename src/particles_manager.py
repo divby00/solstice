@@ -2,6 +2,9 @@ class ParticlesManager(object):
     def __init__(self):
         self.particles = {}
 
+    def get(self, name):
+        return self.particles[name]
+
     def register_particles(self, particles):
         self.particles[particles.name] = particles
 

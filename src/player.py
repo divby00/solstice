@@ -1,5 +1,4 @@
 import actor
-import ray_particles
 
 
 class Laser(actor.Actor):
@@ -128,17 +127,14 @@ class Player(actor.Actor):
         laser = None
         if self.direction == 1:
             colision_x = self.get_laser_right_collision()
-            rays = ray_particles.RayParticles(self.context, 'hit',
-                                              (self.x + 12 + colision_x, self.x + 20 + colision_x, self.y, self.y + 8))
-            self.particlesmanager.register_particles(rays)
-
+            beam_particles = self.particlesmanager.get('hit')
+            beam_particles.generate((self.x + 12 + colision_x, self.x + 20 + colision_x, self.y, self.y + 8))
             laser = Laser(self.context, (self.x + 16, self.y, self.x + 16 + colision_x),
                           (self.absolute_x, self.absolute_y), self.direction)
         else:
             colision_x = self.get_laser_left_collision()
-            rays = ray_particles.RayParticles(self.context, 'hit',
-                                              (self.x - 12 - colision_x, self.x - 4 - colision_x, self.y, self.y + 8))
-            self.particlesmanager.register_particles(rays)
+            beam_particles = self.particlesmanager.get('hit')
+            beam_particles.generate((self.x - 12 - colision_x, self.x - 4 - colision_x, self.y, self.y + 8))
             laser = Laser(self.context, (self.x - 8, self.y, self.x - 8 - colision_x),
                           (self.absolute_x, self.absolute_y), self.direction)
 

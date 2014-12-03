@@ -2,6 +2,7 @@ import control
 import player
 import scene
 import particles_manager
+import particles
 
 
 class GameScene(scene.Scene):
@@ -12,9 +13,10 @@ class GameScene(scene.Scene):
         self.level01 = context.resourcemanager.get('level01')
         self.level02 = context.resourcemanager.get('level02')
         self.particlesmanager = particles_manager.ParticlesManager()
+        beam_particles = particles.RayParticles(context, 'hit')
+        self.particlesmanager.register_particles(beam_particles)
         context.particlesmanager = self.particlesmanager
-        self.player = player.Player(context,
-                                    self.level02)
+        self.player = player.Player(context, self.level02)
         self.laser = context.resourcemanager.get('laser')
         self.song = context.resourcemanager.get('level01_song')
         self.music = self.song
