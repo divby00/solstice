@@ -61,14 +61,14 @@ class SmokeParticles(Particles):
             screen.blit(self.spr[p.frame], (p.x, p.y))
 
 
-class RayParticles(Particles):
+class BeamParticles(Particles):
     def __init__(self, context, name):
-        super(RayParticles, self).__init__(context, name)
+        super(BeamParticles, self).__init__(context, name)
 
     def generate(self, position):
         for x in xrange(0, 10):
             particle = Particle(random.randint(position[0], position[1]), random.randint(position[2], position[3]),
-                                True, random.randint(-4, 0))
+                                True, random.randint(-2, 0))
             self.particle_list.append(particle)
 
     def run(self):

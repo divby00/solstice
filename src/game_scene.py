@@ -13,7 +13,7 @@ class GameScene(scene.Scene):
         self.level01 = context.resourcemanager.get('level01')
         self.level02 = context.resourcemanager.get('level02')
         self.particlesmanager = particles_manager.ParticlesManager()
-        beam_particles = particles.RayParticles(context, 'hit')
+        beam_particles = particles.BeamParticles(context, 'hit')
         self.particlesmanager.register_particles(beam_particles)
         context.particlesmanager = self.particlesmanager
         self.player = player.Player(context, self.level02)
