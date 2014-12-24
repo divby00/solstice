@@ -86,6 +86,7 @@ class TiledLevel(object):
     LAYER = 'layer'
     IMAGE = 'image'
     SOURCE = 'source'
+    START = 'start'
     HARD = 'hard'
     ANIMATED = 'animated'
     ID = 'id'
@@ -145,6 +146,10 @@ class TiledLevel(object):
                             if prop.get(TiledLevel.VALUE) == 'True':
                                 self.hard_tiles.append(tileid + firstgid)
 
+                        if name == TiledLevel.START:
+                            if prop.get(TiledLevel.VALUE) == 'True':
+                                self.start_tile = tileid + firstgid
+
             tilesets.append(Tileset(name, imgwidth, imgheight, tilewidth,
                                     tileheight, source, firstgid))
 
@@ -203,7 +208,7 @@ class TiledLevel(object):
                 for a in xrange(0, l.size[1]):
                     for i in xrange(0, l.size[0]):
 
-                        if l.get_gid(i, a) == 521:
+                        if l.get_gid(i, a) == self.start_tile:
                             self.start_point = (i, a)
 
         # Load tiles sprites
