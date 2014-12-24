@@ -147,7 +147,7 @@ class Player(actor.Actor):
                 calculated_x_limit = int((self.absolute_x + self.w + 256) / self.current_level.map.tilewidth)
                 calculated_y = (self.absolute_y + 8) / self.current_level.map.tileheight
                 for x in xrange(calculated_x, calculated_x_limit):
-                    if l.get_gid(x, calculated_y) == 520:
+                    if self.current_level.is_hard(x, calculated_y):
                         a = abs(x - calculated_x) * 8
                         if self.absolute_x % 8 is not 0:
                             a -= 4
@@ -161,7 +161,7 @@ class Player(actor.Actor):
                 calculated_x_limit = int((self.absolute_x + - 8 - 256) / self.current_level.map.tilewidth)
                 calculated_y = (self.absolute_y + 8) / self.current_level.map.tileheight
                 for x in xrange(calculated_x, calculated_x_limit, -1):
-                    if l.get_gid(x, calculated_y) == 520:
+                    if self.current_level.is_hard(x, calculated_y):
                         a = abs(x - calculated_x) * 8
                         if self.absolute_x % 8 is 0:
                             a -= 4
@@ -178,10 +178,12 @@ class Player(actor.Actor):
                                    level.map.tilewidth))
         for l in level.layers:
             if l.name == 'special':
+                result = False
                 for a in calculated_y:
-                    return self.current_level.is_hard(calculated_x, a)
+                    if self.current_level.is_hard(calculated_x, a):
+                        result = True
 
-        return False
+        return result
 
     def check_left_collision(self, level):
         calculated_x = int((self.absolute_x - 1) / level.map.tilewidth)
@@ -193,10 +195,12 @@ class Player(actor.Actor):
                                    level.map.tileheight))
         for l in level.layers:
             if l.name == 'special':
+                result = False
                 for a in calculated_y:
-                    return self.current_level.is_hard(calculated_x, a)
+                    if self.current_level.is_hard(calculated_x, a):
+                        result = True
 
-        return False
+        return result
 
     def check_upper_collision(self, level):
         calculated_y = int((self.absolute_y - 1) / level.map.tileheight)
@@ -209,10 +213,12 @@ class Player(actor.Actor):
 
         for l in level.layers:
             if l.name == 'special':
+                result = False
                 for i in calculated_x:
-                    return self.current_level.is_hard(i, calculated_y)
+                    if self.current_level.is_hard(i, calculated_y):
+                        result = True
 
-        return False
+        return result
 
     def check_bottom_collision(self, level):
 
@@ -226,8 +232,10 @@ class Player(actor.Actor):
 
         for l in level.layers:
             if l.name == 'special':
+                result = False
                 for i in calculated_x:
-                    return self.current_level.is_hard(i, calculated_y)
+                    if self.current_level.is_hard(i, calculated_y):
+                        result = True
 
-        return False
+        return result
 
