@@ -179,8 +179,8 @@ class Player(actor.Actor):
         for l in level.layers:
             if l.name == 'special':
                 for a in calculated_y:
-                    if l.get_gid(calculated_x, a) == 520:
-                        return True
+                    return self.current_level.is_hard(calculated_x, a)
+
         return False
 
     def check_left_collision(self, level):
@@ -194,8 +194,8 @@ class Player(actor.Actor):
         for l in level.layers:
             if l.name == 'special':
                 for a in calculated_y:
-                    if l.get_gid(calculated_x, a) == 520:
-                        return True
+                    return self.current_level.is_hard(calculated_x, a)
+
         return False
 
     def check_upper_collision(self, level):
@@ -210,8 +210,7 @@ class Player(actor.Actor):
         for l in level.layers:
             if l.name == 'special':
                 for i in calculated_x:
-                    if l.get_gid(i, calculated_y) == 520:
-                        return True
+                    return self.current_level.is_hard(i, calculated_y)
 
         return False
 
@@ -228,8 +227,7 @@ class Player(actor.Actor):
         for l in level.layers:
             if l.name == 'special':
                 for i in calculated_x:
-                    if l.get_gid(i, calculated_y) == 520:
-                        return True
+                    return self.current_level.is_hard(i, calculated_y)
 
         return False
 

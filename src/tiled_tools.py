@@ -41,6 +41,15 @@ class Layer(object):
         self.zindex = None
         self.visible = False
         self.animated_tiles = []
+        self.hard_tiles = []
+
+    def hard(self, x, y):
+        tile = self.get_gid(x, y)
+        
+        if tile in self.hard_tiles:
+            return True
+
+        return False
 
     def get_gid(self, x, y):
 
@@ -77,10 +86,12 @@ class TiledLevel(object):
     LAYER = 'layer'
     IMAGE = 'image'
     SOURCE = 'source'
+    HARD = 'hard'
     ANIMATED = 'animated'
     ID = 'id'
     IMAGELAYER = 'imagelayer'
     FIRSTGID = 'firstgid'
+
 
     def __init__(self, zf, xml_data):
         self.tiles = []
@@ -105,7 +116,8 @@ class TiledLevel(object):
                        int(root.get(TiledLevel.TILEHEIGHT)))
 
         # Read tileset info
-        animated_tiles = []
+        self.animated_tiles = []
+        self.hard_tiles = []
 
         for tileset in root.findall(TiledLevel.TILESET):
             tilewidth = int(tileset.get(TiledLevel.TILEWIDTH))
@@ -127,7 +139,11 @@ class TiledLevel(object):
 
                         if name == TiledLevel.ANIMATED:
                             if prop.get(TiledLevel.VALUE) == 'True':
-                                animated_tiles.append(tileid)
+                                self.animated_tiles.append(tileid + firstgid)
+
+                        if name == TiledLevel.HARD:
+                            if prop.get(TiledLevel.VALUE) == 'True':
+                                self.hard_tiles.append(tileid + firstgid)
 
             tilesets.append(Tileset(name, imgwidth, imgheight, tilewidth,
                                     tileheight, source, firstgid))
@@ -171,7 +187,7 @@ class TiledLevel(object):
                 for tile in data.findall(TiledLevel.TILE):
                     gid = int(tile.get(TiledLevel.GID))
 
-                    if gid in animated_tiles:
+                    if gid in self.animated_tiles:
                         l.animated_tiles.append(gid)
 
                     l.data.append(gid)
@@ -225,3 +241,10 @@ class TiledLevel(object):
             if l.name == name:
                 return l.get_gid(x, y)
         return 0
+
+
+    def is_hard(self, x, y):
+        if self.get_gid(x, y, TiledLevel.SPECIAL) in self.hard_tiles:
+            return True
+
+        return False
