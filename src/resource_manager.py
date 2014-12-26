@@ -6,6 +6,7 @@ import zipfile
 
 import bitmap_font
 import tiled_tools
+import animation_manager
 
 
 class ResourceNotFoundError(Exception):
@@ -20,6 +21,7 @@ class ResourceManager(object):
     def __init__(self, context, zipfilename, xmlfilename='resources.xml'):
         file_path = ''.join([context.cfg.data_path, zipfilename])
         self.zf = zipfile.ZipFile(file_path)
+        self.anim_manager = animation_manager.AnimationManager(self.zf)
         xml = self.zf.read(xmlfilename)
         root = ElementTree.fromstring(xml)
 
@@ -29,6 +31,7 @@ class ResourceManager(object):
         self.samples = {}
         self.fonts = {}
         self.levels = {}
+        self.animations = {}
         self.resources = root.findall('resource')
         self.total_resources = len(root.findall('resource'))
         self.actual_resource = 0
@@ -49,6 +52,9 @@ class ResourceManager(object):
             elif resource.get('type') == 'level':
                 self.__load_level(resource)
                 self.actual_resource += 1
+            elif resource.get('type') == 'animation':
+                self.__load_animation(resource)
+                self.actual_resource += 1
             self.__update_load_screen(context.scr)
 
         self.__update_load_screen(context.scr)
@@ -65,12 +71,6 @@ class ResourceManager(object):
         pygame.draw.rect(scr.virt, (255, 255, 85), (102, 95, bar_size, 1), 1)
         pygame.draw.rect(scr.virt, (85, 255, 85), (102, 96, bar_size, 1), 1)
         pygame.draw.rect(scr.virt, (0, 170, 0), (102, 97, bar_size, 1), 1)
-
-        '''
-        for x in xrange(0, 52, 3):
-            pygame.draw.rect(scr.virt, (0, 0, 0), (101+x, 93, 4, 6), 1)
-        '''
-
         pygame.transform.scale(scr.virt,
                                scr.screen_size,
                                scr.display)
@@ -145,6 +145,13 @@ class ResourceManager(object):
             if level is not None:
                 self.levels[name] = level
 
+    def __load_animation(self, resource):
+        src, name = self.__get_common_info(resource)
+        anim_data = self.zf.read(src)
+
+        if anim_data is not None:
+            self.animations[name] = self.anim_manager.read(anim_data, name)
+
     @staticmethod
     def __get_common_info(resource):
         src = resource.get('src')
@@ -173,6 +180,8 @@ class ResourceManager(object):
                 return self.samples[res_name]
             elif res_name in self.levels:
                 return self.levels[res_name]
+            elif res_name in self.animations:
+                return self.animations[res_name]
             else:
                 message = _('Resource %s not found.' % res_name)
                 raise ResourceNotFoundError(message)
