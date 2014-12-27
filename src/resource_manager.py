@@ -6,7 +6,7 @@ import zipfile
 
 import bitmap_font
 import tiled_tools
-import animation_manager
+import animation
 
 
 class ResourceNotFoundError(Exception):
@@ -21,7 +21,7 @@ class ResourceManager(object):
     def __init__(self, context, zipfilename, xmlfilename='resources.xml'):
         file_path = ''.join([context.cfg.data_path, zipfilename])
         self.zf = zipfile.ZipFile(file_path)
-        self.anim_manager = animation_manager.AnimationManager(self.zf)
+        self.anim_loader = animation.AnimationLoader(self.zf)
         xml = self.zf.read(xmlfilename)
         root = ElementTree.fromstring(xml)
 
@@ -150,7 +150,7 @@ class ResourceManager(object):
         anim_data = self.zf.read(src)
 
         if anim_data is not None:
-            self.animations[name] = self.anim_manager.read(anim_data, name)
+            self.animations[name] = self.anim_loader.read(anim_data, name)
 
     @staticmethod
     def __get_common_info(resource):

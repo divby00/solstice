@@ -10,12 +10,13 @@ class Frame(object):
 class Animation(object):
 
     def __init__(self, name):
+        self.active_frame = 0
         self.name = name
         self.images = {}
         self.frames = []
 
 
-class AnimationManager(object):
+class AnimationLoader(object):
     
     def __init__(self, zip_file):
         self.zf = zip_file

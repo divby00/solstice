@@ -88,7 +88,7 @@ class TiledLevel(object):
     SOURCE = 'source'
     START = 'start'
     HARD = 'hard'
-    ANIMATED = 'animated'
+    ANIMATION = 'animation'
     ID = 'id'
     IMAGELAYER = 'imagelayer'
     FIRSTGID = 'firstgid'
@@ -117,7 +117,7 @@ class TiledLevel(object):
                        int(root.get(TiledLevel.TILEHEIGHT)))
 
         # Read tileset info
-        self.animated_tiles = []
+        self.animated_tiles = {}
         self.hard_tiles = []
 
         for tileset in root.findall(TiledLevel.TILESET):
@@ -138,9 +138,9 @@ class TiledLevel(object):
                     for prop in properties:
                         name = prop.get(TiledLevel.NAME)
 
-                        if name == TiledLevel.ANIMATED:
-                            if prop.get(TiledLevel.VALUE) == 'True':
-                                self.animated_tiles.append(tileid + firstgid)
+                        if name == TiledLevel.ANIMATION:
+                            animation_name = prop.get(TiledLevel.VALUE)
+                            self.animated_tiles.update({tileid + firstgid: animation_name})
 
                         if name == TiledLevel.HARD:
                             if prop.get(TiledLevel.VALUE) == 'True':

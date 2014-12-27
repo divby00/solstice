@@ -19,6 +19,7 @@ class GameScene(scene.Scene):
         self.player = player.Player(context, self.level01)
         self.laser = context.resourcemanager.get('laser')
         self.song = context.resourcemanager.get('level01_song')
+        self.animations = context.resourcemanager.animations
         self.music = self.song
         self.get_menu()
 
@@ -166,11 +167,21 @@ class GameScene(scene.Scene):
                             gid = l.get_gid(x, y)
 
                             if gid > 0:
-                                scr.virt.blit(
-                                    self.current_level.tiles[gid - 1].srfc,
-                                    (posx - offset_pixels[0],
-                                     posy - offset_pixels[1]),
-                                    (0, 0, l.size[0], l.size[1]))
+                                if gid in self.current_level.animated_tiles.keys():
+                                    nombre = self.current_level.animated_tiles.get(gid)
+                                    anim = self.animations.get(nombre)
+                                    img = anim.images.get(str(anim.frames[anim.active_frame].id))
+                                    scr.virt.blit( img, (posx - offset_pixels[0], posy - offset_pixels[1]))
+                                    if anim.active_frame < 6:
+                                        anim.active_frame += 1
+                                    else:
+                                        anim.active_frame = 0
+                                else:
+                                    scr.virt.blit(
+                                        self.current_level.tiles[gid - 1].srfc,
+                                        (posx - offset_pixels[0],
+                                         posy - offset_pixels[1]),
+                                        (0, 0, l.size[0], l.size[1]))
 
                             posx += self.current_level.tiles[gid - 1].size[0]
 
