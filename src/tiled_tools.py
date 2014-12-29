@@ -155,7 +155,7 @@ class TiledLevel(object):
 
         tilesets.sort(key=lambda obj: obj.firstgid)
 
-        # Read background info
+        # Read back info
         source = None
 
         for imagelayer in root.findall(TiledLevel.IMAGELAYER):
@@ -167,7 +167,7 @@ class TiledLevel(object):
             byte_data = io.BytesIO(img_data)
 
             if byte_data is not None:
-                self.background = pygame.image.load(byte_data)
+                self.back = pygame.image.load(byte_data)
 
         # Read layer info
         layerwidth = layerheight = layername = gid = None

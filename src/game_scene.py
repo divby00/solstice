@@ -1,3 +1,4 @@
+import pygame
 import control
 import player
 import scene
@@ -11,7 +12,7 @@ class GameScene(scene.Scene):
         self.screen = context.scr
         self.marcador = context.resourcemanager.get('marcador')
         self.level01 = context.resourcemanager.get('level01')
-        self.level02 = context.resourcemanager.get('level02')
+        # self.level02 = context.resourcemanager.get('level02')
         self.particlesmanager = particles_manager.ParticlesManager()
         beam_particles = particles.BeamParticles(context, 'hit')
         self.particlesmanager.register_particles(beam_particles)
@@ -44,6 +45,53 @@ class GameScene(scene.Scene):
         self.half_player = (self.player.w / 2, self.player.h / 2)
         self.menu_group.visible = False
         self.current_level = self.level01
+        level_size = self.current_level.map.width_pixels, self.current_level.map.height_pixels
+
+        back = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert()
+        back.fill((0, 0, 0))
+        back_img = self.current_level.back
+
+        walls = pygame.Surface(level_size).convert_alpha()
+        walls.fill((0, 0, 0, 0))
+
+        # Draw the back image in the buffer
+        for a in xrange(0, back.get_height(), back_img.get_height()):
+            for i in xrange(0, back.get_width(), back_img.get_width()):
+                back.blit(back_img, (i, a))
+
+        # Draw the background in the buffer
+        for l in self.current_level.layers:
+            if l.name == 'background':
+                posx = posy = 0
+                for a in xrange(0, level_size[1] / 8):
+                    for i in xrange(0, level_size[0] / 8):
+                        gid = l.get_gid(i, a)
+                        if gid > 0:
+                            walls.blit(self.current_level.tiles[gid - 1].srfc, (posx, posy))
+                        posx += 8
+                    posx = 0
+                    posy += 8
+
+        # Draw the walls in the buffer
+        for l in self.current_level.layers:
+            if l.name == 'walls':
+                posx = posy = 0
+                for a in xrange(0, level_size[1] / 8):
+                    for i in xrange(0, level_size[0] / 8):
+                        gid = l.get_gid(i, a)
+                        if gid > 0:
+                            walls.blit(self.current_level.tiles[gid - 1].srfc, (posx, posy))
+                        posx += 8
+                    posx = 0
+                    posy += 8
+
+        x = back.get_width() / 2 - walls.get_width() / 2
+        y = back.get_height() / 2 - walls.get_height() / 2
+        back.blit(walls, (x, y))
+
+        pygame.image.save(back, 'prueba.png')
+                
+
         self.map_size = [self.current_level.map.width_pixels - self.view_port[0],
                          self.current_level.map.height_pixels - self.view_port[1] + (192 / 4)]
         self.half = [self.half_view_port[0] - self.half_player[0],
@@ -131,14 +179,14 @@ class GameScene(scene.Scene):
         posx = posy = 0
         backx = 0
         backy = 0
-        backw = self.current_level.background.get_width()
-        backh = self.current_level.background.get_height()
+        backw = self.current_level.back.get_width()
+        backh = self.current_level.back.get_height()
 
         for y in xrange(-1, int(192 / backh)):
             for x in xrange(-1, int(256 / backw)):
                 backx = backw - (self.cursor[0] % backw)
                 backy = backh - (self.cursor[1] % backh)
-                scr.virt.blit(self.current_level.background,
+                scr.virt.blit(self.current_level.back,
                               (backx + (x * backw), backy + (y * backh)))
 
         offset_pixels = (self.cursor[0] % self.current_level.map.tilewidth,
