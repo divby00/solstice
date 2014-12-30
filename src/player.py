@@ -89,8 +89,11 @@ class Player(actor.Actor):
     def on_start(self):
         self.w = self.sprites[0].get_width()
         self.h = self.sprites[0].get_height()
-        self.x = self.current_level.start_point[0] * self.current_level.map.tilewidth
-        self.y = self.current_level.start_point[1] * self.current_level.map.tileheight
+        self.x = ((self.current_level.start_point[0] * 8) + 256 + 8)
+        self.y = ((self.current_level.start_point[1] * 8) + 144 + 8)
+        #self.current_level.start_point[1] * self.current_level.map.tileheight
+        #self.x = 120
+        #self.y = 64
         self.absolute_x = self.x
         self.absolute_y = self.y
         self.animation = 0
@@ -117,9 +120,7 @@ class Player(actor.Actor):
                 self.lasers.remove(l)
 
     def render(self):
-        self.context.scr.virt.blit(self.sprites[self.animation],
-                                   (self.x % self.view_port[0],
-                                    self.y % self.view_port[1]))
+        self.context.scr.virt.blit(self.sprites[self.animation], (self.x, self.y))
         for l in self.lasers:
             l.render()
 

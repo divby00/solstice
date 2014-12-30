@@ -4,23 +4,26 @@ import player
 import scene
 import particles_manager
 import particles
+import scroll
 
 
 class GameScene(scene.Scene):
+
     def __init__(self, context, name='game', scene_speed=25):
         super(GameScene, self).__init__(context, name, scene_speed)
         self.screen = context.scr
         self.marcador = context.resourcemanager.get('marcador')
         self.level01 = context.resourcemanager.get('level01')
         # self.level02 = context.resourcemanager.get('level02')
+        self.scrollobj = None
         self.particlesmanager = particles_manager.ParticlesManager()
         beam_particles = particles.BeamParticles(context, 'hit')
         self.particlesmanager.register_particles(beam_particles)
         context.particlesmanager = self.particlesmanager
         self.player = player.Player(context, self.level01)
+        self.animations = context.resourcemanager.animations
         self.laser = context.resourcemanager.get('laser')
         self.song = context.resourcemanager.get('level01_song')
-        self.animations = context.resourcemanager.animations
         self.music = self.song
         self.get_menu()
 
@@ -40,58 +43,11 @@ class GameScene(scene.Scene):
         if self.cursor[1] < 0:
             self.cursor[1] = 0
 
-        self.player.y = self.view_port[1] / 2 - (self.player.h / 2)
         self.half_view_port = (self.view_port[0] / 2, self.view_port[1] / 2)
         self.half_player = (self.player.w / 2, self.player.h / 2)
         self.menu_group.visible = False
         self.current_level = self.level01
-        level_size = self.current_level.map.width_pixels, self.current_level.map.height_pixels
-
-        back = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert()
-        back.fill((0, 0, 0))
-        back_img = self.current_level.back
-
-        walls = pygame.Surface(level_size).convert_alpha()
-        walls.fill((0, 0, 0, 0))
-
-        # Draw the back image in the buffer
-        for a in xrange(0, back.get_height(), back_img.get_height()):
-            for i in xrange(0, back.get_width(), back_img.get_width()):
-                back.blit(back_img, (i, a))
-
-        # Draw the background in the buffer
-        for l in self.current_level.layers:
-            if l.name == 'background':
-                posx = posy = 0
-                for a in xrange(0, level_size[1] / 8):
-                    for i in xrange(0, level_size[0] / 8):
-                        gid = l.get_gid(i, a)
-                        if gid > 0:
-                            walls.blit(self.current_level.tiles[gid - 1].srfc, (posx, posy))
-                        posx += 8
-                    posx = 0
-                    posy += 8
-
-        # Draw the walls in the buffer
-        for l in self.current_level.layers:
-            if l.name == 'walls':
-                posx = posy = 0
-                for a in xrange(0, level_size[1] / 8):
-                    for i in xrange(0, level_size[0] / 8):
-                        gid = l.get_gid(i, a)
-                        if gid > 0:
-                            walls.blit(self.current_level.tiles[gid - 1].srfc, (posx, posy))
-                        posx += 8
-                    posx = 0
-                    posy += 8
-
-        x = back.get_width() / 2 - walls.get_width() / 2
-        y = back.get_height() / 2 - walls.get_height() / 2
-        back.blit(walls, (x, y))
-
-        pygame.image.save(back, 'prueba.png')
-                
-
+        self.scrollobj = scroll.Scroll(self.current_level, self.player)
         self.map_size = [self.current_level.map.width_pixels - self.view_port[0],
                          self.current_level.map.height_pixels - self.view_port[1] + (192 / 4)]
         self.half = [self.half_view_port[0] - self.half_player[0],
@@ -102,7 +58,7 @@ class GameScene(scene.Scene):
     def on_quit(self):
         self.music.stop()
 
-    def run(self):
+    def run2(self):
         if self.menu_group.visible:
             self.menu_group.run()
         else:
@@ -175,7 +131,34 @@ class GameScene(scene.Scene):
 
         self.player.run()
 
+    def run(self):
+        if self.menu_group.visible:
+            self.menu_group.run()
+        else:
+            if self.control.on(control.Control.RIGHT):
+                self.player.x += 4
+            if self.control.on(control.Control.LEFT):
+                self.player.x -= 4
+            if self.control.on(control.Control.UP):
+                self.player.y -= 4
+            if self.control.on(control.Control.DOWN):
+                self.player.y += 4
+
+            if self.control.on(control.Control.ACTION2):
+                self.menu_group.visible = True
+
+        self.player.run()
+
     def render(self, scr):
+        
+        scr.virt.blit(self.scrollobj.get_frame(), (0, 0))
+
+        if self.menu_group.visible:
+            self.menu_group.render(scr.virt, (128, 70))
+
+        scr.virt.blit(self.marcador, (0, self.view_port[1]))
+
+    def render2(self, scr):
         posx = posy = 0
         backx = 0
         backy = 0
