@@ -47,7 +47,7 @@ class GameScene(scene.Scene):
         self.half_player = (self.player.w / 2, self.player.h / 2)
         self.menu_group.visible = False
         self.current_level = self.level01
-        self.scrollobj = scroll.Scroll(self.current_level, self.player)
+        self.scrollobj = scroll.Scroll(self.current_level, self.player, self.animations)
         self.map_size = [self.current_level.map.width_pixels - self.view_port[0],
                          self.current_level.map.height_pixels - self.view_port[1] + (192 / 4)]
         self.half = [self.half_view_port[0] - self.half_player[0],

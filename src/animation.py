@@ -11,6 +11,7 @@ class Animation(object):
 
     def __init__(self, name):
         self.active_frame = 0
+        self.counter = 0
         self.name = name
         self.images = {}
         self.frames = []
