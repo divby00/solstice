@@ -73,6 +73,14 @@ class Scroll(object):
         return back
 
     def __init_patterns(self):
+
+        animations = self.level.animated_tiles
+        for a in animations:
+            data = a.split(' ')
+            zindex = data[0]
+            animx = data[1]
+            animy = data[2]
+
         level_size = self.level.map.width_pixels, self.level.map.height_pixels
 
         for l in self.level.layers:

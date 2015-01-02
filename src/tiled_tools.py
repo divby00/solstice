@@ -99,10 +99,12 @@ class TiledLevel(object):
     FIRSTGID = 'firstgid'
 
     def __init__(self, zf, xml_data):
-        self.tiles = []
         self.layers = []
+        self.tiles = []
+        self.hard_tiles = []
+        self.animated_tiles = {}
         self.zf = zf
-        self.start_tile= 0
+        self.start_tile = 0
         self.start_point = None
         self.__load(xml_data)
 
@@ -135,6 +137,7 @@ class TiledLevel(object):
 
     def __load_animations_info(self):
         found = False
+        animated_tiles = {}
 
         for obj in self.root.findall('objectgroup'):
 
@@ -144,73 +147,30 @@ class TiledLevel(object):
                 for o in obj.findall('object'):
                     objx = o.get('x')
                     objy = o.get('y')
+                    animation_name = ''
+                    animation_zindex = ''
 
                     for prop in o.findall('properties'):
                         for p in prop.findall('property'):
                             pname = p.get(TiledLevel.NAME)
-                            pvalue = p.get('value')
+                            pvalue = p.get(TiledLevel.VALUE)
 
                             if pname == TiledLevel.ANIMATION:
-                                animation_name = prop.get(TiledLevel.VALUE)
+                                animation_name = pvalue
 
-                            if pname == TiledLevel.ZINDEX and animation_name is not '':
-                                animation_zindex = prop.get(TiledLevel.VALUE) 
-                                self.animated_tiles.update({''.join([objx, '-', objy]): animation_name})
+                            if pname == TiledLevel.ZINDEX:
+                                animation_zindex = pvalue
+
+                            if animation_name is not '' and animation_zindex is not '':
+                                animated_tiles.update({''.join([animation_zindex, ' ', objx, ' ', objy]): animation_name})
 
         if not found:
             raise TiledLoaderError(_('Unable to find animations layer in level data.'))
 
-    def __load_layers_info(self):
-        layerwidth = layerheight = layername = gid = None
+        return animated_tiles
 
-        for layer in self.root.findall(TiledLevel.LAYER):
-            layerwidth = int(layer.get(TiledLevel.WIDTH))
-            layerheight = int(layer.get(TiledLevel.HEIGHT))
-            layername = layer.get(TiledLevel.NAME)
-
-            if layername in ['walls', 'background', 'special']:
-
-                l = Layer(layername, (layerwidth, layerheight))
-
-                for data in layer.findall(TiledLevel.DATA):
-                    for tile in data.findall(TiledLevel.TILE):
-                        gid = int(tile.get(TiledLevel.GID))
-
-                        if gid in self.animated_tiles:
-                            l.animated_tiles.append(gid)
-
-                        l.data.append(gid)
-
-                self.layers.append(l)
-
-            else:
-                pass
-                #raise TiledLoaderError(_('Unknown layer %s found in level data.' % layername))
-
-    def __get_start_point(self):
-        for l in self.layers:
-            if l.name == TiledLevel.SPECIAL:
-                for a in xrange(0, l.size[1]):
-                    for i in xrange(0, l.size[0]):
-                        if l.get_gid(i, a) == self.start_tile:
-                            return i, a
-
-    def __load(self, xml_data):
-        global source
-        imgwidth = 0
-        imgheight = 0
-        tilewidth = 0
-        tileheight = 0
-        firstgid = 0
+    def __load_tileset_info(self):
         tilesets = []
-        self.root = ElementTree.fromstring(xml_data)
-
-        # Read basic map info
-        self.map = self.__load_map_info()
-
-        # Read tileset info
-        self.animated_tiles = {}
-        self.hard_tiles = []
 
         for tileset in self.root.findall(TiledLevel.TILESET):
             tilewidth = int(tileset.get(TiledLevel.TILEWIDTH))
@@ -242,24 +202,15 @@ class TiledLevel(object):
                                     tileheight, source, firstgid))
 
         tilesets.sort(key=lambda obj: obj.firstgid)
+        return tilesets
 
-        # Read back info. Back info is the first image being rendered.
-        self.back = self.__load_back_info()
-
-        # Read animations info
-        self.__load_animations_info()
-
-        # Read layers info
-        self.__load_layers_info()
-
-        # Get starting point
-        self.start_point = self.__get_start_point()
-
-        # Load tiles sprites
+    def __load_tileset_graphics(self):
+        # Load sprites for the tiles
+        tiles = []
         img_count = 0
         blank = pygame.Color(0, 0, 0, 0)
 
-        for t in tilesets:
+        for t in self.tilesets:
             img_data = self.zf.read(TiledLevel.GFX + t.src)
             byte_data = io.BytesIO(img_data)
 
@@ -267,30 +218,90 @@ class TiledLevel(object):
                 t.img = pygame.image.load(byte_data)
                 t.img = t.img.convert_alpha()
 
-            if t.img is not None:
+                if t.img is not None:
 
-                for y in xrange(0, t.h, t.tileh):
+                    for y in xrange(0, t.h, t.tileh):
 
-                    for x in xrange(0, t.w, t.tilew):
-                        srfc = pygame.Surface((t.tilew, t.tileh))
-                        srfc = srfc.convert_alpha()
+                        for x in xrange(0, t.w, t.tilew):
+                            srfc = pygame.Surface((t.tilew, t.tileh))
+                            srfc = srfc.convert_alpha()
 
-                        if srfc is not None:
-                            srfc.fill(blank)
-                            srfc.blit(t.img,
-                                      (0, 0),
-                                      (x, y, t.tilew, t.tileh),
-                                      0)
+                            if srfc is not None:
+                                srfc.fill(blank)
+                                srfc.blit(t.img,
+                                          (0, 0),
+                                          (x, y, t.tilew, t.tileh),
+                                          0)
 
-                        self.tiles.append(Tile(srfc, (t.tilew, t.tileh)))
-                        img_count += 1
+                            tiles.append(Tile(srfc, (t.tilew, t.tileh)))
+                            img_count += 1
+
+        return tiles
+
+    def __load_layers_info(self):
+        layers = []
+        layerwidth = layerheight = layername = gid = None
+
+        for layer in self.root.findall(TiledLevel.LAYER):
+            layerwidth = int(layer.get(TiledLevel.WIDTH))
+            layerheight = int(layer.get(TiledLevel.HEIGHT))
+            layername = layer.get(TiledLevel.NAME)
+
+            if layername in ['walls', 'background', 'special']:
+
+                l = Layer(layername, (layerwidth, layerheight))
+
+                for data in layer.findall(TiledLevel.DATA):
+                    for tile in data.findall(TiledLevel.TILE):
+                        gid = int(tile.get(TiledLevel.GID))
+
+                        if gid in self.animated_tiles:
+                            l.animated_tiles.append(gid)
+
+                        l.data.append(gid)
+
+                layers.append(l)
+
+            else:
+                pass
+                #raise TiledLoaderError(_('Unknown layer %s found in level data.' % layername))
+        return layers
+
+    def __get_start_point(self):
+        for l in self.layers:
+            if l.name == TiledLevel.SPECIAL:
+                for a in xrange(0, l.size[1]):
+                    for i in xrange(0, l.size[0]):
+                        if l.get_gid(i, a) == self.start_tile:
+                            return i, a
+
+    def __load(self, xml_data):
+        self.root = ElementTree.fromstring(xml_data)
+
+        # Read basic map info
+        self.map = self.__load_map_info()
+
+        # Read tileset info
+        self.tilesets = self.__load_tileset_info()
+        self.tiles = self.__load_tileset_graphics()
+
+        # Read back info. Back info is the first image being rendered.
+        self.back = self.__load_back_info()
+
+        # Read animations info
+        self.animated_tiles = self.__load_animations_info()
+
+        # Read layers info
+        self.layers = self.__load_layers_info()
+
+        # Get starting point
+        self.start_point = self.__get_start_point()
 
     def get_gid(self, x, y, name):
         for l in self.layers:
             if l.name == name:
                 return l.get_gid(x, y)
         return 0
-
 
     def is_hard(self, x, y):
         if self.get_gid(x, y, TiledLevel.SPECIAL) in self.hard_tiles:
