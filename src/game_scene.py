@@ -136,13 +136,18 @@ class GameScene(scene.Scene):
             self.menu_group.run()
         else:
             if self.control.on(control.Control.RIGHT):
-                self.player.x += 4
+                if not self.player.check_right_collision(self.current_level):
+                    self.player.direction = 1
+                    self.player.x += 4
             if self.control.on(control.Control.LEFT):
-                self.player.x -= 4
+                if not self.player.check_left_collision(self.current_level):
+                    self.player.x -= 4
             if self.control.on(control.Control.UP):
-                self.player.y -= 4
+                if not self.player.check_upper_collision(self.current_level):
+                    self.player.y -= 4
             if self.control.on(control.Control.DOWN):
-                self.player.y += 4
+                if not self.player.check_bottom_collision(self.current_level):
+                    self.player.y += 4
 
             if self.control.on(control.Control.ACTION2):
                 self.menu_group.visible = True

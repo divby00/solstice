@@ -3,10 +3,10 @@ import pygame
 
 class Pattern(object):
 
-    def __init__(self, x, y, tile_id):
+    def __init__(self, x, y, animation_name):
         self.x = x
         self.y = y
-        self.tile_id = tile_id
+        self.animation_name = animation_name
 
 
 class Scroll(object):
@@ -75,36 +75,18 @@ class Scroll(object):
     def __init_patterns(self):
 
         animations = self.level.animated_tiles
+
         for a in animations:
             data = a.split(' ')
             zindex = data[0]
             animx = data[1]
             animy = data[2]
+            animname = animations.get(a)
 
-        level_size = self.level.map.width_pixels, self.level.map.height_pixels
-
-        for l in self.level.layers:
-            if l.name == 'backpatterns':
-                posx = posy = 0
-                for a in xrange(0, level_size[1] / 8):
-                    for i in xrange(0, level_size[0] / 8):
-                        gid = l.get_gid(i, a)
-                        if gid > 0:
-                            self.backpatterns.append(Pattern(posx + 256 - 8, posy + 144, gid - 1))
-                        posx += 8
-                    posx = 0
-                    posy += 8
-
-            if l.name == 'forepatterns':
-                posx = posy = 0
-                for a in xrange(0, level_size[1] / 8):
-                    for i in xrange(0, level_size[0] / 8):
-                        gid = l.get_gid(i, a)
-                        if gid > 0:
-                            self.forepatterns.append(Pattern(posx + 256, posy + 144, gid - 1))
-                        posx += 8
-                    posx = 0
-                    posy += 8
+            if zindex == '0':
+                self.backpatterns.append(Pattern(int(animx) + 256, int(animy) + 144, animname))
+            else:
+                self.forepatterns.append(Pattern(int(animx) + 256, int(animy) + 144, animname))
 
     def get_frame(self):
         self.tmp.fill((100, 0, 0))
@@ -115,49 +97,40 @@ class Scroll(object):
 
         # Backpattern rendering
         for b in self.backpatterns:
-            if b.tile_id in self.level.animated_tiles.keys():
-                name = self.level.animated_tiles.get(b.tile_id)
-                anim = self.animations.get(name)
-                img = anim.images.get(str(anim.frames[anim.active_frame].id))
-                self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
+            anim = self.animations.get(b.animation_name)
+            img = anim.images.get(str(anim.frames[anim.active_frame].id))
+            self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
 
-                if anim.counter < anim.frames[anim.active_frame].duration:
-                    anim.counter += 1
+            if anim.counter < anim.frames[anim.active_frame].duration:
+                anim.counter += 1
+            else:
+                anim.counter = 0
+
+                if anim.active_frame < len(anim.frames) - 1:
+                    anim.active_frame += 1
                 else:
-                    anim.counter = 0
-
-                    if anim.active_frame < len(anim.frames) - 1:
-                        anim.active_frame += 1
-                    else:
-                        anim.active_frame = 0
+                    anim.active_frame = 0
 
         # Player rendering
         self.tmp.blit(self.player.sprites[self.player.animation], (self.player.x - 8, self.player.y - 8))
 
         # Forepattern rendering
         for b in self.forepatterns:
-            if b.tile_id in self.level.animated_tiles.keys():
-                name = self.level.animated_tiles.get(b.tile_id)
-                anim = self.animations.get(name)
-                img = anim.images.get(str(anim.frames[anim.active_frame].id))
-                self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
+            anim = self.animations.get(b.animation_name)
+            img = anim.images.get(str(anim.frames[anim.active_frame].id))
+            self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
 
-                if anim.counter < anim.frames[anim.active_frame].duration:
-                    anim.counter += 1
+            if anim.counter < anim.frames[anim.active_frame].duration:
+                anim.counter += 1
+            else:
+                anim.counter = 0
+
+                if anim.active_frame < len(anim.frames) - 1:
+                    anim.active_frame += 1
                 else:
-                    anim.counter = 0
-
-                    if anim.active_frame < len(anim.frames) - 1:
-                        anim.active_frame += 1
-                    else:
-                        anim.active_frame = 0
+                    anim.active_frame = 0
 
         # Viewport rendering
         self.img.blit(self.tmp, (0, 0), (self.player.x - 128, self.player.y - 72, 256, 144))
 
-        # Add quadrant lines
-        '''
-        pygame.draw.line(self.img, (200, 200, 0), (128, 0), (128, 144))
-        pygame.draw.line(self.img, (200, 200, 0), (0, 72), (256, 72))
-        '''
         return self.img
