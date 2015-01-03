@@ -2,52 +2,45 @@ import actor
 
 
 class Laser(actor.Actor):
-    def __init__(self, context, relative_position, absolute_position, direction):
+    def __init__(self, context, position, direction):
         super(Laser, self).__init__(context)
         self.active = True
         self.animation = 4
         self.direction = direction
         self.limit = [0, 0]
-        self.relative_position = relative_position
-        self.absolute_position = absolute_position
+        self.position = position
 
     def run(self):
         if self.animation > 0:
             self.animation -= 1
 
-    def render(self):
+    def render(self, screen):
         if self.direction == 1:
             if self.animation >= 3:
-                self.context.scr.virt.blit(self.context.laser_spr[0],
-                                           (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 4):
-                    self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.relative_position[1]))
+                screen.blit(self.context.laser_spr[0], (self.position[0], self.position[1]))
+                for i in xrange(self.position[0] + 8, self.position[2], 4):
+                    screen.blit(self.context.laser_spr[3], (i, self.position[1]))
             if self.animation == 2:
-                self.context.scr.virt.blit(self.context.laser_spr[1],
-                                           (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 4):
-                    self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.relative_position[1]))
+                screen.blit(self.context.laser_spr[1], (self.position[0], self.position[1]))
+                for i in xrange(self.position[0] + 8, self.position[2], 4):
+                    screen.blit(self.context.laser_spr[4], (i, self.position[1]))
             if self.animation == 1:
-                self.context.scr.virt.blit(self.context.laser_spr[2],
-                                           (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] + 8, self.relative_position[2], 4):
-                    self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.relative_position[1]))
+                screen.blit(self.context.laser_spr[2], (self.position[0], self.position[1]))
+                for i in xrange(self.position[0] + 8, self.position[2], 4):
+                    screen.blit(self.context.laser_spr[5], (i, self.position[1]))
         else:
             if self.animation >= 3:
-                self.context.scr.virt.blit(self.context.laser_spr[8],
-                                           (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] - 4, self.relative_position[2], -4):
-                    self.context.scr.virt.blit(self.context.laser_spr[3], (i, self.relative_position[1]))
+                screen.blit(self.context.laser_spr[8], (self.position[0], self.position[1]))
+                for i in xrange(self.position[0] - 4, self.position[2], -4):
+                    screen.blit(self.context.laser_spr[3], (i, self.position[1]))
             if self.animation == 2:
-                self.context.scr.virt.blit(self.context.laser_spr[7],
-                                           (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] - 4, self.relative_position[2], -4):
-                    self.context.scr.virt.blit(self.context.laser_spr[4], (i, self.relative_position[1]))
+                screen.blit(self.context.laser_spr[7], (self.position[0], self.position[1]))
+                for i in xrange(self.position[0] - 4, self.position[2], -4):
+                    screen.blit(self.context.laser_spr[4], (i, self.position[1]))
             if self.animation == 1:
-                self.context.scr.virt.blit(self.context.laser_spr[6],
-                                           (self.relative_position[0], self.relative_position[1]))
-                for i in xrange(self.relative_position[0] - 4, self.relative_position[2], -4):
-                    self.context.scr.virt.blit(self.context.laser_spr[5], (i, self.relative_position[1]))
+                screen.blit(self.context.laser_spr[6], (self.position[0], self.position[1]))
+                for i in xrange(self.position[0] - 4, self.position[2], -4):
+                    screen.blit(self.context.laser_spr[5], (i, self.position[1]))
 
 
 class Player(actor.Actor):
@@ -57,13 +50,12 @@ class Player(actor.Actor):
         self.y = 0
         self.w = 0
         self.h = 0
-        self.absolute_x = 0
-        self.absolute_y = 0
         self.animation = 0
         self.direction = 0
+        self.shoot_avail = True
+        self.shoot_avail_counter = 0
         self.sprites = []
         self.laser_spr = []
-        self.view_port = [256, 144]
         self.particlesmanager = context.particlesmanager
 
         player = ['player0', 'player1', 'player2', 'player3',
@@ -91,11 +83,6 @@ class Player(actor.Actor):
         self.h = self.sprites[0].get_height()
         self.x = ((self.current_level.start_point[0] * 8) + 256 + 8)
         self.y = ((self.current_level.start_point[1] * 8) + 144 + 8)
-        #self.current_level.start_point[1] * self.current_level.map.tileheight
-        #self.x = 120
-        #self.y = 64
-        self.absolute_x = self.x
-        self.absolute_y = self.y
         self.animation = 0
         self.direction = 1
         self.firing = False
@@ -119,38 +106,44 @@ class Player(actor.Actor):
             if l.animation == 0:
                 self.lasers.remove(l)
 
-    def render(self):
-        self.context.scr.virt.blit(self.sprites[self.animation], (self.x, self.y))
+        if not self.shoot_avail:
+            self.shoot_avail_counter += 1
+            
+            if self.shoot_avail_counter == 6:
+                self.shoot_avail = True
+                self.shoot_avail_counter = 0
+
+    def render(self, screen):
+        screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
         for l in self.lasers:
-            l.render()
+            l.render(screen)
 
     def shoot(self):
         laser = None
+        self.shoot_avail = False
         if self.direction == 1:
             colision_x = self.get_laser_right_collision()
             beam_particles = self.particlesmanager.get('hit')
-            beam_particles.generate((self.x + 12 + colision_x, self.x + 20 + colision_x, self.y, self.y + 8))
-            laser = Laser(self.context, (self.x + 16, self.y, self.x + 16 + colision_x),
-                          (self.absolute_x, self.absolute_y), self.direction)
+            beam_particles.generate((self.x + 4 + colision_x, self.x + 12 + colision_x, self.y - 8, self.y))
+            laser = Laser(self.context, (self.x + 8, self.y - 8, self.x + 8 + colision_x), self.direction)
         else:
             colision_x = self.get_laser_left_collision()
             beam_particles = self.particlesmanager.get('hit')
-            beam_particles.generate((self.x - 12 - colision_x, self.x - 4 - colision_x, self.y, self.y + 8))
-            laser = Laser(self.context, (self.x - 8, self.y, self.x - 8 - colision_x),
-                          (self.absolute_x, self.absolute_y), self.direction)
+            beam_particles.generate((self.x - 20 - colision_x, self.x - 12 - colision_x, self.y - 8, self.y))
+            laser = Laser(self.context, (self.x - 8 - 8, self.y - 8, self.x - 8 - 8 - colision_x), self.direction)
 
         self.lasers.append(laser)
 
     def get_laser_right_collision(self):
         for l in self.current_level.layers:
             if l.name == 'special':
-                calculated_x = int((self.absolute_x + self.w) / self.current_level.map.tilewidth)
-                calculated_x_limit = int((self.absolute_x + self.w + 256) / self.current_level.map.tilewidth)
-                calculated_y = (self.absolute_y + 8) / self.current_level.map.tileheight
+                calculated_x = int((self.x - 8 + self.w) / self.current_level.map.tilewidth) - 32
+                calculated_x_limit = int((self.x - 8 + self.w + 256) / self.current_level.map.tilewidth) -32
+                calculated_y = (self.y - 8 + 8) / self.current_level.map.tileheight - 18
                 for x in xrange(calculated_x, calculated_x_limit):
                     if self.current_level.is_hard(x, calculated_y):
                         a = abs(x - calculated_x) * 8
-                        if self.absolute_x % 8 is not 0:
+                        if self.x % 8 is not 0:
                             a -= 4
                         return a
         return 256
@@ -158,13 +151,13 @@ class Player(actor.Actor):
     def get_laser_left_collision(self):
         for l in self.current_level.layers:
             if l.name == 'special':
-                calculated_x = int((self.absolute_x - 8) / self.current_level.map.tilewidth)
-                calculated_x_limit = int((self.absolute_x + - 8 - 256) / self.current_level.map.tilewidth)
-                calculated_y = (self.absolute_y + 8) / self.current_level.map.tileheight
+                calculated_x = int((self.x - 8 - 8) / self.current_level.map.tilewidth) - 32
+                calculated_x_limit = int((self.x - 8 - 256) / self.current_level.map.tilewidth) - 32
+                calculated_y = (self.y - 8 + 8) / self.current_level.map.tileheight - 18
                 for x in xrange(calculated_x, calculated_x_limit, -1):
                     if self.current_level.is_hard(x, calculated_y):
                         a = abs(x - calculated_x) * 8
-                        if self.absolute_x % 8 is 0:
+                        if self.x % 8 is 0:
                             a -= 4
                         return a
         return 256
@@ -239,4 +232,3 @@ class Player(actor.Actor):
                         result = True
 
         return result
-

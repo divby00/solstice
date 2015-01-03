@@ -9,12 +9,17 @@ class Pattern(object):
         self.animation_name = animation_name
 
 
-class Scroll(object):
+class Renderer(object):
 
-    def __init__(self, level, player, animations):
-        self.level = level
-        self.player = player
-        self.animations = animations
+    def __init__(self, context):
+        self.screen = context.screen
+        self.level = context.current_level
+        self.player = context.player
+        self.animations = context.animations
+        self.particlesmanager = context.particlesmanager
+        self.player = context.player
+        self.board = context.board
+        self.speed = 4, 4
         self.start_point = self.__get_start_point()
         self.source = self.__init_source_image()
         self.backpatterns = []
@@ -22,8 +27,6 @@ class Scroll(object):
         self.__init_patterns()
         self.tmp = pygame.Surface((self.source.get_width(), self.source.get_height())).convert()
         self.tmp.fill((0, 0, 0, 0))
-        self.img = pygame.Surface((256, 144)).convert()
-        self.img.fill((0, 0, 0))
 
     def __get_start_point(self):
         return ((self.level.start_point[0] * 8) + 256 + 8) - 128, ((self.level.start_point[1] * 8) + 144 + 8) - 72
@@ -88,8 +91,34 @@ class Scroll(object):
             else:
                 self.forepatterns.append(Pattern(int(animx) + 256, int(animy) + 144, animname))
 
-    def get_frame(self):
-        self.tmp.fill((100, 0, 0))
+    def run(self):
+        for b in self.backpatterns:
+            anim = self.animations.get(b.animation_name)
+
+            if anim.counter < anim.frames[anim.active_frame].duration:
+                anim.counter += 1
+            else:
+                anim.counter = 0
+
+                if anim.active_frame < len(anim.frames) - 1:
+                    anim.active_frame += 1
+                else:
+                    anim.active_frame = 0
+
+        for b in self.forepatterns:
+            anim = self.animations.get(b.animation_name)
+
+            if anim.counter < anim.frames[anim.active_frame].duration:
+                anim.counter += 1
+            else:
+                anim.counter = 0
+
+                if anim.active_frame < len(anim.frames) - 1:
+                    anim.active_frame += 1
+                else:
+                    anim.active_frame = 0
+
+    def render(self):
         # Source rendering
         self.tmp.blit(self.source,
                       (self.player.x - 128, self.player.y - 72),
@@ -101,18 +130,11 @@ class Scroll(object):
             img = anim.images.get(str(anim.frames[anim.active_frame].id))
             self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
 
-            if anim.counter < anim.frames[anim.active_frame].duration:
-                anim.counter += 1
-            else:
-                anim.counter = 0
-
-                if anim.active_frame < len(anim.frames) - 1:
-                    anim.active_frame += 1
-                else:
-                    anim.active_frame = 0
-
         # Player rendering
-        self.tmp.blit(self.player.sprites[self.player.animation], (self.player.x - 8, self.player.y - 8))
+        self.player.render(self.tmp)
+
+        # Particles rendering
+        self.particlesmanager.render(self.tmp)
 
         # Forepattern rendering
         for b in self.forepatterns:
@@ -120,17 +142,8 @@ class Scroll(object):
             img = anim.images.get(str(anim.frames[anim.active_frame].id))
             self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
 
-            if anim.counter < anim.frames[anim.active_frame].duration:
-                anim.counter += 1
-            else:
-                anim.counter = 0
-
-                if anim.active_frame < len(anim.frames) - 1:
-                    anim.active_frame += 1
-                else:
-                    anim.active_frame = 0
-
         # Viewport rendering
-        self.img.blit(self.tmp, (0, 0), (self.player.x - 128, self.player.y - 72, 256, 144))
+        self.screen.virt.blit(self.tmp, (0, 0), (self.player.x - 128, self.player.y - 72, 256, 144))
 
-        return self.img
+        # Board rendering
+        self.screen.virt.blit(self.board, (0, 144))

@@ -66,9 +66,9 @@ class BeamParticles(Particles):
         super(BeamParticles, self).__init__(context, name)
 
     def generate(self, position):
-        for x in xrange(0, 10):
+        for x in xrange(0, 20):
             particle = Particle(random.randint(position[0], position[1]), random.randint(position[2], position[3]),
-                                True, random.randint(-2, 0))
+                                True, random.randint(-4, 0))
             self.particle_list.append(particle)
 
     def run(self):
