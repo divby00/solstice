@@ -130,7 +130,7 @@ class Player(actor.Actor):
             colision_x = self.get_laser_left_collision()
             beam_particles = self.particlesmanager.get('hit')
             beam_particles.generate((self.x - 20 - colision_x, self.x - 12 - colision_x, self.y - 8, self.y))
-            laser = Laser(self.context, (self.x - 8 - 8, self.y - 8, self.x - 8 - 8 - colision_x), self.direction)
+            laser = Laser(self.context, (self.x - 16, self.y - 8, self.x - 16 - colision_x), self.direction)
 
         self.lasers.append(laser)
 
@@ -138,8 +138,8 @@ class Player(actor.Actor):
         for l in self.current_level.layers:
             if l.name == 'special':
                 calculated_x = int((self.x - 8 + self.w) / self.current_level.map.tilewidth) - 32
-                calculated_x_limit = int((self.x - 8 + self.w + 256) / self.current_level.map.tilewidth) -32
-                calculated_y = (self.y - 8 + 8) / self.current_level.map.tileheight - 18
+                calculated_x_limit = int((self.x + self.w + 248) / self.current_level.map.tilewidth) - 32
+                calculated_y = (self.y) / self.current_level.map.tileheight - 18
                 for x in xrange(calculated_x, calculated_x_limit):
                     if self.current_level.is_hard(x, calculated_y):
                         a = abs(x - calculated_x) * 8
@@ -151,9 +151,9 @@ class Player(actor.Actor):
     def get_laser_left_collision(self):
         for l in self.current_level.layers:
             if l.name == 'special':
-                calculated_x = int((self.x - 8 - 8) / self.current_level.map.tilewidth) - 32
-                calculated_x_limit = int((self.x - 8 - 256) / self.current_level.map.tilewidth) - 32
-                calculated_y = (self.y - 8 + 8) / self.current_level.map.tileheight - 18
+                calculated_x = int((self.x - 16) / self.current_level.map.tilewidth) - 32
+                calculated_x_limit = int((self.x - 264) / self.current_level.map.tilewidth) - 32
+                calculated_y = (self.y) / self.current_level.map.tileheight - 18
                 for x in xrange(calculated_x, calculated_x_limit, -1):
                     if self.current_level.is_hard(x, calculated_y):
                         a = abs(x - calculated_x) * 8
