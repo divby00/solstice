@@ -28,7 +28,6 @@ class GameScene(scene.Scene):
 
     def on_start(self):
         self.player.on_start()
-        self.view_port = [256, 144]
         self.menu_group.visible = False
         self.current_level = self.level01
         self.renderobj = renderer.Renderer(self)

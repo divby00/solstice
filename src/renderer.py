@@ -127,7 +127,6 @@ class Renderer(object):
         # Backpattern rendering
         for b in self.backpatterns:
             anim = self.animations.get(b.animation_name)
-            print(anim)
             img = anim.images.get(str(anim.frames[anim.active_frame].id))
             self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
 
