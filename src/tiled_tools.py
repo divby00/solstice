@@ -92,6 +92,8 @@ class TiledLevel(object):
     IMAGE = 'image'
     SOURCE = 'source'
     START = 'start'
+    START_POINT = 'start_point'
+    EXIT_POINT = 'exit_point'
     HARD = 'hard'
     ANIMATION = 'animation'
     ID = 'id'
@@ -106,6 +108,7 @@ class TiledLevel(object):
         self.zf = zf
         self.start_tile = 0
         self.start_point = None
+        self.exit_point = None
         self.__load(xml_data)
 
     def __load_map_info(self):
@@ -141,7 +144,7 @@ class TiledLevel(object):
 
         for obj in self.root.findall('objectgroup'):
 
-            if obj.get(TiledLevel.NAME) == 'animations':
+            if obj.get(TiledLevel.NAME) == TiledLevel.SPECIAL:
                 found = True
 
                 for o in obj.findall('object'):
@@ -193,11 +196,7 @@ class TiledLevel(object):
                         if name == TiledLevel.HARD:
                             if prop.get(TiledLevel.VALUE) == 'True':
                                 self.hard_tiles.append(tileid + firstgid)
-
-                        if name == TiledLevel.START:
-                            if prop.get(TiledLevel.VALUE) == 'True':
-                                self.start_tile = tileid + firstgid
-
+                
             tilesets.append(Tileset(name, imgwidth, imgheight, tilewidth,
                                     tileheight, source, firstgid))
 
@@ -247,17 +246,13 @@ class TiledLevel(object):
             layerheight = int(layer.get(TiledLevel.HEIGHT))
             layername = layer.get(TiledLevel.NAME)
 
-            if layername in ['walls', 'background', 'special']:
+            if layername in ['walls', 'background', 'hard']:
 
                 l = Layer(layername, (layerwidth, layerheight))
 
                 for data in layer.findall(TiledLevel.DATA):
                     for tile in data.findall(TiledLevel.TILE):
                         gid = int(tile.get(TiledLevel.GID))
-
-                        if gid in self.animated_tiles:
-                            l.animated_tiles.append(gid)
-
                         l.data.append(gid)
 
                 layers.append(l)
@@ -268,12 +263,52 @@ class TiledLevel(object):
         return layers
 
     def __get_start_point(self):
-        for l in self.layers:
-            if l.name == TiledLevel.SPECIAL:
-                for a in xrange(0, l.size[1]):
-                    for i in xrange(0, l.size[0]):
-                        if l.get_gid(i, a) == self.start_tile:
-                            return i, a
+        start_point = None
+        for obj in self.root.findall('objectgroup'):
+
+            if obj.get(TiledLevel.NAME) == TiledLevel.SPECIAL:
+                found = True
+
+                for o in obj.findall('object'):
+                    objx = o.get('x')
+                    objy = o.get('y')
+
+                    for prop in o.findall('properties'):
+                        for p in prop.findall('property'):
+                            pname = p.get(TiledLevel.NAME)
+                            pvalue = p.get(TiledLevel.VALUE)
+
+                            if pname == TiledLevel.START_POINT:
+                                start_point = int(objx), int(objy)
+
+        if not start_point:
+            raise TiledLoaderError(_('Unable to find start point in level data.'))
+
+        return start_point
+
+    def __get_exit_point(self):
+        exit_point = None
+        for obj in self.root.findall('objectgroup'):
+
+            if obj.get(TiledLevel.NAME) == TiledLevel.SPECIAL:
+                found = True
+
+                for o in obj.findall('object'):
+                    objx = o.get('x')
+                    objy = o.get('y')
+
+                    for prop in o.findall('properties'):
+                        for p in prop.findall('property'):
+                            pname = p.get(TiledLevel.NAME)
+                            pvalue = p.get(TiledLevel.VALUE)
+
+                            if pname == TiledLevel.EXIT_POINT:
+                                exit_point = int(objx), int(objy)
+
+        if not exit_point:
+            raise TiledLoaderError(_('Unable to find exit point in level data.'))
+
+        return exit_point
 
     def __load(self, xml_data):
         self.root = ElementTree.fromstring(xml_data)
@@ -297,6 +332,9 @@ class TiledLevel(object):
         # Get starting point
         self.start_point = self.__get_start_point()
 
+        # Get exit point
+        self.exit_point = self.__get_exit_point()
+
     def get_gid(self, x, y, name):
         for l in self.layers:
             if l.name == name:
@@ -304,7 +342,6 @@ class TiledLevel(object):
         return 0
 
     def is_hard(self, x, y):
-        if self.get_gid(x, y, TiledLevel.SPECIAL) in self.hard_tiles:
+        if self.get_gid(x, y, TiledLevel.HARD) in self.hard_tiles:
             return True
-
         return False

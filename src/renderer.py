@@ -29,7 +29,7 @@ class Renderer(object):
         self.tmp.fill((0, 0, 0, 0))
 
     def __get_start_point(self):
-        return ((self.level.start_point[0] * 8) + 256 + 8) - 128, ((self.level.start_point[1] * 8) + 144 + 8) - 72
+        return ((self.level.start_point[0]) + 256 + 8) - 128, ((self.level.start_point[1]) + 144 + 8) - 72
 
     def __init_source_image(self):
         level_size = self.level.map.width_pixels, self.level.map.height_pixels
@@ -127,6 +127,7 @@ class Renderer(object):
         # Backpattern rendering
         for b in self.backpatterns:
             anim = self.animations.get(b.animation_name)
+            print(anim)
             img = anim.images.get(str(anim.frames[anim.active_frame].id))
             self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
 
