@@ -50,11 +50,19 @@ class Player(actor.Actor):
         self.y = 0
         self.w = 0
         self.h = 0
+        self.thrust = 107
+        self.bullets = 107
+        self.life = 100
+        self.lives = 3
         self.animation = 0
+        self.recovery_mode = False
+        self.recovery_animation = 0
+        self.recovery_counter = 0
         self.direction = 0
         self.shoot_avail = True
         self.shoot_avail_counter = 0
         self.sprites = []
+        self.recovery_spr = []
         self.laser_spr = []
         self.particlesmanager = context.particlesmanager
 
@@ -75,6 +83,9 @@ class Player(actor.Actor):
         for l in xrange(0, len(laser)):
             self.laser_spr.insert(l, self.context.resourcemanager.get(laser[l]))
 
+        for r in xrange(0, 4):
+            self.recovery_spr.insert(r, self.context.resourcemanager.get('playerrecovery'+str(r)))
+
         self.current_level = current_level
         self.context.laser_spr = self.laser_spr
 
@@ -87,14 +98,33 @@ class Player(actor.Actor):
         self.direction = 1
         self.firing = False
         self.lasers = []
+        self.thrust = 107
+        self.bullets = 107
+        self.life = 100
+        self.lives = 3
+        self.recovery_mode = False
+        self.recovery_animation = 0
+        self.recovery_counter = 0
+        self.shoot_avail = True
+        self.shoot_avail_counter = 0
 
     def run(self):
-        self.animation += self.direction
+        if self.recovery_mode:
+            self.recovery_animation += 1
+            self.life += .3
 
-        if self.animation == 15:
-            self.animation = 0
-        if self.animation < 0:
-            self.animation = 14
+            if self.life >= 100:
+                self.recovery_mode = False
+
+            if self.recovery_animation == 4:
+                self.recovery_animation = 0
+        else:
+            self.animation += self.direction
+
+            if self.animation == 15:
+                self.animation = 0
+            if self.animation < 0:
+                self.animation = 14
 
         if self.firing:
             self.shoot()
@@ -114,9 +144,12 @@ class Player(actor.Actor):
                 self.shoot_avail_counter = 0
 
     def render(self, screen):
-        screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
-        for l in self.lasers:
-            l.render(screen)
+        if not self.recovery_mode:
+            screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
+            for l in self.lasers:
+                l.render(screen)
+        else:
+            screen.blit(self.recovery_spr[self.recovery_animation], (self.x - 8 - 16, self.y - 8 - 16))
 
     def shoot(self):
         laser = None

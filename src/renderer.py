@@ -146,4 +146,4 @@ class Renderer(object):
         self.screen.virt.blit(self.tmp, (0, 0), (self.player.x - 128, self.player.y - 72, 256, 144))
 
         # Board rendering
-        self.screen.virt.blit(self.board, (0, 144))
+        self.board.render(self.screen.virt)
