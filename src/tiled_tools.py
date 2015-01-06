@@ -3,6 +3,8 @@ import io
 import pygame
 import xml.etree.ElementTree as ElementTree
 
+import item
+
 
 class TiledLoaderError(Exception):
     def __init__(self, value):
@@ -105,6 +107,7 @@ class TiledLevel(object):
         self.tiles = []
         self.hard_tiles = []
         self.animated_tiles = {}
+        self.items = {}
         self.zf = zf
         self.start_tile = 0
         self.start_point = None
@@ -171,6 +174,63 @@ class TiledLevel(object):
             raise TiledLoaderError(_('Unable to find animations layer in level data.'))
 
         return animated_tiles
+
+    def __load_special_info(self):
+        found = False
+        special = {}
+
+        for obj in self.root.findall('objectgroup'):
+
+            if obj.get(TiledLevel.NAME) == TiledLevel.SPECIAL:
+                found = True
+
+                for o in obj.findall('object'):
+                    objx = o.get('x')
+                    objy = o.get('y')
+                    objw = o.get('width')
+                    objh = o.get('height')
+
+                    item_name = ''
+                    properties = {}
+
+                    for prop in o.findall('properties'):
+                        for p in prop.findall('property'):
+                            pname = p.get(TiledLevel.NAME)
+                            pvalue = p.get(TiledLevel.VALUE)
+                            properties.update({pname: pvalue})
+
+                    special.update({''.join([objx, ' ', objy, ' ', objw, ' ', objh]): properties})
+
+        if not found:
+            raise TiledLoaderError(_('Unable to find special layer in level data.'))
+
+        return special
+
+    def __parse_items_info(self, special):
+        items = []
+
+        for s in special:
+            item_name = None
+            item_unlocks = None
+            
+            for a in special[s]:
+
+                if a == 'item':
+                    item_name = special[s].get(a)
+
+                if a == 'unlocks':
+                    item_unlocks = int(special[s].get(a))
+                    
+            if item_name is not None:
+                data = s.split(' ') 
+                item_x = int(data[0])
+                item_y = int(data[1])
+                item_w = int(data[2])
+                item_h = int(data[3])
+    
+                items.append(item.ItemBuilder.build(item_name, (item_x, item_y), (item_w, item_h)))
+
+        return items
 
     def __load_tileset_info(self):
         tilesets = []
@@ -325,6 +385,10 @@ class TiledLevel(object):
 
         # Read animations info
         self.animated_tiles = self.__load_animations_info()
+
+        # Read special layer info
+        special = self.__load_special_info()
+        self.items = self.__parse_items_info(special)
 
         # Read layers info
         self.layers = self.__load_layers_info()
