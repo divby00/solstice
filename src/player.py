@@ -161,6 +161,7 @@ class Player(actor.Actor):
 
     def use_item(self):
         item = self.selected_item
+        item.run(self)
 
     def shoot(self):
         laser = None

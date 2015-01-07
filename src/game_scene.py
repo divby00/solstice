@@ -26,6 +26,10 @@ class GameScene(scene.Scene):
         self.animations = context.resourcemanager.animations
         self.resourcemanager = context.resourcemanager
         self.laser = context.resourcemanager.get('laser')
+        self.use_item = context.resourcemanager.get('accept')
+        self.no_item = context.resourcemanager.get('cancel')
+        self.bulletsup = context.resourcemanager.get('bulletsup')
+        self.thrustup = context.resourcemanager.get('thrustup')
         self.song = context.resourcemanager.get('level01_song')
         self.music = self.song
         self.get_menu()
@@ -57,19 +61,33 @@ class GameScene(scene.Scene):
             if self.control.on(control.Control.RIGHT):
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
-                #if not self.player.check_right_collision(self.current_level):
-                self.player.direction = 1
-                self.player.x += self.renderobj.speed[0]
+
+                if not self.player.check_right_collision(self.current_level):
+                    self.player.direction = 1
+                    self.player.x += self.renderobj.speed[0]
+
             if self.control.on(control.Control.LEFT):
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
-                #if not self.player.check_left_collision(self.current_level):
-                self.player.direction = -1
-                self.player.x -= self.renderobj.speed[0]
 
-            if self.control.on(control.Control.DOWN):
-                self.player.life -= 1
+                if not self.player.check_left_collision(self.current_level):
+                    self.player.direction = -1
+                    self.player.x -= self.renderobj.speed[0]
+
+            if self.control.on(control.Control.UP) and self.player.thrust > 0:
+                self.player.recovery_counter = 0
+                self.player.recovery_mode = False
+                self.player.thrust -= .1
+                if not self.player.check_upper_collision(self.current_level):
+                    self.player.y -= self.renderobj.speed[1]
+            else:
+                if not self.player.check_bottom_collision(self.current_level):
+                    self.player.y += self.renderobj.speed[1]
+
+            if self.control.on(control.Control.DOWN) and self.player.shoot_avail:
+                self.player.recovery_mode = False
                 # Checks if player is over an item
+                item_found = False
 
                 for i in self.items:
                     x = self.player.x
@@ -79,6 +97,7 @@ class GameScene(scene.Scene):
 
                     if x + 8 >= i.x and x - 8 <= i.x + i.w and y + 8 >= i.y and y - 8 <= i.y + i.h:
                         # Player is over an item
+                        item_found = True
 
                         if not self.player.selected_item:
                             self.player.selected_item = i
@@ -92,17 +111,11 @@ class GameScene(scene.Scene):
                             tmp_item.x, tmp_item.y = x, y
                             self.items.append(tmp_item)
                             self.renderobj.change_animation((i.x, i.y), tmp_item.name)
+                if item_found:
+                    self.use_item.play()
+                else:
+                    self.no_item.play()
             
-            if self.control.on(control.Control.UP) and self.player.thrust > 0:
-                self.player.recovery_counter = 0
-                self.player.recovery_mode = False
-                self.player.thrust -= .1
-                if not self.player.check_upper_collision(self.current_level):
-                    self.player.y -= self.renderobj.speed[1]
-            else:
-                if not self.player.check_bottom_collision(self.current_level):
-                    self.player.y += self.renderobj.speed[1]
-
             if self.control.on(control.Control.ACTION1) and self.player.shoot_avail and self.player.bullets > 0:
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
@@ -111,7 +124,14 @@ class GameScene(scene.Scene):
                 self.player.bullets -= .3
 
             if self.control.on(control.Control.ACTION2):
-                self.player.using_item = True
+                if self.player.selected_item is not None:
+                    self.player.life -= 1
+                    self.player.using_item = True
+                    self.thrustup.play()
+                else:
+                    self.no_item.play()
+
+            if self.control.on(control.Control.START):
                 self.menu_group.visible = True
 
         self.player.run()

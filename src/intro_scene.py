@@ -153,7 +153,7 @@ class IntroScene(scene.Scene):
         pygame.mixer.music.load(self.music)
         self.stars = Stars(context.resourcemanager,
                            (self.menu_image.get_width(), 145))
-        self.skip_text = self.font_white.get(_('Press action 2 to skip'), 256)
+        self.skip_text = self.font_white.get(_('Press start to skip'), 256)
         self.intro_text = []
         self.intro_text.insert(0, self.font_white.get(_('In a very near place...'), 256))
         self.intro_text.insert(1, self.font_white.get(_('...a nuclear plant is going to blow!!!'), 256))
@@ -179,7 +179,7 @@ class IntroScene(scene.Scene):
     def run(self):
         self.menu_group.run()
 
-        if self.control.on(control.Control.ACTION2):
+        if self.control.on(control.Control.START):
             self.title_anim = 12
             self.background_x_position = 196
 

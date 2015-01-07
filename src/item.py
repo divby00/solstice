@@ -11,7 +11,7 @@ class Item(object):
         self.active = True
         self.sprite = None
 
-    def run(self):
+    def run(self, player):
         raise NotImplementedError('Implement this method')
 
     def __repr__(self):
@@ -24,8 +24,9 @@ class ItemBarrel(Item):
     def __init__(self, position, size, unlocks):
         super(ItemBarrel, self).__init__('barrel', position, size, unlocks)
 
-    def run(self):
-        print('Barrel beh')
+    def run(self, player):
+        player.thrust = 107
+        player.selected_item = None
 
 
 class ItemBattery(Item):
@@ -33,8 +34,9 @@ class ItemBattery(Item):
     def __init__(self, position, size, unlocks):
         super(ItemBattery, self).__init__('battery', position, size, unlocks)
 
-    def run(self):
-        pass
+    def run(self, player):
+        player.bullets = 107
+        player.selected_item = None
 
 
 class ItemU(Item):
@@ -42,7 +44,7 @@ class ItemU(Item):
     def __init__(self, position, size, unlocks):
         super(ItemU, self).__init__('U', position, size, unlocks)
 
-    def run(self):
+    def run(self, player):
         pass
 
 
@@ -51,7 +53,7 @@ class ItemDrill(Item):
     def __init__(self, position, size, unlocks):
         super(ItemDrill, self).__init__('drill', position, size, unlocks)
 
-    def run(self):
+    def run(self, player):
         pass
 
 
@@ -60,7 +62,7 @@ class ItemKey(Item):
     def __init__(self, position, size, unlocks):
         super(ItemKey, self).__init__('key', position, size, unlocks)
 
-    def run(self):
+    def run(self, player):
         pass
 
 
@@ -69,7 +71,7 @@ class ItemTeleport(Item):
     def __init__(self, position, size, unlocks):
         super(ItemTeleport, self).__init__('teleport_pass', position, size, unlocks)
 
-    def run(self):
+    def run(self, player):
         pass
 
 
@@ -78,7 +80,7 @@ class ItemTnt(Item):
     def __init__(self, position, size, unlocks):
         super(ItemTnt, self).__init__('tnt', position, size, unlocks)
 
-    def run(self):
+    def run(self, player):
         pass
 
 
@@ -87,7 +89,7 @@ class ItemWaste(Item):
     def __init__(self, position, size, unlocks):
         super(ItemWaste, self).__init__('waste', position, size, unlocks)
 
-    def run(self):
+    def run(self, player):
         pass
 
 

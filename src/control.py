@@ -68,6 +68,7 @@ class Control(object):
     RIGHT = 'right'
     ACTION1 = 'action1'
     ACTION2 = 'action2'
+    START = 'start'
 
     def __init__(self, context):
         self.cfg = context.cfg
@@ -85,6 +86,7 @@ class Control(object):
             actions.append(ControlAction(Control.RIGHT, self.cfg.key_right))
             actions.append(ControlAction(Control.ACTION1, self.cfg.key_act1))
             actions.append(ControlAction(Control.ACTION2, self.cfg.key_act2))
+            actions.append(ControlAction(Control.START, self.cfg.key_start))
             devices.append(KeyboardInput(actions))
 
         if self.cfg.control_type in ['autodetect', 'joystick']:

@@ -28,6 +28,7 @@ class Configuration(object):
     OPT_KEY_RIGHT = 'key right'
     OPT_KEY_ACTION_1 = 'key action 1'
     OPT_KEY_ACTION_2 = 'key action 2'
+    OPT_KEY_START = 'key start'
 
     ''' Default values '''
     DATA_PATH = './'
@@ -47,6 +48,7 @@ class Configuration(object):
     KEY_RIGHT = 100
     KEY_ACTION_1 = 117
     KEY_ACTION_2 = 105
+    KEY_START = 13
 
     def __init__(self):
         self.parser = ConfigParser.ConfigParser()
@@ -98,6 +100,8 @@ class Configuration(object):
                     Configuration.SECTION[3], Configuration.OPT_KEY_ACTION_1)
                 self.key_act2 = self.parser.getint(
                     Configuration.SECTION[3], Configuration.OPT_KEY_ACTION_2)
+                self.key_start = self.parser.getint(
+                    Configuration.SECTION[3], Configuration.OPT_KEY_START)
             else:
                 self.__set_default_values()
 
@@ -164,6 +168,9 @@ class Configuration(object):
         self.parser.set(Configuration.SECTION[3],
                         Configuration.OPT_KEY_ACTION_2,
                         Configuration.KEY_ACTION_2)
+        self.parser.set(Configuration.SECTION[3],
+                        Configuration.OPT_KEY_START,
+                        Configuration.KEY_START)
         self.save()
         self.data_path = Configuration.DATA_PATH
         self.locale_path = Configuration.LOCALE_PATH
@@ -181,6 +188,7 @@ class Configuration(object):
         self.key_right = Configuration.KEY_RIGHT
         self.key_act1 = Configuration.KEY_ACTION_1
         self.key_act2 = Configuration.KEY_ACTION_2
+        self.key_start = Configuration.KEY_START
 
     @staticmethod
     def __check_correct_values(option, read_value):
