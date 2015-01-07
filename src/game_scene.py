@@ -83,6 +83,7 @@ class GameScene(scene.Scene):
                         if not self.player.selected_item:
                             self.player.selected_item = i
                             self.items.remove(i)
+                            self.renderobj.change_animation((i.x, i.y), None)
                         else:
                             tmp_item = self.player.selected_item
                             self.player.selected_item = i
@@ -90,6 +91,7 @@ class GameScene(scene.Scene):
                             self.items.remove(i)
                             tmp_item.x, tmp_item.y = x, y
                             self.items.append(tmp_item)
+                            self.renderobj.change_animation((i.x, i.y), tmp_item.name)
             
             if self.control.on(control.Control.UP) and self.player.thrust > 0:
                 self.player.recovery_counter = 0

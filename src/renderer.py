@@ -92,6 +92,20 @@ class Renderer(object):
             else:
                 self.forepatterns.append(Pattern(int(animx) + 256, int(animy) + 144, animname))
 
+    def change_animation(self, position, new_anim):
+        for b in self.backpatterns:
+            if b.x == position[0] and b.y == position[1]:
+                if new_anim is None:
+                    self.backpatterns.remove(b)
+                else:
+                    b.animation_name = new_anim
+        for b in self.forepatterns:
+            if b.x == position[0] and b.y == position[1]:
+                if new_anim is None:
+                    self.forepatterns.remove(b)
+                else:
+                    b.animation_name = new_anim
+
     def run(self):
         for b in self.backpatterns:
             anim = self.animations.get(b.animation_name)
@@ -130,9 +144,6 @@ class Renderer(object):
             anim = self.animations.get(b.animation_name)
             img = anim.images.get(str(anim.frames[anim.active_frame].id))
             self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
-
-        for i in self.items:
-            self.tmp.blit(i.sprite, (i.x, i.y))
 
         # Player rendering
         self.player.render(self.tmp)

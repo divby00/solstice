@@ -67,7 +67,7 @@ class ItemKey(Item):
 class ItemTeleport(Item):
     
     def __init__(self, position, size, unlocks):
-        super(ItemTeleport, self).__init__('teleport', position, size, unlocks)
+        super(ItemTeleport, self).__init__('teleport_pass', position, size, unlocks)
 
     def run(self):
         pass
