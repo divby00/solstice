@@ -15,6 +15,7 @@ class Renderer(object):
         self.screen = context.screen
         self.level = context.current_level
         self.player = context.player
+        self.items = context.items
         self.animations = context.animations
         self.particlesmanager = context.particlesmanager
         self.player = context.player
@@ -129,6 +130,9 @@ class Renderer(object):
             anim = self.animations.get(b.animation_name)
             img = anim.images.get(str(anim.frames[anim.active_frame].id))
             self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
+
+        for i in self.items:
+            self.tmp.blit(i.sprite, (i.x, i.y))
 
         # Player rendering
         self.player.render(self.tmp)

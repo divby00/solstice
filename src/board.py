@@ -22,6 +22,7 @@ class Board(object):
     def render(self, screen):
         pygame.draw.rect(self.board, (0, 0, 0), (136, 17, 112, 22), 0)
         pygame.draw.rect(self.board, (0, 0, 0), (44, 16, 16, 16), 0)
+        pygame.draw.rect(self.board, (0, 0, 0), (12, 16, 16, 16), 0)
 
         # Render player life
         if self.player.life < 0:
@@ -68,7 +69,12 @@ class Board(object):
         for i in xrange(0, bullets):
             self.board.blit(selected_bar[1], (138 + i, 25))
         self.board.blit(selected_bar[2], (138 + bullets, 25))
-        
+
         # Render time bar TODO
+
+        # Render selected item
+        if self.player.selected_item is not None:
+            item = self.player.selected_item
+            self.board.blit(item.sprite, (12, 16))
 
         screen.blit(self.board, (0, 144))

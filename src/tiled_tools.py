@@ -222,13 +222,7 @@ class TiledLevel(object):
                     item_unlocks = int(special[s].get(a))
                     
             if item_name is not None:
-                data = s.split(' ') 
-                item_x = int(data[0])
-                item_y = int(data[1])
-                item_w = int(data[2])
-                item_h = int(data[3])
-    
-                items.append(item.ItemBuilder.build(item_name, (item_x, item_y), (item_w, item_h)))
+                items.append(''.join([item_name, ' ', s, ' ', str(item_unlocks)]))
 
         return items
 
@@ -371,33 +365,61 @@ class TiledLevel(object):
         return exit_point
 
     def __load(self, xml_data):
+        # XML parsing
+        before = pygame.time.get_ticks()
         self.root = ElementTree.fromstring(xml_data)
+        after = pygame.time.get_ticks()
+        print('\tLEVEL: resources.xml parsed in %d milliseconds.' % (after - before))
 
         # Read basic map info
+        before = pygame.time.get_ticks()
         self.map = self.__load_map_info()
+        after = pygame.time.get_ticks()
+        print('\tLEVEL: Map loaded in %d milliseconds.' % (after - before))
 
         # Read tileset info
+        before = pygame.time.get_ticks()
         self.tilesets = self.__load_tileset_info()
         self.tiles = self.__load_tileset_graphics()
+        after = pygame.time.get_ticks()
+        print('\tLEVEL: Tileset info loaded in %d milliseconds.' % (after - before))
 
         # Read back info. Back info is the first image being rendered.
+        before = pygame.time.get_ticks()
         self.back = self.__load_back_info()
+        after = pygame.time.get_ticks()
+        print('\tLEVEL: Back info loaded in %d milliseconds.' % (after - before))
 
         # Read animations info
+        before = pygame.time.get_ticks()
         self.animated_tiles = self.__load_animations_info()
+        after = pygame.time.get_ticks()
+        print('\tLEVEL: Animations info loaded in %d milliseconds.' % (after - before))
 
         # Read special layer info
+        before = pygame.time.get_ticks()
         special = self.__load_special_info()
         self.items = self.__parse_items_info(special)
+        after = pygame.time.get_ticks()
+        print('\tLEVEL: Special info loaded in %d milliseconds.' % (after - before))
 
         # Read layers info
+        before = pygame.time.get_ticks()
         self.layers = self.__load_layers_info()
+        after = pygame.time.get_ticks()
+        print('\tLEVEL: Layers info loaded in %d milliseconds.' % (after - before))
 
         # Get starting point
+        before = pygame.time.get_ticks()
         self.start_point = self.__get_start_point()
+        after = pygame.time.get_ticks()
+        print('\tLEVEL: Start point info loaded in %d milliseconds.' % (after - before))
 
         # Get exit point
+        before = pygame.time.get_ticks()
         self.exit_point = self.__get_exit_point()
+        after = pygame.time.get_ticks()
+        print('\tLEVEL: Exit info loaded in %d milliseconds.' % (after - before))
 
     def get_gid(self, x, y, name):
         for l in self.layers:

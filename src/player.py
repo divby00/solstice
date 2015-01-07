@@ -54,6 +54,8 @@ class Player(actor.Actor):
         self.bullets = 107
         self.life = 100
         self.lives = 3
+        self.using_item = False
+        self.selected_item = None
         self.animation = 0
         self.recovery_mode = False
         self.recovery_animation = 0
@@ -102,6 +104,8 @@ class Player(actor.Actor):
         self.bullets = 107
         self.life = 100
         self.lives = 3
+        self.using_item = False
+        self.selected_item = None
         self.recovery_mode = False
         self.recovery_animation = 0
         self.recovery_counter = 0
@@ -125,6 +129,10 @@ class Player(actor.Actor):
                 self.animation = 0
             if self.animation < 0:
                 self.animation = 14
+
+        if self.using_item:
+            self.use_item()
+            self.using_item = False
 
         if self.firing:
             self.shoot()
@@ -150,6 +158,9 @@ class Player(actor.Actor):
                 l.render(screen)
         else:
             screen.blit(self.recovery_spr[self.recovery_animation], (self.x - 8 - 16, self.y - 8 - 16))
+
+    def use_item(self):
+        item = self.selected_item
 
     def shoot(self):
         laser = None

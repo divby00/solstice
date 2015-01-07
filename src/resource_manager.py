@@ -37,6 +37,7 @@ class ResourceManager(object):
         self.actual_resource = 0
 
         for resource in root.findall('resource'):
+            before = pygame.time.get_ticks()
             if resource.get('type') == 'gfx':
                 self.__load_gfx(resource)
                 self.actual_resource += 1
@@ -55,7 +56,10 @@ class ResourceManager(object):
             elif resource.get('type') == 'animation':
                 self.__load_animation(resource)
                 self.actual_resource += 1
+            after = pygame.time.get_ticks()
+            print('Resource %s loaded in %d milliseconds.' % (resource.get('name'), (after - before)))
             self.__update_load_screen(context.scr)
+
 
         self.__update_load_screen(context.scr)
         pygame.time.delay(200)
@@ -137,7 +141,10 @@ class ResourceManager(object):
 
     def __load_level(self, resource):
         src, name = self.__get_common_info(resource)
+        before = pygame.time.get_ticks()
         lvl_data = self.zf.read(src)
+        after = pygame.time.get_ticks()
+        print('\tLEVEL: File read in %d milliseconds.' % (after - before))
 
         if lvl_data is not None:
             level = tiled_tools.TiledLevel(self.zf, lvl_data)
