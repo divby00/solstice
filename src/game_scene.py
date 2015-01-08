@@ -109,24 +109,21 @@ class GameScene(scene.Scene):
                             item_found = True
                             self.player.get_item_available = False
                             self.player.get_item_counter = 0
+                            self.use_item.play()
 
                             if not self.player.selected_item:
-                                print('B')
-                                self.use_item.play()
                                 self.player.selected_item = i
                                 self.items.remove(i)
                                 self.renderobj.change_animation((i.x, i.y), None)
                             else:
-                                print('A')
-                                print(i.name)
-                                self.use_item.play()
                                 tmp_item = self.player.selected_item
-                                self.player.selected_item = i
                                 x, y = i.x, i.y
+                                self.player.selected_item = i
                                 self.items.remove(i)
                                 tmp_item.x, tmp_item.y = x, y
                                 self.items.append(tmp_item)
                                 self.renderobj.change_animation((i.x, i.y), tmp_item.name)
+                                break
             
             if self.control.on(control.Control.ACTION1) and self.player.shoot_avail and self.player.bullets > 0:
                 self.player.recovery_counter = 0
