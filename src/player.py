@@ -55,6 +55,8 @@ class Player(actor.Actor):
         self.life = 100
         self.lives = 3
         self.using_item = False
+        self.get_item_available = True
+        self.get_item_counter = 5
         self.selected_item = None
         self.animation = 0
         self.recovery_mode = False
@@ -106,6 +108,8 @@ class Player(actor.Actor):
         self.lives = 3
         self.using_item = False
         self.selected_item = None
+        self.get_item_counter = 5
+        self.get_item_available = True
         self.recovery_mode = False
         self.recovery_animation = 0
         self.recovery_counter = 0

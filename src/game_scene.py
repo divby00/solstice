@@ -50,6 +50,12 @@ class GameScene(scene.Scene):
             self.menu_group.run()
         else:
 
+            if self.player.get_item_counter < 5:
+                self.player.get_item_counter += 1
+                
+                if self.player.get_item_counter == 5:
+                    self.player.get_item_available = True
+
             if not self.player.recovery_mode and self.player.life < 100:
 
                 if self.player.recovery_counter < 100 :
@@ -62,17 +68,17 @@ class GameScene(scene.Scene):
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
 
-                if not self.player.check_right_collision(self.current_level):
-                    self.player.direction = 1
-                    self.player.x += self.renderobj.speed[0]
+                # if not self.player.check_right_collision(self.current_level):
+                self.player.direction = 1
+                self.player.x += self.renderobj.speed[0]
 
             if self.control.on(control.Control.LEFT):
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
 
-                if not self.player.check_left_collision(self.current_level):
-                    self.player.direction = -1
-                    self.player.x -= self.renderobj.speed[0]
+                # if not self.player.check_left_collision(self.current_level):
+                self.player.direction = -1
+                self.player.x -= self.renderobj.speed[0]
 
             if self.control.on(control.Control.UP) and self.player.thrust > 0:
                 self.player.recovery_counter = 0
@@ -84,37 +90,43 @@ class GameScene(scene.Scene):
                 if not self.player.check_bottom_collision(self.current_level):
                     self.player.y += self.renderobj.speed[1]
 
-            if self.control.on(control.Control.DOWN) and self.player.shoot_avail:
+            if self.control.on(control.Control.DOWN):
                 self.player.recovery_mode = False
-                # Checks if player is over an item
-                item_found = False
+                self.player.recovery_counter = 0
 
-                for i in self.items:
+                # Checks if player is over an item
+                if self.player.get_item_available:
+                    item_found = False
                     x = self.player.x
                     y = self.player.y
                     w = self.player.w
                     h = self.player.h
 
-                    if x + 8 >= i.x and x - 8 <= i.x + i.w and y + 8 >= i.y and y - 8 <= i.y + i.h:
-                        # Player is over an item
-                        item_found = True
+                    for i in self.items:
 
-                        if not self.player.selected_item:
-                            self.player.selected_item = i
-                            self.items.remove(i)
-                            self.renderobj.change_animation((i.x, i.y), None)
-                        else:
-                            tmp_item = self.player.selected_item
-                            self.player.selected_item = i
-                            x, y = i.x, i.y
-                            self.items.remove(i)
-                            tmp_item.x, tmp_item.y = x, y
-                            self.items.append(tmp_item)
-                            self.renderobj.change_animation((i.x, i.y), tmp_item.name)
-                if item_found:
-                    self.use_item.play()
-                else:
-                    self.no_item.play()
+                        if x + 8 >= i.x and x - 8 <= i.x + i.w and y + 8 >= i.y and y - 8 <= i.y + i.h:
+                            # Player is over an item
+                            item_found = True
+                            self.player.get_item_available = False
+                            self.player.get_item_counter = 0
+
+                            if not self.player.selected_item:
+                                print('B')
+                                self.use_item.play()
+                                self.player.selected_item = i
+                                self.items.remove(i)
+                                self.renderobj.change_animation((i.x, i.y), None)
+                            else:
+                                print('A')
+                                print(i.name)
+                                self.use_item.play()
+                                tmp_item = self.player.selected_item
+                                self.player.selected_item = i
+                                x, y = i.x, i.y
+                                self.items.remove(i)
+                                tmp_item.x, tmp_item.y = x, y
+                                self.items.append(tmp_item)
+                                self.renderobj.change_animation((i.x, i.y), tmp_item.name)
             
             if self.control.on(control.Control.ACTION1) and self.player.shoot_avail and self.player.bullets > 0:
                 self.player.recovery_counter = 0
@@ -124,6 +136,9 @@ class GameScene(scene.Scene):
                 self.player.bullets -= .3
 
             if self.control.on(control.Control.ACTION2):
+                self.player.recovery_counter = 0
+                self.player.recovery_mode = False
+
                 if self.player.selected_item is not None:
                     self.player.life -= 1
                     self.player.using_item = True
