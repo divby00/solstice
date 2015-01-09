@@ -59,6 +59,11 @@ class ItemUnlocker(Item):
                     # Delete item
                     self.player.selected_item = None
 
+                    # Generate explosion particles
+                    exp_particles = self.game_context.particlesmanager.get('exp')
+                    exp_particles.generate((l.x, l.x + l.w, l.y, l.y + l.h))
+                    self.game_context.exp.play()
+
 
 class ItemBarrel(Item):
 

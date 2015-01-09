@@ -38,11 +38,23 @@ class ExplosionParticles(Particles):
     def __init__(self, context, name):
         super(ExplosionParticles, self).__init__(context, name)
 
-    def run(self):
-        pass
+    def generate(self, position):
+        for x in xrange(0,20):
+            particle = Particle(random.randint(position[0] - 16, position[1] - 16), random.randint(position[2] - 16, position[3] - 16),
+                                True, random.randint(-6, 0))
+            self.particle_list.append(particle)
 
-    def render(self):
-        pass
+    def run(self):
+        for p in self.particle_list:
+            if p.frame < 6:
+                p.frame += 1
+            else:
+                self.particle_list.remove(p)
+
+    def render(self, screen):
+        for p in self.particle_list:
+            if -1 < p.frame < 6:
+                screen.blit(self.spr[p.frame], (p.x, p.y))
 
 
 class SmokeParticles(Particles):

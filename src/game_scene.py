@@ -21,7 +21,9 @@ class GameScene(scene.Scene):
         self.renderobj = None
         self.particlesmanager = particles_manager.ParticlesManager()
         beam_particles = particles.BeamParticles(context, 'hit')
+        exp_particles = particles.ExplosionParticles(context, 'exp')
         self.particlesmanager.register_particles(beam_particles)
+        self.particlesmanager.register_particles(exp_particles)
         context.particlesmanager = self.particlesmanager
         self.player = player.Player(context, self.level01)
         self.board = board.Board(context, self.player)
@@ -33,6 +35,7 @@ class GameScene(scene.Scene):
         self.bulletsup = context.resourcemanager.get('bulletsup')
         self.thrustup = context.resourcemanager.get('thrustup')
         self.song = context.resourcemanager.get('level01_song')
+        self.exp = context.resourcemanager.get('exp')
         self.music = self.song
         self.get_menu()
 
