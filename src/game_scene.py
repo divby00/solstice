@@ -40,10 +40,13 @@ class GameScene(scene.Scene):
         self.player.on_start()
         self.menu_group.visible = False
         self.current_level = self.level01
-        self.locks = lock.LockBuilder.build(self.resourcemanager, self.current_level.locks)
-        self.items = item.ItemBuilder.build(self.resourcemanager, self.current_level.items)
+        self.locks = lock.LockBuilder.build(self, self.resourcemanager, self.current_level.locks)
+        self.items = item.ItemBuilder.build(self, self.resourcemanager, self.current_level.items)
         self.renderobj = renderer.Renderer(self)
         self.music.play(-1)
+
+    def get_game_context(self):
+        return self
 
     def on_quit(self):
         self.music.stop()

@@ -1,6 +1,6 @@
 class Lock(object):
 
-    def __init__(self, id, position, size):
+    def __init__(self, game_context, id, position, size):
         self.id = id
         self.x, self.y = position[0] + 256, position[1] + 144
         self.w, self.h = size
@@ -10,7 +10,7 @@ class Lock(object):
 class LockBuilder(object):
 
     @staticmethod
-    def build(resourcemanager, locks):
+    def build(game_context, resourcemanager, locks):
 
         results = []
 
@@ -25,7 +25,7 @@ class LockBuilder(object):
             lock = None
             position = (x, y)
             size = (w, h)
-            lock = Lock(id, (x, y), (w, h))
+            lock = Lock(game_context, id, (x, y), (w, h))
             results.append(lock)
 
         return results
