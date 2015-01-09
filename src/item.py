@@ -11,7 +11,7 @@ class Item(object):
         self.active = True
         self.sprite = None
 
-    def run(self, player):
+    def run(self, player, locks, rendererobj):
         raise NotImplementedError('Implement this method')
 
     def __repr__(self):
@@ -24,7 +24,7 @@ class ItemBarrel(Item):
     def __init__(self, position, size, unlocks):
         super(ItemBarrel, self).__init__('barrel', position, size, unlocks)
 
-    def run(self, player):
+    def run(self, player, locks, rendererobj):
         player.thrust = 107
         player.selected_item = None
 
@@ -34,7 +34,7 @@ class ItemBattery(Item):
     def __init__(self, position, size, unlocks):
         super(ItemBattery, self).__init__('battery', position, size, unlocks)
 
-    def run(self, player):
+    def run(self, player, locks, rendererobj):
         player.bullets = 107
         player.selected_item = None
 
@@ -44,7 +44,7 @@ class ItemU(Item):
     def __init__(self, position, size, unlocks):
         super(ItemU, self).__init__('U', position, size, unlocks)
 
-    def run(self, player):
+    def run(self, player, locks, rendererobj):
         pass
 
 
@@ -53,7 +53,7 @@ class ItemDrill(Item):
     def __init__(self, position, size, unlocks):
         super(ItemDrill, self).__init__('drill', position, size, unlocks)
 
-    def run(self, player):
+    def run(self, player, locks, rendererobj):
         pass
 
 
@@ -62,7 +62,7 @@ class ItemKey(Item):
     def __init__(self, position, size, unlocks):
         super(ItemKey, self).__init__('key', position, size, unlocks)
 
-    def run(self, player):
+    def run(self, player, locks, rendererobj):
         pass
 
 
@@ -71,7 +71,7 @@ class ItemTeleport(Item):
     def __init__(self, position, size, unlocks):
         super(ItemTeleport, self).__init__('teleport_pass', position, size, unlocks)
 
-    def run(self, player):
+    def run(self, player, locks, rendererobj):
         pass
 
 
@@ -80,8 +80,31 @@ class ItemTnt(Item):
     def __init__(self, position, size, unlocks):
         super(ItemTnt, self).__init__('tnt', position, size, unlocks)
 
-    def run(self, player):
-        pass
+    def run(self, player, locks, rendererobj):
+
+        # Check if selected item can unlock
+        if player.selected_item.unlocks:
+            x = player.x
+            y = player.y
+            w = player.w
+            h = player.h
+            
+            for l in locks:
+                # Check if player is near a lock
+                if x + 8 >= l.x - 8 and x - 8 <= l.x + l.w + 8 and y + 8 >= l.y - 8 and y - 8 <= l.y + l.h + 8:
+                    
+                    # Check if selected_item unlocks the nearby lock
+                    if player.selected_item.unlocks == l.id:
+                        print(player.selected_item.unlocks, l.id)
+                        
+                        # Open the lock
+                        renderobj.change_animation((l.x, l.y), None)
+
+                        # Delete item
+                        player.selected_item = None
+
+                        # TODO Remove hard zones
+                        pass
 
 
 class ItemWaste(Item):
@@ -89,7 +112,7 @@ class ItemWaste(Item):
     def __init__(self, position, size, unlocks):
         super(ItemWaste, self).__init__('waste', position, size, unlocks)
 
-    def run(self, player):
+    def run(self, player, locks, rendererobj):
         pass
 
 
@@ -124,7 +147,7 @@ class ItemBuilder(object):
             item = None
             position = (item_x, item_y)
             size = (item_w, item_h)
-            unlocks = item_unlocks
+            unlocks = item_unlocks if item_unlocks != 'None' else None
 
             if item_name == 'barrel':
                 item = ItemBarrel(position, size, unlocks)

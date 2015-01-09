@@ -1,6 +1,7 @@
 import pygame
 import board
 import control
+import lock
 import item
 import player
 import scene
@@ -14,6 +15,7 @@ class GameScene(scene.Scene):
     def __init__(self, context, name='game', scene_speed=25):
         super(GameScene, self).__init__(context, name, scene_speed)
         self.screen = context.scr
+        self.locks = None
         self.items = None
         self.level01 = context.resourcemanager.get('level01')
         self.renderobj = None
@@ -38,6 +40,7 @@ class GameScene(scene.Scene):
         self.player.on_start()
         self.menu_group.visible = False
         self.current_level = self.level01
+        self.locks = lock.LockBuilder.build(self.resourcemanager, self.current_level.locks)
         self.items = item.ItemBuilder.build(self.resourcemanager, self.current_level.items)
         self.renderobj = renderer.Renderer(self)
         self.music.play(-1)
