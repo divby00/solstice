@@ -45,8 +45,11 @@ class GameScene(scene.Scene):
         self.renderobj = renderer.Renderer(self)
         self.music.play(-1)
 
-    def get_game_context(self):
-        return self
+    def get_renderer(self):
+        return self.renderobj
+
+    def get_layers(self):
+        return self.current_level.layers
 
     def on_quit(self):
         self.music.stop()
@@ -145,9 +148,7 @@ class GameScene(scene.Scene):
                 if self.player.selected_item is not None:
                     self.player.life -= 1
                     self.player.using_item = True
-                    self.thrustup.play()
-                else:
-                    self.no_item.play()
+                    self.use_item.play()
 
             if self.control.on(control.Control.START):
                 self.menu_group.visible = True

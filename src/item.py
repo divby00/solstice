@@ -1,4 +1,5 @@
 from gettext import gettext as _
+import game_scene
 
 
 class Item(object):
@@ -7,9 +8,9 @@ class Item(object):
         self.name = name
         self.x, self.y = position[0] + 256, position[1] + 144
         self.w, self.h = size
-        self.unlocks = unlocks
         self.active = True
         self.sprite = None
+        self.unlocks = unlocks
         self.game_context = game_context
         self.player = game_context.player
         self.locks = game_context.locks
@@ -25,7 +26,7 @@ class Item(object):
 class ItemUnlocker(Item):
 
     def __init__(self, game_context, name, position, size, unlocks):
-        super(ItemUnlocker, self).__init__(game_context, 'tnt', position, size, unlocks)
+        super(ItemUnlocker, self).__init__(game_context, name, position, size, unlocks)
     
     def run(self):
         x = self.player.x
@@ -36,22 +37,34 @@ class ItemUnlocker(Item):
         # Check if player is near a lock
         for l in self.locks:
             if x + 8 >= l.x - 8 and x - 8 <= l.x + l.w + 8 and y + 8 >= l.y - 8 and y - 8 <= l.y + l.h + 8:
+
                 # Check if selected_item unlocks the nearby lock
                 if self.player.selected_item.unlocks == l.id:
                     
                     # Open the lock
-                    # self.renderer.change_animation((l.x, l.y), None)
+                    self.game_context.get_renderer().change_animation((l.x, l.y), None)
+
+                    # Remove hard zones
+                    # TODO Test if this code works!!!
+                    for la in self.game_context.get_layers():
+                        if la.name == 'hard':
+                            gx = (l.x - 256) / 8
+                            gy = (l.y - 144) / 8
+                            gw = l.w / 8
+                            gh = l.h / 8
+
+                            for a in xrange(gy, gy + gh):
+                                for i in xrange(gx, gx + gw):
+                                    la.set_gid(i, a, 0)
 
                     # Delete item
-                     self.player.selected_item = None
-
-                    # TODO Remove hard zones
+                    self.player.selected_item = None
 
 
 class ItemBarrel(Item):
 
-    def __init__(self, game_context, position, size, unlocks):
-        super(ItemBarrel, self).__init__(game_context, 'barrel', position, size, unlocks)
+    def __init__(self, game_context, position, size):
+        super(ItemBarrel, self).__init__(game_context, 'barrel', position, size, None)
 
     def run(self):
         self.player.thrust = 107
@@ -60,8 +73,8 @@ class ItemBarrel(Item):
 
 class ItemBattery(Item):
     
-    def __init__(self, game_context, position, size, unlocks):
-        super(ItemBattery, self).__init__(game_context, 'battery', position, size, unlocks)
+    def __init__(self, game_context, position, size):
+        super(ItemBattery, self).__init__(game_context, 'battery', position, size, None)
 
     def run(self):
         self.player.bullets = 107
@@ -70,8 +83,8 @@ class ItemBattery(Item):
 
 class ItemU(Item):
     
-    def __init__(self, game_context, position, size, unlocks):
-        super(ItemU, self).__init__(game_context, 'U', position, size, unlocks)
+    def __init__(self, game_context, position, size):
+        super(ItemU, self).__init__(game_context, 'U', position, size, None)
 
     def run(self):
         pass
@@ -97,8 +110,8 @@ class ItemKey(ItemUnlocker):
 
 class ItemTeleport(Item):
     
-    def __init__(self, game_context, position, size, unlocks):
-        super(ItemTeleport, self).__init__(game_context, 'teleport_pass', position, size, unlocks)
+    def __init__(self, game_context, position, size):
+        super(ItemTeleport, self).__init__(game_context, 'teleport_pass', position, size, None)
 
     def run(self):
         pass
@@ -115,8 +128,8 @@ class ItemTnt(ItemUnlocker):
 
 class ItemWaste(Item):
     
-    def __init__(self, game_context, position, size, unlocks):
-        super(ItemWaste, self).__init__(game_context, 'waste', position, size, unlocks)
+    def __init__(self, game_context, position, size):
+        super(ItemWaste, self).__init__(game_context, 'waste', position, size, None)
 
     def run(self):
         pass
@@ -144,7 +157,6 @@ class ItemBuilder(object):
             item_y = int(item_elements[2])
             item_w = int(item_elements[3])
             item_h = int(item_elements[4])
-            item_unlocks = item_elements[5]
 
             if item_name not in ['barrel', 'battery', 'drill', 'key',
                                  'teleport_pass', 'tnt', 'waste']:
@@ -153,28 +165,27 @@ class ItemBuilder(object):
             item = None
             position = (item_x, item_y)
             size = (item_w, item_h)
-            unlocks = item_unlocks if item_unlocks != 'None' else None
 
             if item_name == 'barrel':
-                item = ItemBarrel(game_context, position, size, unlocks)
+                item = ItemBarrel(game_context, position, size)
 
             if item_name == 'battery':
-                item = ItemBattery(game_context, position, size, unlocks)
+                item = ItemBattery(game_context, position, size)
 
             if item_name == 'drill':
-                item = ItemDrill(game_context, position, size, unlocks)
+                item = ItemDrill(game_context, position, size, item_elements[5])
 
             if item_name == 'key':
-                item = ItemKey(game_context, position, size, unlocks)
+                item = ItemKey(game_context, position, size, item_elements[5])
 
             if item_name == 'teleport_pass':
-                item = ItemTeleport(game_context, position, size, unlocks)
+                item = ItemTeleport(game_context, position, size)
 
             if item_name == 'tnt':
-                item = ItemTnt(game_context, position, size, unlocks)
+                item = ItemTnt(game_context, position, size, item_elements[5])
 
             if item_name == 'waste':
-                item = ItemWaste(game_context, position, size, unlocks)
+                item = ItemWaste(game_context, position, size)
 
             sprite = ''.join(['item_', item_name])
             item.sprite = resourcemanager.get(sprite)

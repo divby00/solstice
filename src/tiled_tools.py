@@ -63,6 +63,9 @@ class Layer(object):
 
         return False
 
+    def set_gid(self, x, y, gid):
+        self.data[(y * self.size[0]) + x] = gid
+
     def get_gid(self, x, y):
 
         if x < 0 or y < 0:
