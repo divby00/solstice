@@ -28,4 +28,17 @@ class LockBuilder(object):
             lock = Lock(game_context, id, (x, y), (w, h))
             results.append(lock)
 
+        # Rebuild hard tiles destroyed when player unlocks some gate.
+        for la in game_context.current_level.layers:
+            if la.name == 'hard':
+                for l in results:
+                    gx = (l.x - 256) / 8
+                    gy = (l.y - 144) / 8
+                    gw = l.w / 8
+                    gh = l.h / 8
+
+                    for a in xrange(gy, gy + gh):
+                        for i in xrange(gx, gx + gw):
+                            la.set_gid(i, a, game_context.current_level.hard_tiles[0])
+            
         return results

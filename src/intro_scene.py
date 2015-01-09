@@ -223,7 +223,7 @@ class IntroScene(scene.Scene):
 
         if 0 < self.title_anim < 12:
             tmp_surface = pygame.Surface((self.title_imgs[0].get_width(),
-                                          self.title_anim)).convert()
+                                          self.title_anim)).convert_alpha()
             tmp_surface.fill((0, 0, 0, 0))
             pygame.transform.scale(self.title_imgs[0],
                                    (self.title_imgs[0].get_width(),

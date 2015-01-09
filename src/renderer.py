@@ -71,6 +71,25 @@ class Renderer(object):
                     posx = 0
                     posy += 8
 
+        # Draws hard zones. 
+        # TODO Remove this. Only for debugging purpose!!
+        '''
+        for l in self.level.layers:
+            if l.name == 'hard':
+                posx = posy = 0
+                for a in xrange(0, level_size[1] / 8):
+                    for i in xrange(0, level_size[0] / 8):
+                        gid = l.get_gid(i, a)
+                        if gid in self.level.hard_tiles:
+                            walls.blit(self.level.tiles[518].srfc, (posx, posy))
+                        else:
+                            walls.blit(self.level.tiles[1].srfc,(posx, posy))
+                        posx += 8
+                    posx = 0
+                    posy += 8
+        '''
+        # End debugging walls
+
         x = (back.get_width() / 2) - (walls.get_width() / 2)
         y = (back.get_height() / 2) - (walls.get_height() / 2)
         back.blit(walls, (x, y))

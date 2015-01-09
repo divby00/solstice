@@ -33,6 +33,18 @@ class Particles(object):
         raise NotImplementedError('Implement this method')
 
 
+class ExplosionParticles(Particles):
+    
+    def __init__(self, context, name):
+        super(ExplosionParticles, self).__init__(context, name)
+
+    def run(self):
+        pass
+
+    def render(self):
+        pass
+
+
 class SmokeParticles(Particles):
     def __init__(self, context, name):
         super(SmokeParticles, self).__init__(context, name)

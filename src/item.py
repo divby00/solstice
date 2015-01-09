@@ -45,7 +45,6 @@ class ItemUnlocker(Item):
                     self.game_context.get_renderer().change_animation((l.x, l.y), None)
 
                     # Remove hard zones
-                    # TODO Test if this code works!!!
                     for la in self.game_context.get_layers():
                         if la.name == 'hard':
                             gx = (l.x - 256) / 8
