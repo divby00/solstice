@@ -1,4 +1,5 @@
 import actor
+import teleport
 
 
 class Laser(actor.Actor):
@@ -54,6 +55,9 @@ class Player(actor.Actor):
         self.bullets = 107
         self.life = 100
         self.lives = 3
+        self.teleporting = False
+        self.teleport_animation = -1
+        self.destiny = None
         self.flying = False
         self.using_item = False
         self.get_item_available = True
@@ -62,13 +66,14 @@ class Player(actor.Actor):
         self.selected_item = None
         self.animation = 0
         self.recovery_mode = False
-        self.recovery_animation = 0
+        self.recovery_animation = -1
         self.recovery_counter = 0
         self.direction = 0
         self.shoot_avail = True
         self.shoot_avail_counter = 0
         self.sprites = []
         self.recovery_spr = []
+        self.teleport_spr = []
         self.laser_spr = []
         self.magnetic_fields = None
         self.current_level = None
@@ -94,34 +99,41 @@ class Player(actor.Actor):
         for r in xrange(0, 4):
             self.recovery_spr.insert(r, self.context.resourcemanager.get('playerrecovery'+str(r)))
 
+        for r in xrange(0, 5):
+            self.teleport_spr.insert(r, self.context.resourcemanager.get('playerteleport'+str(r)))
+
         self.context.laser_spr = self.laser_spr
 
     def on_start(self, game_context):
         self.magnetic_fields = game_context.magnetic_fields
         self.current_level = game_context.current_level
+        self.teleports = game_context.teleports
         self.w = self.sprites[0].get_width()
         self.h = self.sprites[0].get_height()
         self.x = ((self.current_level.start_point[0]) + 256 + 8)
         self.y = ((self.current_level.start_point[1]) + 144 + 8)
         self.animation = 0
         self.direction = 1
+        self.teleporting = False
+        self.teleport_animation = -1
+        self.destiny = None
         self.firing = False
+        self.using_item = False
+        self.flying = False
         self.lasers = []
         self.thrust = 107
         self.bullets = 107
         self.life = 100
         self.lives = 3
-        self.using_item = False
         self.selected_item = None
         self.get_item_counter = 5
         self.get_item_available = True
         self.getting_item = False
         self.recovery_mode = False
-        self.recovery_animation = 0
+        self.recovery_animation = -1
         self.recovery_counter = 0
         self.shoot_avail = True
         self.shoot_avail_counter = 0
-        self.flying = False
 
     def run(self):
         if not self.flying:
@@ -135,7 +147,20 @@ class Player(actor.Actor):
                 self.recovery_mode = False
 
             if self.recovery_animation == 4:
-                self.recovery_animation = 0
+                self.recovery_animation = -1
+        elif self.teleporting:
+            self.teleport_animation += 1
+
+            if self.teleport_animation >= 5:
+                self.teleport_animation = -1
+                self.teleporting = False
+                self.x = self.destiny.x + 8
+                self.y = self.destiny.y + 8
+                id = self.destiny.id
+
+                for destiny in self.teleports:
+                    if id == destiny.id and destiny.x + 8 != self.x or destiny.y + 8 != self.y:
+                        self.destiny = destiny
         else:
             self.animation += self.direction
 
@@ -166,12 +191,14 @@ class Player(actor.Actor):
                 self.shoot_avail_counter = 0
 
     def render(self, screen):
-        if not self.recovery_mode:
+        if not self.recovery_mode and not self.teleporting:
             screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
             for l in self.lasers:
                 l.render(screen)
-        else:
+        elif self.recovery_mode:
             screen.blit(self.recovery_spr[self.recovery_animation], (self.x - 8 - 16, self.y - 8 - 16))
+        elif self.teleporting:
+            screen.blit(self.teleport_spr[self.teleport_animation], (self.x - 8, self.y - 8))
 
     def use_item(self):
         item = self.selected_item
@@ -223,12 +250,22 @@ class Player(actor.Actor):
 
     def __goes_down(self):
         for m in self.magnetic_fields:
-            if self.x - 8 >= m.position[0] and self.x + 8 <= m.position[0] + m.size[0]:
+
+            if self.x - 8 >= m.position[0] and self.x + 8 <= m.position[0] + m.size[0] and \
+               self.y - 8 >= m.position[1] and self.y + 8 <= m.position[1] + m.size[1]:
+
                 if not self.check_upper_collision(self.current_level):
                     self.y -= 4
             else:
+
                 if not self.check_bottom_collision(self.current_level):
                     self.y += 4
+
+    def check_in_active_teleport(self, level):
+        for t in self.teleports:
+            if t.status != teleport.Teleport.INACTIVE and self.x + 8 >= t.x and self.x - 8 <= t.x + t.w + 8 and self.y - 8 == t.y:
+                return True
+        return False
 
     def check_right_collision(self, level):
         calculated_x = int(((self.x - 8 ) + self.w) / level.map.tilewidth) - 32

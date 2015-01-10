@@ -1,5 +1,7 @@
 from gettext import gettext as _
+
 import game_scene
+import teleport
 
 
 class Item(object):
@@ -14,6 +16,7 @@ class Item(object):
         self.game_context = game_context
         self.player = game_context.player
         self.locks = game_context.locks
+        self.teleports = game_context.teleports
 
     def run(self):
         raise NotImplementedError('Implement this method')
@@ -118,7 +121,22 @@ class ItemTeleport(Item):
         super(ItemTeleport, self).__init__(game_context, 'teleport_pass', position, size, None)
 
     def run(self):
-        pass
+        x = self.player.x
+        y = self.player.y
+        w = self.player.w
+        h = self.player.h
+        
+        # Check if player is near a teleport machine, in that case prepare both teleport machines
+        for t in self.teleports:
+            if x + 8 >= t.x - 8 and x - 8 <= t.x + t.w + 16 and y + 8 >= t.y - 8 and y - 8 <= t.y + t.h + 8:
+                t.status = teleport.Teleport.ACTIVE
+
+                for destiny in self.teleports:
+                    if destiny.id == t.id and (destiny.x != t.x or destiny.y != t.y):
+                        destiny.status = teleport.Teleport.ACTIVE
+                        self.player.destiny = destiny
+
+                self.player.selected_item = None
 
 
 class ItemTnt(ItemUnlocker):

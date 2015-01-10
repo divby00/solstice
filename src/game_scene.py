@@ -2,6 +2,7 @@ import pygame
 import board
 import control
 import magnetic
+import teleport
 import lock
 import item
 import player
@@ -18,6 +19,7 @@ class GameScene(scene.Scene):
         self.screen = context.scr
         self.locks = None
         self.items = None
+        self.teleports = None
         self.magnetic_fields = None
         self.level01 = context.resourcemanager.get('level01')
         self.current_level = None
@@ -46,6 +48,7 @@ class GameScene(scene.Scene):
         self.menu_group.visible = False
         self.current_level = self.level01
         self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
+        self.teleports = teleport.TeleportBuilder.build(self.current_level.teleports)
         self.locks = lock.LockBuilder.build(self, self.resourcemanager, self.current_level.locks)
         self.items = item.ItemBuilder.build(self, self.resourcemanager, self.current_level.items)
         self.renderobj = renderer.Renderer(self)
@@ -106,6 +109,10 @@ class GameScene(scene.Scene):
 
                 if not self.player.check_upper_collision(self.current_level):
                     self.player.y -= self.renderobj.speed[1]
+
+                    # Check if player is in teleport
+                    if self.player.check_in_active_teleport(self.current_level):
+                        self.player.teleporting = True
             else:
                 pass
                 '''
@@ -148,14 +155,15 @@ class GameScene(scene.Scene):
                                 self.renderobj.change_animation((i.x, i.y), tmp_item.name)
                                 break
             
-            if self.control.on(control.Control.ACTION1) and self.player.shoot_avail and self.player.bullets > 0:
+            if self.control.on(control.Control.ACTION1) and self.player.shoot_avail and \
+               self.player.bullets > 0 and not self.player.teleporting:
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
                 self.laser.play()
                 self.player.firing = True
                 self.player.bullets -= .3
 
-            if self.control.on(control.Control.ACTION2):
+            if self.control.on(control.Control.ACTION2) and not self.player.teleporting:
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
 
@@ -167,7 +175,8 @@ class GameScene(scene.Scene):
             if self.control.on(control.Control.START):
                 self.menu_group.visible = True
 
-        self.player.run()
+            self.player.run()
+
         self.particlesmanager.run()
         self.renderobj.run()
 
