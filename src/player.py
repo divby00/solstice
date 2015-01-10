@@ -44,7 +44,7 @@ class Laser(actor.Actor):
 
 
 class Player(actor.Actor):
-    def __init__(self, context, current_level):
+    def __init__(self, context, game_context):
         super(Player, self).__init__(context)
         self.x = 0
         self.y = 0
@@ -54,6 +54,7 @@ class Player(actor.Actor):
         self.bullets = 107
         self.life = 100
         self.lives = 3
+        self.flying = False
         self.using_item = False
         self.get_item_available = True
         self.get_item_counter = 5
@@ -69,6 +70,8 @@ class Player(actor.Actor):
         self.sprites = []
         self.recovery_spr = []
         self.laser_spr = []
+        self.magnetic_fields = None
+        self.current_level = None
         self.particlesmanager = context.particlesmanager
 
         player = ['player0', 'player1', 'player2', 'player3',
@@ -91,10 +94,11 @@ class Player(actor.Actor):
         for r in xrange(0, 4):
             self.recovery_spr.insert(r, self.context.resourcemanager.get('playerrecovery'+str(r)))
 
-        self.current_level = current_level
         self.context.laser_spr = self.laser_spr
 
-    def on_start(self):
+    def on_start(self, game_context):
+        self.magnetic_fields = game_context.magnetic_fields
+        self.current_level = game_context.current_level
         self.w = self.sprites[0].get_width()
         self.h = self.sprites[0].get_height()
         self.x = ((self.current_level.start_point[0]) + 256 + 8)
@@ -117,8 +121,12 @@ class Player(actor.Actor):
         self.recovery_counter = 0
         self.shoot_avail = True
         self.shoot_avail_counter = 0
+        self.flying = False
 
     def run(self):
+        if not self.flying:
+            self.__goes_down()
+
         if self.recovery_mode:
             self.recovery_animation += 1
             self.life += .3
@@ -212,6 +220,15 @@ class Player(actor.Actor):
                             a -= 4
                         return a
         return 256
+
+    def __goes_down(self):
+        for m in self.magnetic_fields:
+            if self.x - 8 >= m.position[0] and self.x + 8 <= m.position[0] + m.size[0]:
+                if not self.check_upper_collision(self.current_level):
+                    self.y -= 4
+            else:
+                if not self.check_bottom_collision(self.current_level):
+                    self.y += 4
 
     def check_right_collision(self, level):
         calculated_x = int(((self.x - 8 ) + self.w) / level.map.tilewidth) - 32

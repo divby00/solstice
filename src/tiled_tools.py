@@ -112,6 +112,7 @@ class TiledLevel(object):
         self.animated_tiles = {}
         self.items = {}
         self.locks = {}
+        self.magnetic_fields = {}
         self.zf = zf
         self.start_tile = 0
         self.start_point = None
@@ -224,6 +225,15 @@ class TiledLevel(object):
                         locks.append(''.join([lock_id, ' ', s]))
 
         return locks
+
+    def __parse_magnetic_info(self, special):
+        magnetic_fields = []
+
+        for s in special:
+            for a in special[s]:
+                if a == 'magnetic':
+                    magnetic_fields.append(s)
+        return magnetic_fields
     
     def __parse_items_info(self, special):
         items = []
@@ -418,8 +428,8 @@ class TiledLevel(object):
         # Read special layer info
         before = pygame.time.get_ticks()
         special = self.__load_special_info()
+        self.magnetic_fields = self.__parse_magnetic_info(special)
         self.locks = self.__parse_locks_info(special)
-        print(self.locks)
         self.items = self.__parse_items_info(special)
         after = pygame.time.get_ticks()
         print('\tLEVEL: Special info loaded in %d milliseconds.' % (after - before))

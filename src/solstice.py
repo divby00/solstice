@@ -47,7 +47,7 @@ class Solstice(object):
     def __platform_specific_inits():
         if platform.system() == 'Windows':
             os.environ['SDL_AUDIODRIVER'] = 'dsound'
-
+        
         os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 

@@ -1,6 +1,7 @@
 import pygame
 import board
 import control
+import magnetic
 import lock
 import item
 import player
@@ -17,7 +18,9 @@ class GameScene(scene.Scene):
         self.screen = context.scr
         self.locks = None
         self.items = None
+        self.magnetic_fields = None
         self.level01 = context.resourcemanager.get('level01')
+        self.current_level = None
         self.renderobj = None
         self.particlesmanager = particles_manager.ParticlesManager()
         beam_particles = particles.BeamParticles(context, 'hit')
@@ -25,7 +28,7 @@ class GameScene(scene.Scene):
         self.particlesmanager.register_particles(beam_particles)
         self.particlesmanager.register_particles(exp_particles)
         context.particlesmanager = self.particlesmanager
-        self.player = player.Player(context, self.level01)
+        self.player = player.Player(context, self)
         self.board = board.Board(context, self.player)
         self.animations = context.resourcemanager.animations
         self.resourcemanager = context.resourcemanager
@@ -40,12 +43,13 @@ class GameScene(scene.Scene):
         self.get_menu()
 
     def on_start(self):
-        self.player.on_start()
         self.menu_group.visible = False
         self.current_level = self.level01
+        self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
         self.locks = lock.LockBuilder.build(self, self.resourcemanager, self.current_level.locks)
         self.items = item.ItemBuilder.build(self, self.resourcemanager, self.current_level.items)
         self.renderobj = renderer.Renderer(self)
+        self.player.on_start(self)
         self.music.play(-1)
 
     def get_renderer(self):
@@ -61,6 +65,8 @@ class GameScene(scene.Scene):
         if self.menu_group.visible:
             self.menu_group.run()
         else:
+
+            self.player.flying = False
 
             if self.player.get_item_counter < 5:
                 self.player.get_item_counter += 1
@@ -80,27 +86,32 @@ class GameScene(scene.Scene):
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
 
-                # if not self.player.check_right_collision(self.current_level):
-                self.player.direction = 1
-                self.player.x += self.renderobj.speed[0]
+                if not self.player.check_right_collision(self.current_level):
+                    self.player.direction = 1
+                    self.player.x += self.renderobj.speed[0]
 
             if self.control.on(control.Control.LEFT):
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
 
-                # if not self.player.check_left_collision(self.current_level):
-                self.player.direction = -1
-                self.player.x -= self.renderobj.speed[0]
+                if not self.player.check_left_collision(self.current_level):
+                    self.player.direction = -1
+                    self.player.x -= self.renderobj.speed[0]
 
             if self.control.on(control.Control.UP) and self.player.thrust > 0:
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
                 self.player.thrust -= .1
+                self.player.flying = True
+
                 if not self.player.check_upper_collision(self.current_level):
                     self.player.y -= self.renderobj.speed[1]
             else:
+                pass
+                '''
                 if not self.player.check_bottom_collision(self.current_level):
                     self.player.y += self.renderobj.speed[1]
+                '''
 
             if self.control.on(control.Control.DOWN):
                 self.player.recovery_mode = False
