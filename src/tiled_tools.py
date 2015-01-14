@@ -1,7 +1,7 @@
 from gettext import gettext as _
 import io
 import pygame
-import xml.etree.ElementTree as ElementTree
+import xml.etree.cElementTree as ElementTree
 
 import item
 
