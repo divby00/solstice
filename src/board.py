@@ -40,9 +40,9 @@ class Board(object):
 
         thrust = int(round(self.player.thrust))
 
-        if thrust > 66:
+        if thrust > 70:
             selected_bar = self.bluebar
-        elif thrust > 33 and thrust <= 66:
+        elif thrust > 35 and thrust <= 70:
             selected_bar = self.greenbar
         else:
             selected_bar = self.redbar
@@ -58,9 +58,9 @@ class Board(object):
 
         bullets = int(round(self.player.bullets))
 
-        if bullets > 66:
+        if bullets > 70:
             selected_bar = self.bluebar
-        elif bullets > 33 and bullets <= 66:
+        elif bullets > 35 and bullets <= 70:
             selected_bar = self.greenbar
         else:
             selected_bar = self.redbar
