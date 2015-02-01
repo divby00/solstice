@@ -38,13 +38,14 @@ class Map(object):
     '''
     Contains level and tile sizes.
     '''
-    def __init__(self, width, height, tilewidth, tileheight):
+    def __init__(self, width, height, tilewidth, tileheight, enemy_data):
         self.width = width
         self.height = height
         self.tilewidth = tilewidth
         self.tileheight = tileheight
         self.width_pixels = width * tilewidth
         self.height_pixels = height * tileheight
+        self.enemy_data = enemy_data
 
 
 class Layer(object):
@@ -121,10 +122,21 @@ class TiledLevel(object):
         self.__load(xml_data)
 
     def __load_map_info(self):
-       return Map(int(self.root.get(TiledLevel.WIDTH)),
+
+        ''' Reads global enemy data such as max. number of enemies and enemy frecuency '''
+        enemy_data = {}
+
+        for properties in self.root.findall('properties'):
+            for prop in properties.findall('property'):
+                name = prop.get(TiledLevel.NAME)
+                value = prop.get(TiledLevel.VALUE)
+                enemy_data[name] = value
+
+        return Map(int(self.root.get(TiledLevel.WIDTH)),
                   int(self.root.get(TiledLevel.HEIGHT)),
                   int(self.root.get(TiledLevel.TILEWIDTH)),
-                  int(self.root.get(TiledLevel.TILEHEIGHT)))
+                  int(self.root.get(TiledLevel.TILEHEIGHT)),
+                  enemy_data)
 
     def __load_back_info(self):
         source = None

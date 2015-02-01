@@ -10,6 +10,7 @@ import scene
 import particles_manager
 import particles
 import renderer
+import enemy
 
 
 class GameScene(scene.Scene):
@@ -21,6 +22,7 @@ class GameScene(scene.Scene):
         self.items = None
         self.teleports = None
         self.magnetic_fields = None
+        self.enemies = None
         self.level01 = context.resourcemanager.get('level01')
         self.current_level = None
         self.renderobj = None
@@ -47,6 +49,7 @@ class GameScene(scene.Scene):
     def on_start(self):
         self.menu_group.visible = False
         self.current_level = self.level01
+        self.enemies = enemy.EnemyBuilder.build(self)
         self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
         self.teleports = teleport.TeleportBuilder.build(self.current_level.teleports)
         self.locks = lock.LockBuilder.build(self, self.resourcemanager, self.current_level.locks)

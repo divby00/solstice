@@ -193,12 +193,6 @@ class ItemBuilder(object):
                 item_name.startswith('card'): 
                 raise UnknownItemError(_('Unable to build %s item') % item_name)
 
-            '''
-            if item_elements[0].startswith('card'):
-                item_name = item_elements[0][:4]
-                card_id = item_elements[0][-2:]
-            '''
-
             item = None
             position = (item_x, item_y)
             size = (item_w, item_h)
