@@ -68,6 +68,14 @@ class ItemUnlocker(Item):
                     self.game_context.exp.play()
 
 
+class ItemBomb(Item):
+
+    def __init__(self, game_context, position, size):
+        super(ItemBomb, self).__init__(game_context, 'bomb', position, size, None)
+
+    def run(self):
+        pass
+
 class ItemBarrel(Item):
 
     def __init__(self, game_context, position, size):
@@ -88,10 +96,11 @@ class ItemBattery(Item):
         self.player.selected_item = None
 
 
-class ItemU(Item):
+class ItemCard(Item):
     
-    def __init__(self, game_context, position, size):
-        super(ItemU, self).__init__(game_context, 'U', position, size, None)
+    def __init__(self, game_context, position, size, card_id):
+        super(ItemCard, self).__init__(game_context, ''.join(['card', card_id]), position, size, None)
+        self.card_id = card_id
 
     def run(self):
         pass
@@ -180,9 +189,15 @@ class ItemBuilder(object):
             item_w = int(item_elements[3])
             item_h = int(item_elements[4])
 
-            if item_name not in ['barrel', 'battery', 'drill', 'key',
-                                 'teleport_pass', 'tnt', 'waste']:
+            if item_name not in ['barrel', 'battery', 'drill', 'key', 'teleport_pass', 'tnt', 'waste', 'bomb'] and not \
+                item_name.startswith('card'): 
                 raise UnknownItemError(_('Unable to build %s item') % item_name)
+
+            '''
+            if item_elements[0].startswith('card'):
+                item_name = item_elements[0][:4]
+                card_id = item_elements[0][-2:]
+            '''
 
             item = None
             position = (item_x, item_y)
@@ -193,6 +208,13 @@ class ItemBuilder(object):
 
             if item_name == 'battery':
                 item = ItemBattery(game_context, position, size)
+
+            if item_name == 'bomb':
+                item = ItemBomb(game_context, position, size)
+
+            if item_name.startswith('card'):
+                card_id = item_name[-2:]
+                item = ItemCard(game_context, position, size, card_id)
 
             if item_name == 'drill':
                 item = ItemDrill(game_context, position, size, item_elements[5])
@@ -210,6 +232,7 @@ class ItemBuilder(object):
                 item = ItemWaste(game_context, position, size)
 
             sprite = ''.join(['item_', item_name])
+            print('Sprite:'+sprite)
             item.sprite = resourcemanager.get(sprite)
             results.append(item)
 
