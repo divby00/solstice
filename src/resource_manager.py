@@ -42,11 +42,13 @@ class ResourceManager(object):
                 self.__load_gfx(resource)
                 self.actual_resource += 1
             elif resource.get('type') == 'music':
-                self.__load_song(resource)
-                self.actual_resource += 1
+                if context.cfg.music:
+                    self.__load_song(resource)
+                    self.actual_resource += 1
             elif resource.get('type') == 'sample':
-                self.__load_sample(resource)
-                self.actual_resource += 1
+                if context.cfg.sound:
+                    self.__load_sample(resource)
+                    self.actual_resource += 1
             elif resource.get('type') == 'font':
                 self.__load_font(resource)
                 self.actual_resource += 1

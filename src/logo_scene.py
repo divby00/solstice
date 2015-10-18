@@ -8,8 +8,9 @@ class LogoScene(scene.Scene):
 
     def __init__(self, context, name='logo', scene_speed=30):
         super(LogoScene, self).__init__(context, name, scene_speed)
+        self.sound_player = context.sound_player
         self.logo = context.resourcemanager.get('logo')
-        self.logo_sound = context.resourcemanager.get('logo_sound')
+        self.logo_sound = self.sound_player.load_sample(['logo_sound'])
         self.dither = []
         dither_images = [
             'dither0', 'dither1', 'dither2',
@@ -30,7 +31,7 @@ class LogoScene(scene.Scene):
 
         if not self.playing:
             self.playing = True
-            self.logo_sound.play()
+            self.sound_player.play_sample('logo_sound')
 
         if self.dither_anim > -1 and self.fading == 0:
             self.dither_anim -= 1

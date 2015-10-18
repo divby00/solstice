@@ -34,14 +34,20 @@ class GameScene(scene.Scene):
         self.board = board.Board(context, self.player)
         self.animations = context.resourcemanager.animations
         self.resourcemanager = context.resourcemanager
+        self.sound_player = context.sound_player
+        self.sound_player.load_sample([
+            'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song'
+        ])
+        '''
         self.laser = context.resourcemanager.get('laser')
         self.use_item = context.resourcemanager.get('accept')
         self.no_item = context.resourcemanager.get('cancel')
         self.bulletsup = context.resourcemanager.get('bulletsup')
         self.thrustup = context.resourcemanager.get('thrustup')
-        self.song = context.resourcemanager.get('level01_song')
         self.exp = context.resourcemanager.get('exp')
-        self.music = self.song
+        '''
+        # self.song = context.resourcemanager.get('level01_song')
+        # self.music = self.song
         self.get_menu()
 
     def on_start(self):
@@ -54,7 +60,7 @@ class GameScene(scene.Scene):
         self.items = item.ItemBuilder.build(self, self.resourcemanager, self.current_level.items)
         self.renderobj = renderer.Renderer(self)
         self.player.on_start(self)
-        self.music.play(-1)
+        self.sound_player.play_sample('level01_song')
 
     def get_renderer(self):
         return self.renderobj
@@ -63,7 +69,8 @@ class GameScene(scene.Scene):
         return self.current_level.layers
 
     def on_quit(self):
-        self.music.stop()
+        self.sound_player.stop()
+        # self.sound_player.stop_music()
 
     def run(self):
         if self.menu_group.visible:
@@ -140,7 +147,8 @@ class GameScene(scene.Scene):
                             item_found = True
                             self.player.get_item_available = False
                             self.player.get_item_counter = 0
-                            self.use_item.play()
+                            self.sound_player.play_sample('accept')
+                            # self.use_item.play()
 
                             if not self.player.selected_item:
                                 self.player.selected_item = i
@@ -160,7 +168,8 @@ class GameScene(scene.Scene):
                     and self.player.shoot_avail and self.player.bullets > 0 and not self.player.teleporting:
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
-                self.laser.play()
+                self.sound_player.play_sample('laser')
+                # self.laser.play()
                 self.player.firing = True
                 self.player.bullets -= .3
 
@@ -171,7 +180,8 @@ class GameScene(scene.Scene):
                 if self.player.selected_item is not None:
                     self.player.life -= 1
                     self.player.using_item = True
-                    self.use_item.play()
+                    self.sound_player.play_sample('accept')
+                    # self.use_item.play()
 
             if self.control.on(control.Control.START):
                 self.menu_group.visible = True

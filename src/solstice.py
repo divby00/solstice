@@ -15,6 +15,7 @@ import logo_scene
 import intro_scene
 import game_scene
 import screen
+import sound_player
 
 
 class Solstice(object):
@@ -23,12 +24,16 @@ class Solstice(object):
         self.cfg = config.Configuration()
         gettext.bindtextdomain('solstice', self.cfg.locale_path)
         gettext.textdomain('solstice')
-        pygame.mixer.pre_init(22050, -16, 2, 1024)
+
+        if self.cfg.sound or self.cfg.music:
+            pygame.mixer.pre_init(22050, -16, 2, 1024)
+
         pygame.init()
         self.scr = screen.Screen(self.cfg, _('Solstice'))
         self.control = control.Control(self)
         self.resourcemanager = resource_manager.ResourceManager(self,
                                                                 'data.zip')
+        self.sound_player = sound_player.SoundPlayer(self)
         self.scenes = {
             'logo': logo_scene.LogoScene(self),
             'intro': intro_scene.IntroScene(self),

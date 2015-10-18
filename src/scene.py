@@ -18,9 +18,13 @@ class Scene(object):
         self.font_white = context.resourcemanager.get('font_white')
         self.font_blue = context.resourcemanager.get('font_blue')
         self.font_yellow = context.resourcemanager.get('font_yellow')
+        self.sound_player = context.sound_player
+        self.sound_player.load_sample(['blip', 'accept', 'cancel'])
+        '''
         self.blip = context.resourcemanager.get('blip')
         self.accept = context.resourcemanager.get('accept')
         self.cancel = context.resourcemanager.get('cancel')
+        '''
         self.panel_imgs = []
         panel = ['panel0', 'panel1', 'panel2',
                  'panel3', 'panel4', 'panel5',
@@ -32,7 +36,7 @@ class Scene(object):
 
         self.menu_context = (self.panel_imgs,
                              (self.font_white, self.font_blue, self.font_yellow),
-                             (self.blip, self.accept, self.cancel),
+                             self.sound_player,
                              self.control)
 
     def on_start(self):

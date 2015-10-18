@@ -68,7 +68,7 @@ class MenuGroup(object):
         self.menu_list = menu_list
         self.panel_imgs = menu_context[0]
         self.fonts = menu_context[1]
-        self.sounds = menu_context[2]
+        self.sound_player = menu_context[2]
         self.control = menu_context[3]
         self.visible = False
         self.accept = False
@@ -112,21 +112,21 @@ class MenuGroup(object):
 
             if self.control.on(control.Control.UP):
                 menu.selected_option -= 1
-                self.sounds[0].play()
+                self.sound_player.play_sample('blip')
 
                 if menu.selected_option == -1:
                     menu.selected_option = len(menu.items) - 1
 
             if self.control.on(control.Control.DOWN):
                 menu.selected_option += 1
-                self.sounds[0].play()
+                self.sound_player.play_sample('blip')
 
                 if menu.selected_option == len(menu.items):
                     menu.selected_option = 0
 
             if self.control.on(control.Control.ACTION1):
                 self.accept = True
-                self.sounds[1].play()
+                self.sound_player.play_sample('accept')
                 item = menu.items[menu.selected_option]
 
                 if item.function is not None:
@@ -140,7 +140,7 @@ class MenuGroup(object):
                     self.seloption = self.selected_menu.selected_option
 
             if self.control.on(control.Control.ACTION2):
-                self.sounds[2].play()
+                self.sound_player.play_sample('cancel')
                 parent = self.__get_menu(menu.parent_menu_name)
 
                 if parent:

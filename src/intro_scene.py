@@ -149,8 +149,8 @@ class IntroScene(scene.Scene):
         self.sun = context.resourcemanager.get('sun')
         self.plant = context.resourcemanager.get('plant')
         self.font_dither = context.resourcemanager.get('font_dither')
-        self.music = context.resourcemanager.get('menu_song')
-        pygame.mixer.music.load(self.music)
+        self.sound_player = context.sound_player
+        self.sound_player.load_music('menu_song')
         self.stars = Stars(context.resourcemanager,
                            (self.menu_image.get_width(), 145))
         self.skip_text = self.font_white.get(_('Press start to skip'), 256)
@@ -170,11 +170,10 @@ class IntroScene(scene.Scene):
         self.title_fade = -1
         self.credits.on_start()
         self.menu_group.visible = False
-        pygame.mixer.music.play(-1)
+        self.sound_player.play_music()
 
-    @staticmethod
-    def on_quit():
-        pygame.mixer.music.stop()
+    def on_quit(self):
+        self.sound_player.stop_music()
 
     def run(self):
         self.menu_group.run()
