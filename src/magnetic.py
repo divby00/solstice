@@ -1,15 +1,12 @@
 class Magnetic(object):
-
     def __init__(self, position, size):
         self.position = position[0] + 256, position[1] + 144
         self.size = size
 
 
 class MagneticBuilder(object):
-
     @staticmethod
     def build(magnetic_fields):
-
         results = []
 
         for m in magnetic_fields:
@@ -24,5 +21,5 @@ class MagneticBuilder(object):
             size = (w, h)
             magnetic_field = Magnetic((x, y), (w, h))
             results.append(magnetic_field)
-            
+
         return results

@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#title              :image_scaler.py
-#description        :asks the user for a horizontal and vertical value and scales all\
-#					the images found in the path with the provided factor.
-#author             :divby0
-#date               :20140802
-#version            :0.2
+# title              :image_scaler.py
+# description        :asks the user for a horizontal and vertical value and scales all\
+#                     the images found in the path with the provided factor.
+# author             :divby0
+# date               :20140802
+# version            :0.2
 
 import os
 import argparse
 import pygame as pg
-
 
 SCALE_FACTOR_BOTTOM_LIMIT = 2
 SCALE_FACTOR_UPPER_LIMIT = 10
@@ -52,7 +51,7 @@ def main():
         for file in files:
 
             if file.lower().endswith(PNG):
-                number_of_files = number_of_files + 1
+                number_of_files += 1
 
     # Notify to the user
     srfc = font.render('Found ' + str(number_of_files) + ' files', 1, (128, 128, 128))
@@ -83,9 +82,9 @@ def main():
     for k in image_map.items():
         src_srfc = k[1]
         dst_srfc = pg.Surface((
-                                  src_srfc.get_size()[0] * results.horizontal,
-                                  src_srfc.get_size()[1] * results.vertical
-                              ), pg.SRCALPHA)
+            src_srfc.get_size()[0] * results.horizontal,
+            src_srfc.get_size()[1] * results.vertical
+        ), pg.SRCALPHA)
         dst_srfc.fill((0, 0, 0, 0))
         dst_srfc = pg.transform.scale(src_srfc, (
             src_srfc.get_size()[0] * results.horizontal,

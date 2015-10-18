@@ -34,13 +34,13 @@ class Particles(object):
 
 
 class ExplosionParticles(Particles):
-    
     def __init__(self, context, name):
         super(ExplosionParticles, self).__init__(context, name)
 
     def generate(self, position):
-        for x in xrange(0,20):
-            particle = Particle(random.randint(position[0] - 16, position[1] - 16), random.randint(position[2] - 16, position[3] - 16),
+        for x in xrange(0, 20):
+            particle = Particle(random.randint(position[0] - 16, position[1] - 16),
+                                random.randint(position[2] - 16, position[3] - 16),
                                 True, random.randint(-6, 0))
             self.particle_list.append(particle)
 

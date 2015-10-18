@@ -1,5 +1,4 @@
 class Lock(object):
-
     def __init__(self, game_context, id, position, size):
         self.id = id
         self.x, self.y = position[0] + 256, position[1] + 144
@@ -8,7 +7,6 @@ class Lock(object):
 
 
 class LockBuilder(object):
-
     @staticmethod
     def build(game_context, resourcemanager, locks):
 
@@ -40,5 +38,5 @@ class LockBuilder(object):
                     for a in xrange(gy, gy + gh):
                         for i in xrange(gx, gx + gw):
                             la.set_gid(i, a, game_context.current_level.hard_tiles[0])
-            
+
         return results

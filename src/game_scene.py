@@ -1,4 +1,3 @@
-import pygame
 import board
 import control
 import magnetic
@@ -14,7 +13,6 @@ import enemy
 
 
 class GameScene(scene.Scene):
-
     def __init__(self, context, name='game', scene_speed=25):
         super(GameScene, self).__init__(context, name, scene_speed)
         self.screen = context.scr
@@ -76,13 +74,13 @@ class GameScene(scene.Scene):
 
             if self.player.get_item_counter < 5:
                 self.player.get_item_counter += 1
-                
+
                 if self.player.get_item_counter == 5:
                     self.player.get_item_available = True
 
             if not self.player.recovery_mode and self.player.life < 100:
 
-                if self.player.recovery_counter < 100 :
+                if self.player.recovery_counter < 100:
                     self.player.recovery_counter += 1
 
                 if self.player.recovery_counter == 100:
@@ -157,9 +155,9 @@ class GameScene(scene.Scene):
                                 self.items.append(tmp_item)
                                 self.renderobj.change_animation((i.x, i.y), tmp_item.name)
                                 break
-            
-            if self.control.on(control.Control.ACTION1) and self.player.shoot_avail and \
-               self.player.bullets > 0 and not self.player.teleporting:
+
+            if self.control.on(control.Control.ACTION1) \
+                    and self.player.shoot_avail and self.player.bullets > 0 and not self.player.teleporting:
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
                 self.laser.play()

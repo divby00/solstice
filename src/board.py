@@ -2,7 +2,6 @@ import pygame
 
 
 class Board(object):
-
     def __init__(self, context, player):
         self.player = player
         self.board = context.resourcemanager.get('board')
@@ -12,12 +11,12 @@ class Board(object):
         self.dronelife = []
 
         for i in xrange(0, 3):
-            self.bluebar.insert(i, context.resourcemanager.get('bluebar'+str(i)))
-            self.greenbar.insert(i, context.resourcemanager.get('greenbar'+str(i)))
-            self.redbar.insert(i, context.resourcemanager.get('redbar'+str(i)))
+            self.bluebar.insert(i, context.resourcemanager.get('bluebar' + str(i)))
+            self.greenbar.insert(i, context.resourcemanager.get('greenbar' + str(i)))
+            self.redbar.insert(i, context.resourcemanager.get('redbar' + str(i)))
 
         for i in xrange(0, 9):
-            self.dronelife.insert(i, context.resourcemanager.get('playerhit'+str(i)))
+            self.dronelife.insert(i, context.resourcemanager.get('playerhit' + str(i)))
 
     def render(self, screen):
         pygame.draw.rect(self.board, (0, 0, 0), (136, 17, 112, 22), 0)
@@ -27,7 +26,7 @@ class Board(object):
         # Render player life
         if self.player.life < 0:
             self.player.life = 0
-        
+
         life = int(round(self.player.life))
         di = (life * 8) / 100
         self.board.blit(self.dronelife[8 - di], (44, 16))
@@ -42,7 +41,7 @@ class Board(object):
 
         if thrust > 70:
             selected_bar = self.bluebar
-        elif thrust > 35 and thrust <= 70:
+        elif 35 < thrust <= 70:
             selected_bar = self.greenbar
         else:
             selected_bar = self.redbar
@@ -51,7 +50,7 @@ class Board(object):
         for i in xrange(0, thrust):
             self.board.blit(selected_bar[1], (138 + i, 17))
         self.board.blit(selected_bar[2], (138 + thrust, 17))
-        
+
         # Render bullets bar
         if self.player.bullets < 0:
             self.player.bullets = 0
@@ -60,7 +59,7 @@ class Board(object):
 
         if bullets > 70:
             selected_bar = self.bluebar
-        elif bullets > 35 and bullets <= 70:
+        elif 35 < bullets <= 70:
             selected_bar = self.greenbar
         else:
             selected_bar = self.redbar

@@ -8,7 +8,6 @@ class Frame(object):
 
 
 class Animation(object):
-
     def __init__(self, name):
         self.active_frame = 0
         self.counter = 0
@@ -18,7 +17,6 @@ class Animation(object):
 
 
 class AnimationLoader(object):
-    
     def __init__(self, zip_file):
         self.zf = zip_file
         self.image_buffer = {}
@@ -67,7 +65,7 @@ class AnimationLoader(object):
                     frame_offsetx = int(frame.get('offsetx'))
                     frame_offsety = int(frame.get('offsety'))
                     frame_duration = int(frame.get('duration'))
-                    
+
                     fr = Frame()
                     fr.id = frame_id
                     fr.offsetx = frame_offsetx
@@ -75,5 +73,5 @@ class AnimationLoader(object):
                     fr.duration = frame_duration
                     animation.frames.insert(frame_order, fr)
                     frame_order += 1
-        
+
         return animation

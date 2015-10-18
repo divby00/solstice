@@ -2,7 +2,6 @@ import pygame
 
 
 class Pattern(object):
-
     def __init__(self, x, y, animation_name):
         self.x = x
         self.y = y
@@ -10,7 +9,6 @@ class Pattern(object):
 
 
 class Renderer(object):
-
     def __init__(self, context):
         self.screen = context.screen
         self.level = context.current_level
@@ -162,7 +160,8 @@ class Renderer(object):
         for b in self.backpatterns:
             anim = self.animations.get(b.animation_name)
             img = anim.images.get(str(anim.frames[anim.active_frame].id))
-            self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
+            self.tmp.blit(img,
+                          (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
 
         # Player rendering
         self.player.render(self.tmp)
@@ -174,7 +173,8 @@ class Renderer(object):
         for b in self.forepatterns:
             anim = self.animations.get(b.animation_name)
             img = anim.images.get(str(anim.frames[anim.active_frame].id))
-            self.tmp.blit(img, (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
+            self.tmp.blit(img,
+                          (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
 
         # Viewport rendering
         self.screen.virt.blit(self.tmp, (0, 0), (self.player.x - 128, self.player.y - 72, 256, 144))

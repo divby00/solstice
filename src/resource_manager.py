@@ -60,7 +60,6 @@ class ResourceManager(object):
             print('Resource %s loaded in %d milliseconds.' % (resource.get('name'), (after - before)))
             self.__update_load_screen(context.scr)
 
-
         self.__update_load_screen(context.scr)
         pygame.time.delay(200)
 

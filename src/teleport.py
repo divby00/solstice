@@ -1,5 +1,4 @@
 class Teleport(object):
-
     INACTIVE = 0
     ACTIVE = 1
 
@@ -11,7 +10,6 @@ class Teleport(object):
 
 
 class TeleportBuilder(object):
-
     @staticmethod
     def build(teleports):
         results = []
@@ -29,5 +27,5 @@ class TeleportBuilder(object):
             size = (w, h)
             teleport = Teleport(id, (x, y), (w, h))
             results.append(teleport)
-            
+
         return results

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#title              :animate.py
-#description        :Animates some bitmaps. Useful when making some animations for a videogame and want to test them.
-#author             :divby0
-#date               :20140802
-#version            :0.1
-#usage              :
+# title              :animate.py
+# description        :Animates some bitmaps. Useful when making some animations for a videogame and want to test them.
+# author             :divby0
+# date               :20140802
+# version            :0.1
+# usage              :
 # M                 :Swap between movement mode and no movement.
 # +/-               :Change background color.
 # Left/Right Arrow  :Change x move speed (movement mode only)
@@ -20,7 +20,6 @@ import sys
 
 
 def check_params():
-    parametros = sys.argv[1:]
     parser = argparse.ArgumentParser(description='Small utility to animate some bitmaps.')
     parser.add_argument('input_file', action="store", help='image filename (PNG)')
     parser.add_argument('-z', action="store", dest='zoom', type=int, default=1, help='scale factor for image playing')
@@ -102,13 +101,13 @@ def main():
     x_speed = results.zoom
     y_speed = results.zoom
 
-    while (True):
+    while True:
         display.fill(colors[selected_color])
         img_size = images[counter].get_size()
 
         if move is True:
-            x = x + x_direction * x_speed
-            y = y + y_direction * y_speed
+            x += x_direction * x_speed
+            y += y_direction * y_speed
 
             if x + img_size[0] + x_speed > results.width:
                 x_direction = -1
@@ -139,35 +138,35 @@ def main():
 
                 if event.key == pg.K_PLUS:
                     if selected_color > 0:
-                        selected_color = selected_color - 1
+                        selected_color -= 1
 
                 if event.key == pg.K_MINUS:
                     if selected_color < len(colors) - 1:
-                        selected_color = selected_color + 1
+                        selected_color += 1
 
                 if event.key == pg.K_RIGHT:
                     if x_speed < 30:
-                        x_speed = x_speed + 1
+                        x_speed += 1
 
                 if event.key == pg.K_LEFT:
                     if x_speed > 0:
-                        x_speed = x_speed - 1
+                        x_speed -= 1
 
                 if event.key == pg.K_UP:
                     if y_speed < 30:
-                        y_speed = y_speed + 1
+                        y_speed += 1
 
                 if event.key == pg.K_DOWN:
                     if y_speed > 0:
-                        y_speed = y_speed - 1
+                        y_speed -= 1
 
                 if event.key == pg.K_m:
-                    move = move ^ True
+                    move ^= True
 
         display.blit(images[counter], (x, y))
         pg.display.flip()
         pg.time.delay(results.delay)
-        counter = counter + 1
+        counter += 1
 
         if counter >= len(images):
             counter = 0

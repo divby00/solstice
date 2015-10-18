@@ -1,11 +1,9 @@
 from gettext import gettext as _
 
-import game_scene
 import teleport
 
 
 class Item(object):
-
     def __init__(self, game_context, name, position, size, unlocks):
         self.name = name
         self.x, self.y = position[0] + 256, position[1] + 144
@@ -27,23 +25,22 @@ class Item(object):
 
 
 class ItemUnlocker(Item):
-
     def __init__(self, game_context, name, position, size, unlocks):
         super(ItemUnlocker, self).__init__(game_context, name, position, size, unlocks)
-    
+
     def run(self):
         x = self.player.x
         y = self.player.y
         w = self.player.w
         h = self.player.h
-        
+
         # Check if player is near a lock
         for l in self.locks:
             if x + 8 >= l.x - 8 and x - 8 <= l.x + l.w + 8 and y + 8 >= l.y - 8 and y - 8 <= l.y + l.h + 8:
 
                 # Check if selected_item unlocks the nearby lock
                 if self.player.selected_item.unlocks == l.id:
-                    
+
                     # Open the lock
                     self.game_context.get_renderer().change_animation((l.x, l.y), None)
 
@@ -69,15 +66,14 @@ class ItemUnlocker(Item):
 
 
 class ItemBomb(Item):
-
     def __init__(self, game_context, position, size):
         super(ItemBomb, self).__init__(game_context, 'bomb', position, size, None)
 
     def run(self):
         pass
 
-class ItemBarrel(Item):
 
+class ItemBarrel(Item):
     def __init__(self, game_context, position, size):
         super(ItemBarrel, self).__init__(game_context, 'barrel', position, size, None)
 
@@ -87,7 +83,6 @@ class ItemBarrel(Item):
 
 
 class ItemBattery(Item):
-    
     def __init__(self, game_context, position, size):
         super(ItemBattery, self).__init__(game_context, 'battery', position, size, None)
 
@@ -97,7 +92,6 @@ class ItemBattery(Item):
 
 
 class ItemCard(Item):
-    
     def __init__(self, game_context, position, size, card_id):
         super(ItemCard, self).__init__(game_context, ''.join(['card', card_id]), position, size, None)
         self.card_id = card_id
@@ -107,7 +101,6 @@ class ItemCard(Item):
 
 
 class ItemDrill(ItemUnlocker):
-
     def __init__(self, game_context, position, size, unlocks):
         super(ItemDrill, self).__init__(game_context, 'drill', position, size, unlocks)
 
@@ -116,7 +109,6 @@ class ItemDrill(ItemUnlocker):
 
 
 class ItemKey(ItemUnlocker):
-
     def __init__(self, game_context, position, size, unlocks):
         super(ItemKey, self).__init__(game_context, 'key', position, size, unlocks)
 
@@ -125,7 +117,6 @@ class ItemKey(ItemUnlocker):
 
 
 class ItemTeleport(Item):
-    
     def __init__(self, game_context, position, size):
         super(ItemTeleport, self).__init__(game_context, 'teleport_pass', position, size, None)
 
@@ -134,7 +125,7 @@ class ItemTeleport(Item):
         y = self.player.y
         w = self.player.w
         h = self.player.h
-        
+
         # Check if player is near a teleport machine, in that case prepare both teleport machines
         for t in self.teleports:
             if x + 8 >= t.x - 8 and x - 8 <= t.x + t.w + 16 and y + 8 >= t.y - 8 and y - 8 <= t.y + t.h + 8:
@@ -149,7 +140,6 @@ class ItemTeleport(Item):
 
 
 class ItemTnt(ItemUnlocker):
-    
     def __init__(self, game_context, position, size, unlocks):
         super(ItemTnt, self).__init__(game_context, 'tnt', position, size, unlocks)
 
@@ -158,7 +148,6 @@ class ItemTnt(ItemUnlocker):
 
 
 class ItemWaste(Item):
-    
     def __init__(self, game_context, position, size):
         super(ItemWaste, self).__init__(game_context, 'waste', position, size, None)
 
@@ -175,7 +164,6 @@ class UnknownItemError(Exception):
 
 
 class ItemBuilder(object):
-
     @staticmethod
     def build(game_context, resourcemanager, items):
 
@@ -190,7 +178,7 @@ class ItemBuilder(object):
             item_h = int(item_elements[4])
 
             if item_name not in ['barrel', 'battery', 'drill', 'key', 'teleport_pass', 'tnt', 'waste', 'bomb'] and not \
-                item_name.startswith('card'): 
+                    item_name.startswith('card'):
                 raise UnknownItemError(_('Unable to build %s item') % item_name)
 
             item = None
@@ -226,7 +214,7 @@ class ItemBuilder(object):
                 item = ItemWaste(game_context, position, size)
 
             sprite = ''.join(['item_', item_name])
-            print('Sprite:'+sprite)
+            print('Sprite:' + sprite)
             item.sprite = resourcemanager.get(sprite)
             results.append(item)
 

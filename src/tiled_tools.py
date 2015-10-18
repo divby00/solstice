@@ -3,8 +3,6 @@ import io
 import pygame
 import xml.etree.cElementTree as ElementTree
 
-import item
-
 
 class TiledLoaderError(Exception):
     def __init__(self, value):
@@ -35,9 +33,10 @@ class Tile(object):
 
 
 class Map(object):
-    '''
+    """
     Contains level and tile sizes.
-    '''
+    """
+
     def __init__(self, width, height, tilewidth, tileheight, enemy_data):
         self.width = width
         self.height = height
@@ -58,7 +57,7 @@ class Layer(object):
 
     def hard(self, x, y):
         tile = self.get_gid(x, y)
-        
+
         if tile in self.hard_tiles:
             return True
 
@@ -123,7 +122,7 @@ class TiledLevel(object):
 
     def __load_map_info(self):
 
-        ''' Reads global enemy data such as max. number of enemies and enemy frecuency '''
+        """ Reads global enemy data such as max. number of enemies and enemy frecuency """
         enemy_data = {}
 
         for properties in self.root.findall('properties'):
@@ -133,10 +132,10 @@ class TiledLevel(object):
                 enemy_data[name] = value
 
         return Map(int(self.root.get(TiledLevel.WIDTH)),
-                  int(self.root.get(TiledLevel.HEIGHT)),
-                  int(self.root.get(TiledLevel.TILEWIDTH)),
-                  int(self.root.get(TiledLevel.TILEHEIGHT)),
-                  enemy_data)
+                   int(self.root.get(TiledLevel.HEIGHT)),
+                   int(self.root.get(TiledLevel.TILEWIDTH)),
+                   int(self.root.get(TiledLevel.TILEHEIGHT)),
+                   enemy_data)
 
     def __load_back_info(self):
         source = None
@@ -186,7 +185,8 @@ class TiledLevel(object):
                                 animation_zindex = pvalue
 
                             if animation_name is not '' and animation_zindex is not '':
-                                animated_tiles.update({''.join([animation_zindex, ' ', objx, ' ', objy]): animation_name})
+                                animated_tiles.update(
+                                    {''.join([animation_zindex, ' ', objx, ' ', objy]): animation_name})
 
         if not found:
             raise TiledLoaderError(_('Unable to find animations layer in level data.'))
@@ -224,7 +224,8 @@ class TiledLevel(object):
 
         return special
 
-    def __parse_locks_info(self, special):
+    @staticmethod
+    def __parse_locks_info(special):
         locks = []
 
         for s in special:
@@ -239,7 +240,8 @@ class TiledLevel(object):
 
         return locks
 
-    def __parse_teleports_info(self, special):
+    @staticmethod
+    def __parse_teleports_info(special):
         teleports = []
 
         for s in special:
@@ -254,7 +256,8 @@ class TiledLevel(object):
 
         return teleports
 
-    def __parse_magnetic_info(self, special):
+    @staticmethod
+    def __parse_magnetic_info(special):
         magnetic_fields = []
 
         for s in special:
@@ -262,14 +265,15 @@ class TiledLevel(object):
                 if a == 'magnetic':
                     magnetic_fields.append(s)
         return magnetic_fields
-    
-    def __parse_items_info(self, special):
+
+    @staticmethod
+    def __parse_items_info(special):
         items = []
 
         for s in special:
             item_name = None
             item_unlocks = None
-            
+
             for a in special[s]:
 
                 if a == 'item':
@@ -277,7 +281,7 @@ class TiledLevel(object):
 
                 if a == 'unlocks':
                     item_unlocks = int(special[s].get(a))
-                    
+
             if item_name is not None:
                 items.append(''.join([item_name, ' ', s, ' ', str(item_unlocks)]))
 
@@ -291,6 +295,13 @@ class TiledLevel(object):
             tileheight = int(tileset.get(TiledLevel.TILEHEIGHT))
             firstgid = int(tileset.get(TiledLevel.FIRSTGID))
             name = tileset.get(TiledLevel.NAME)
+            imgwidth = 0
+            imgheight = 0
+
+            if 'object' in name:
+                continue
+
+            source = None
 
             for image in tileset.findall(TiledLevel.IMAGE):
                 source = image.get(TiledLevel.SOURCE)
@@ -307,7 +318,7 @@ class TiledLevel(object):
                         if name == TiledLevel.HARD:
                             if prop.get(TiledLevel.VALUE) == 'True':
                                 self.hard_tiles.append(tileid + firstgid)
-                
+
             tilesets.append(Tileset(name, imgwidth, imgheight, tilewidth,
                                     tileheight, source, firstgid))
 
@@ -369,8 +380,7 @@ class TiledLevel(object):
                 layers.append(l)
 
             else:
-                pass
-                #raise TiledLoaderError(_('Unknown layer %s found in level data.' % layername))
+                print(_('Skipping layer %s' % layername))
         return layers
 
     def __get_start_point(self):

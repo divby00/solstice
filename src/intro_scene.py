@@ -89,8 +89,8 @@ class Credits(object):
             _('Music by:'),
             _('Daniel Galan'),
             _('This is Free Software'),
-            _('Hope you enjoy this game...'),
-            _('...and long life to EGA!!!')
+            _('We hope you enjoy it!'),
+            _('Thank you MikroGen!'),
         ]
         self.credits_imgs = []
         self.font_dither = font_dither
@@ -155,9 +155,9 @@ class IntroScene(scene.Scene):
                            (self.menu_image.get_width(), 145))
         self.skip_text = self.font_white.get(_('Press start to skip'), 256)
         self.intro_text = []
-        self.intro_text.insert(0, self.font_white.get(_('In a very near place...'), 256))
+        self.intro_text.insert(0, self.font_white.get(_('In a close place...'), 256))
         self.intro_text.insert(1, self.font_white.get(_('...a nuclear plant is going to blow!!!'), 256))
-        self.credits = Credits(self.font_white, self.font_dither)
+        self.credits = Credits(self.font_blue, self.font_dither)
         self.background = pygame.Surface((self.menu_image.get_width(), self.menu_image.get_height())).convert()
         self.get_menu()
         self.particlesmanager = particles_manager.ParticlesManager()
@@ -257,4 +257,3 @@ class IntroScene(scene.Scene):
         if not self.menu_group.visible:
             scr.virt.blit(self.skip_text,
                           (128 - self.skip_text.get_width() / 2, 176))
-

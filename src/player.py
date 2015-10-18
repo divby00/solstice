@@ -97,10 +97,10 @@ class Player(actor.Actor):
             self.laser_spr.insert(l, self.context.resourcemanager.get(laser[l]))
 
         for r in xrange(0, 4):
-            self.recovery_spr.insert(r, self.context.resourcemanager.get('playerrecovery'+str(r)))
+            self.recovery_spr.insert(r, self.context.resourcemanager.get('playerrecovery' + str(r)))
 
         for r in xrange(0, 5):
-            self.teleport_spr.insert(r, self.context.resourcemanager.get('playerteleport'+str(r)))
+            self.teleport_spr.insert(r, self.context.resourcemanager.get('playerteleport' + str(r)))
 
         self.context.laser_spr = self.laser_spr
 
@@ -185,7 +185,7 @@ class Player(actor.Actor):
 
         if not self.shoot_avail:
             self.shoot_avail_counter += 1
-            
+
             if self.shoot_avail_counter == 4:
                 self.shoot_avail = True
                 self.shoot_avail_counter = 0
@@ -225,7 +225,7 @@ class Player(actor.Actor):
             if l.name == 'hard':
                 calculated_x = int((self.x - 8 + self.w) / self.current_level.map.tilewidth) - 32
                 calculated_x_limit = int((self.x + self.w + 248) / self.current_level.map.tilewidth) - 32
-                calculated_y = (self.y) / self.current_level.map.tileheight - 18
+                calculated_y = self.y / self.current_level.map.tileheight - 18
                 for x in xrange(calculated_x, calculated_x_limit):
                     if self.current_level.is_hard(x, calculated_y):
                         a = abs(x - calculated_x) * 8
@@ -239,7 +239,7 @@ class Player(actor.Actor):
             if l.name == 'hard':
                 calculated_x = int((self.x - 16) / self.current_level.map.tilewidth) - 32
                 calculated_x_limit = int((self.x - 264) / self.current_level.map.tilewidth) - 32
-                calculated_y = (self.y) / self.current_level.map.tileheight - 18
+                calculated_y = self.y / self.current_level.map.tileheight - 18
                 for x in xrange(calculated_x, calculated_x_limit, -1):
                     if self.current_level.is_hard(x, calculated_y):
                         a = abs(x - calculated_x) * 8
@@ -252,7 +252,7 @@ class Player(actor.Actor):
         for m in self.magnetic_fields:
 
             if self.x - 8 >= m.position[0] and self.x + 8 <= m.position[0] + m.size[0] and \
-               self.y - 8 >= m.position[1] and self.y + 8 <= m.position[1] + m.size[1]:
+                                    self.y - 8 >= m.position[1] and self.y + 8 <= m.position[1] + m.size[1]:
 
                 if not self.check_upper_collision(self.current_level):
                     self.y -= 4
@@ -263,18 +263,21 @@ class Player(actor.Actor):
 
     def check_in_active_teleport(self, level):
         for t in self.teleports:
-            if t.status != teleport.Teleport.INACTIVE and self.x + 8 >= t.x and self.x - 8 <= t.x + t.w + 8 and self.y - 8 == t.y:
+            if t.status != teleport.Teleport.INACTIVE \
+                    and self.x + 8 >= t.x and self.x - 8 <= t.x + t.w + 8 and self.y - 8 == t.y:
                 return True
         return False
 
     def check_right_collision(self, level):
-        calculated_x = int(((self.x - 8 ) + self.w) / level.map.tilewidth) - 32
+        calculated_x = int(((self.x - 8) + self.w) / level.map.tilewidth) - 32
         calculated_y = []
         calculated_y.insert(0, int((self.y - 8) / level.map.tilewidth) - 18)
         calculated_y.insert(1, int(((self.y - 8) + ((self.h / 2) - 1)) /
                                    level.map.tilewidth) - 18)
         calculated_y.insert(2, int(((self.y - 8) + (self.h - 1)) /
                                    level.map.tilewidth) - 18)
+        result = False
+
         for l in level.layers:
             if l.name == 'hard':
                 result = False
@@ -292,6 +295,8 @@ class Player(actor.Actor):
                                    level.map.tileheight) - 18)
         calculated_y.insert(2, int((self.y - 8 + (self.h - 1)) /
                                    level.map.tileheight) - 18)
+        result = False
+
         for l in level.layers:
             if l.name == 'hard':
                 result = False
@@ -310,6 +315,8 @@ class Player(actor.Actor):
         calculated_x.insert(2, int(((self.x - 8) + (self.w - 1)) /
                                    level.map.tilewidth) - 32)
 
+        result = False
+
         for l in level.layers:
             if l.name == 'hard':
                 result = False
@@ -324,10 +331,12 @@ class Player(actor.Actor):
         calculated_y = int(((self.y - 8) + self.h) / level.map.tileheight) - 18
         calculated_x = []
         calculated_x.insert(0, int((self.x - 8) / level.map.tilewidth) - 32)
-        calculated_x.insert(1, int(((self.x - 8)+ ((self.w / 2) - 1)) /
+        calculated_x.insert(1, int(((self.x - 8) + ((self.w / 2) - 1)) /
                                    level.map.tilewidth) - 32)
         calculated_x.insert(2, int(((self.x - 8) + (self.w - 1)) /
                                    level.map.tilewidth) - 32)
+
+        result = False
 
         for l in level.layers:
             if l.name == 'hard':
