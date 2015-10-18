@@ -38,16 +38,6 @@ class GameScene(scene.Scene):
         self.sound_player.load_sample([
             'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song'
         ])
-        '''
-        self.laser = context.resourcemanager.get('laser')
-        self.use_item = context.resourcemanager.get('accept')
-        self.no_item = context.resourcemanager.get('cancel')
-        self.bulletsup = context.resourcemanager.get('bulletsup')
-        self.thrustup = context.resourcemanager.get('thrustup')
-        self.exp = context.resourcemanager.get('exp')
-        '''
-        # self.song = context.resourcemanager.get('level01_song')
-        # self.music = self.song
         self.get_menu()
 
     def on_start(self):
@@ -70,7 +60,6 @@ class GameScene(scene.Scene):
 
     def on_quit(self):
         self.sound_player.stop()
-        # self.sound_player.stop_music()
 
     def run(self):
         if self.menu_group.visible:
@@ -148,7 +137,6 @@ class GameScene(scene.Scene):
                             self.player.get_item_available = False
                             self.player.get_item_counter = 0
                             self.sound_player.play_sample('accept')
-                            # self.use_item.play()
 
                             if not self.player.selected_item:
                                 self.player.selected_item = i
@@ -169,7 +157,6 @@ class GameScene(scene.Scene):
                 self.player.recovery_counter = 0
                 self.player.recovery_mode = False
                 self.sound_player.play_sample('laser')
-                # self.laser.play()
                 self.player.firing = True
                 self.player.bullets -= .3
 
@@ -181,7 +168,6 @@ class GameScene(scene.Scene):
                     self.player.life -= 1
                     self.player.using_item = True
                     self.sound_player.play_sample('accept')
-                    # self.use_item.play()
 
             if self.control.on(control.Control.START):
                 self.menu_group.visible = True
