@@ -221,31 +221,33 @@ class Player(actor.Actor):
         self.lasers.append(laser)
 
     def get_laser_right_collision(self):
+        # TODO: Please check this 'optimization', do we really need to iterate through all the layers??
+        # I have removed this loop from both player and laser collisions
+        '''
         for l in self.current_level.layers:
             if l.name == 'hard':
-                calculated_x = int((self.x - 8 + self.w) / self.current_level.map.tilewidth) - 32
-                calculated_x_limit = int((self.x + self.w + 248) / self.current_level.map.tilewidth) - 32
-                calculated_y = self.y / self.current_level.map.tileheight - 18
-                for x in xrange(calculated_x, calculated_x_limit):
-                    if self.current_level.is_hard(x, calculated_y):
-                        a = abs(x - calculated_x) * 8
-                        if self.x % 8 is not 0:
-                            a -= 4
-                        return a
+        '''
+        calculated_x = int((self.x - 8 + self.w) / self.current_level.map.tilewidth) - 32
+        calculated_x_limit = int((self.x + self.w + 248) / self.current_level.map.tilewidth) - 32
+        calculated_y = self.y / self.current_level.map.tileheight - 18
+        for x in xrange(calculated_x, calculated_x_limit):
+            if self.current_level.is_hard(x, calculated_y):
+                a = abs(x - calculated_x) * 8
+                if self.x % 8 is not 0:
+                    a -= 4
+                return a
         return 256
 
     def get_laser_left_collision(self):
-        for l in self.current_level.layers:
-            if l.name == 'hard':
-                calculated_x = int((self.x - 16) / self.current_level.map.tilewidth) - 32
-                calculated_x_limit = int((self.x - 264) / self.current_level.map.tilewidth) - 32
-                calculated_y = self.y / self.current_level.map.tileheight - 18
-                for x in xrange(calculated_x, calculated_x_limit, -1):
-                    if self.current_level.is_hard(x, calculated_y):
-                        a = abs(x - calculated_x) * 8
-                        if self.x % 8 is 0:
-                            a -= 4
-                        return a
+        calculated_x = int((self.x - 16) / self.current_level.map.tilewidth) - 32
+        calculated_x_limit = int((self.x - 264) / self.current_level.map.tilewidth) - 32
+        calculated_y = self.y / self.current_level.map.tileheight - 18
+        for x in xrange(calculated_x, calculated_x_limit, -1):
+            if self.current_level.is_hard(x, calculated_y):
+                a = abs(x - calculated_x) * 8
+                if self.x % 8 is 0:
+                    a -= 4
+                return a
         return 256
 
     def __goes_down(self):
@@ -278,12 +280,9 @@ class Player(actor.Actor):
                                    level.map.tilewidth) - 18)
         result = False
 
-        for l in level.layers:
-            if l.name == 'hard':
-                result = False
-                for a in calculated_y:
-                    if self.current_level.is_hard(calculated_x, a):
-                        result = True
+        for a in calculated_y:
+            if self.current_level.is_hard(calculated_x, a):
+                result = True
 
         return result
 
@@ -297,12 +296,9 @@ class Player(actor.Actor):
                                    level.map.tileheight) - 18)
         result = False
 
-        for l in level.layers:
-            if l.name == 'hard':
-                result = False
-                for a in calculated_y:
-                    if self.current_level.is_hard(calculated_x, a):
-                        result = True
+        for a in calculated_y:
+            if self.current_level.is_hard(calculated_x, a):
+                result = True
 
         return result
 
@@ -314,15 +310,11 @@ class Player(actor.Actor):
                                    level.map.tilewidth) - 32)
         calculated_x.insert(2, int(((self.x - 8) + (self.w - 1)) /
                                    level.map.tilewidth) - 32)
-
         result = False
 
-        for l in level.layers:
-            if l.name == 'hard':
-                result = False
-                for i in calculated_x:
-                    if self.current_level.is_hard(i, calculated_y):
-                        result = True
+        for i in calculated_x:
+            if self.current_level.is_hard(i, calculated_y):
+                result = True
 
         return result
 
@@ -335,14 +327,10 @@ class Player(actor.Actor):
                                    level.map.tilewidth) - 32)
         calculated_x.insert(2, int(((self.x - 8) + (self.w - 1)) /
                                    level.map.tilewidth) - 32)
-
         result = False
 
-        for l in level.layers:
-            if l.name == 'hard':
-                result = False
-                for i in calculated_x:
-                    if self.current_level.is_hard(i, calculated_y):
-                        result = True
+        for i in calculated_x:
+            if self.current_level.is_hard(i, calculated_y):
+                result = True
 
         return result

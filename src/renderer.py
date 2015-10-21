@@ -13,6 +13,7 @@ class Renderer(object):
         self.screen = context.screen
         self.level = context.current_level
         self.player = context.player
+        self.enemies = context.enemies
         self.items = context.items
         self.animations = context.animations
         self.particlesmanager = context.particlesmanager
@@ -165,6 +166,10 @@ class Renderer(object):
 
         # Player rendering
         self.player.render(self.tmp)
+
+        # Enemies rendering
+        for enemy in self.enemies:
+            enemy.render(self.tmp)
 
         # Particles rendering
         self.particlesmanager.render(self.tmp)

@@ -43,6 +43,7 @@ class GameScene(scene.Scene):
     def on_start(self):
         self.menu_group.visible = False
         self.current_level = self.level01
+        self.enemies_renderer = enemy.EnemyAnimations.init(self)
         self.enemies = enemy.EnemyBuilder.build(self)
         self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
         self.teleports = teleport.TeleportBuilder.build(self.current_level.teleports)
@@ -173,6 +174,9 @@ class GameScene(scene.Scene):
                 self.menu_group.visible = True
 
             self.player.run()
+
+        for enemy in self.enemies:
+            enemy.run()
 
         self.particlesmanager.run()
         self.renderobj.run()
