@@ -4,14 +4,74 @@ import random
 
 
 class Enemy(object):
-    def __init__(self, type, position):
+    HORIZONTAL = 0
+    VERTICAL = 1
+    DIAGONAL = 2
+
+    def __init__(self, type, position, game_context):
+        self.level = game_context.current_level
         self.x = position[0]
         self.y = position[1]
         self.active = True
         self.type = type
         self.anim = EnemyAnimations.animations[self.type]
+        self.direction = 1
+        self.speed = random.randint(1, 4)
+        self.move = random.randint(0, 1)
 
     def run(self):
+        positions = []
+
+        if self.move == Enemy.HORIZONTAL:
+            if self.direction == 1:
+                positions.append(
+                    ((self.x + 15 + self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
+                positions.append(
+                    ((self.x + 15 + self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight))
+                positions.append(
+                    ((self.x + 15 + self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight))
+
+                for p in positions:
+                    if self.level.is_hard(p[0], p[1]):
+                        self.direction = -1
+            else:
+                positions.append(((self.x - self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
+                positions.append(
+                    ((self.x - self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight))
+                positions.append(
+                    ((self.x - self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight))
+
+                for p in positions:
+                    if self.level.is_hard(p[0], p[1]):
+                        self.direction = 1
+
+            self.x += (self.speed * self.direction)
+
+        elif self.move == Enemy.VERTICAL:
+            if self.direction == 1:
+                positions.append(
+                    (self.x / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
+                positions.append(
+                    ((self.x + 8) / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
+                positions.append(
+                    ((self.x + 15) / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
+
+                for p in positions:
+                    if self.level.is_hard(p[0], p[1]):
+                        self.direction = -1
+            else:
+                positions.append((self.x / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+                positions.append(
+                    ((self.x + 8) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+                positions.append(
+                    ((self.x + 15) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+
+                for p in positions:
+                    if self.level.is_hard(p[0], p[1]):
+                        self.direction = 1
+
+            self.y += (self.speed * self.direction)
+
         if self.anim.counter < self.anim.frames[self.anim.active_frame].duration:
             self.anim.counter += 1
         else:
@@ -25,28 +85,28 @@ class Enemy(object):
     def render(self, screen):
         if self.active:
             screen.blit(self.anim.images[str(self.anim.active_frame)],
-                        (self.x + self.anim.frames[self.anim.active_frame].offsetx,
-                         self.y + self.anim.frames[self.anim.active_frame].offsety))
+                        (self.x + 256 + self.anim.frames[self.anim.active_frame].offsetx,
+                         self.y + 144 + self.anim.frames[self.anim.active_frame].offsety))
 
 
 class Jellyfish00(Enemy):
-    def __init__(self, position):
-        super(Jellyfish00, self).__init__('jellyfish00', position)
+    def __init__(self, position, game_context):
+        super(Jellyfish00, self).__init__('jellyfish00', position, game_context)
 
 
 class Jellyfish01(Enemy):
-    def __init__(self, position):
-        super(Jellyfish01, self).__init__('jellyfish01', position)
+    def __init__(self, position, game_context):
+        super(Jellyfish01, self).__init__('jellyfish01', position, game_context)
 
 
 class Devil00(Enemy):
-    def __init__(self, position):
-        super(Devil00, self).__init__('devil00', position)
+    def __init__(self, position, game_context):
+        super(Devil00, self).__init__('devil00', position, game_context)
 
 
 class Devil01(Enemy):
-    def __init__(self, position):
-        super(Devil01, self).__init__('devil01', position)
+    def __init__(self, position, game_context):
+        super(Devil01, self).__init__('devil01', position, game_context)
 
 
 class EnemyUnknownException(Exception):
@@ -106,13 +166,13 @@ class EnemyBuilder(object):
                     position = EnemyBuilder.__get_initial_position(enemy_size, level)
 
                     if 'jellyfish00_frequency' in k:
-                        enemy = Jellyfish00(position)
+                        enemy = Jellyfish00(position, game_context)
                     elif 'jellyfish01_frequency' in k:
-                        enemy = Jellyfish01(position)
+                        enemy = Jellyfish01(position, game_context)
                     elif 'devil00_frequency' in k:
-                        enemy = Devil00(position)
+                        enemy = Devil00(position, game_context)
                     elif 'devil01_frequency' in k:
-                        enemy = Devil01(position)
+                        enemy = Devil01(position, game_context)
                     else:
                         raise EnemyUnknownException(_('Unable to find enemy %s' % k))
                     enemies.append(enemy)
@@ -149,7 +209,7 @@ class EnemyBuilder(object):
             if not found:
                 found_hard_zones = False
 
-        return x + 256, y + 144
+        return x, y
 
 
 class EnemyAnimations(object):
