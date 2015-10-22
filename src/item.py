@@ -62,7 +62,7 @@ class ItemUnlocker(Item):
                     # Generate explosion particles
                     exp_particles = self.game_context.particlesmanager.get('exp')
                     exp_particles.generate((l.x, l.x + l.w, l.y, l.y + l.h))
-                    self.game_context.exp.play()
+                    self.game_context.sound_player.play_sample('exp')
 
 
 class ItemBomb(Item):

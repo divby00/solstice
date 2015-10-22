@@ -25,8 +25,8 @@ class Enemy(object):
     def render(self, screen):
         if self.active:
             screen.blit(self.anim.images[str(self.anim.active_frame)],
-                        (self.x + 256 + self.anim.frames[self.anim.active_frame].offsetx,
-                         self.y + 144 + self.anim.frames[self.anim.active_frame].offsety))
+                        (self.x + self.anim.frames[self.anim.active_frame].offsetx,
+                         self.y + self.anim.frames[self.anim.active_frame].offsety))
 
 
 class Jellyfish00(Enemy):
@@ -149,7 +149,7 @@ class EnemyBuilder(object):
             if not found:
                 found_hard_zones = False
 
-        return x, y
+        return x + 256, y + 144
 
 
 class EnemyAnimations(object):
