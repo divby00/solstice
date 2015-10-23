@@ -8,6 +8,9 @@ class Enemy(object):
     VERTICAL = 1
     DIAGONAL = 2
 
+    def __str__(self):
+        return ''.join([str(self.type), ';', str(self.x), ';', str(self.y)])
+
     def __init__(self, type, position, game_context):
         self.level = game_context.current_level
         self.x = position[0]
@@ -15,6 +18,7 @@ class Enemy(object):
         self.active = True
         self.type = type
         self.anim = EnemyAnimations.animations[self.type]
+        self.size = self.anim.images[str(0)].get_size()
         self.direction = 1
         self.speed = random.randint(1, 4)
         self.move = random.randint(0, 1)
@@ -219,3 +223,17 @@ class EnemyAnimations(object):
     def init(game_context):
         for e in EnemyBuilder.enemy_list:
             EnemyAnimations.animations[e] = game_context.resourcemanager.get(e)
+
+
+class EnemyUtils(object):
+    @staticmethod
+    def get_nearby_enemies(enemies, position):
+        result = []
+        x = position[0] - 264
+        y = position[1] - 152
+
+        for e in enemies:
+            if (e.y < y + 16) and (e.y + e.size[1]) > y:
+                result.append(e)
+
+        return result

@@ -10,6 +10,7 @@ class Pattern(object):
 
 class Renderer(object):
     def __init__(self, context):
+        self.font_white = context.font_white
         self.screen = context.screen
         self.level = context.current_level
         self.player = context.player
@@ -186,3 +187,8 @@ class Renderer(object):
 
         # Board rendering
         self.board.render(self.screen.virt)
+
+        # Debug information
+        pygame.draw.rect(self.screen.virt, (30, 30, 30), (0, 0, 100, 20), 0)
+        text = self.font_white.get(('x:' + str(self.player.x - 264) + ' y:' + str(self.player.y - 152)), 100)
+        self.screen.virt.blit(text, (5, 5))
