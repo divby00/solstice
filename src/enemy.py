@@ -92,6 +92,14 @@ class Enemy(object):
                         (self.x + 256 + self.anim.frames[self.anim.active_frame].offsetx,
                          self.y + 144 + self.anim.frames[self.anim.active_frame].offsety))
 
+    def __cmp__(self, enemy):
+        if self.x < enemy.x:
+            return -1
+        elif self.x > enemy.x:
+            return 1
+        else:
+            return 0
+
 
 class Jellyfish00(Enemy):
     def __init__(self, position, game_context):

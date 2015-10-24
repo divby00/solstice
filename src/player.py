@@ -224,69 +224,71 @@ class Player(actor.Actor):
 
     def get_laser_right_collision(self):
         # TODO: Please check this 'optimization', do we really need to iterate through all the layers??
-        # I have removed this loop from both player and laser collisaions
+        # I have removed this loop from both player and laser collisions
         '''
         for l in self.current_level.layers:
             if l.name == 'hard':
         '''
-        enemies_in_sight = enemy.EnemyUtils.get_nearby_enemies(self.enemies, (self.x, self.y))
+        enemies_in_sight = sorted(enemy.EnemyUtils.get_nearby_enemies(self.enemies, (self.x, self.y)))
         calculated_x = int((self.x - 8 + self.w) / self.current_level.map.tilewidth) - 32
         calculated_x_limit = int((self.x + self.w + 248) / self.current_level.map.tilewidth) - 32
         calculated_y = self.y / self.current_level.map.tileheight - 18
 
-        result = 0
-        enemy_found = False
-        wall_found = False
+        enemy_result = -1
+        wall_result = -1
 
-        # if not wall_found:
         for e in enemies_in_sight:
             if (e.x > (self.x - (264 + 16)) and (e.x + e.size[0]) < (calculated_x_limit * 8)):
                 a = abs(((e.x + 8) / 8) - calculated_x) * 8
-                enemy_found = True
-                result = a
+                enemy_result = a
+                break
 
-        # if not enemy_found:
         for x in xrange(calculated_x, calculated_x_limit):
             if self.current_level.is_hard(x, calculated_y):
                 a = abs(x - calculated_x) * 8
                 if self.x % 8 is not 0:
                     a -= 4
-                wall_found = True
-                result = a
+                wall_result = a
+                break
 
-        if result > 256:
-            result = 256
-        return result
+        if enemy_result == -1:
+            enemy_result = 256
+
+        if wall_result == -1:
+            wall_result = 256
+
+        return wall_result if wall_result < enemy_result else enemy_result
 
     def get_laser_left_collision(self):
-        enemies_in_sight = enemy.EnemyUtils.get_nearby_enemies(self.enemies, (self.x, self.y))
+        enemies_in_sight = sorted(enemy.EnemyUtils.get_nearby_enemies(self.enemies, (self.x, self.y)), reverse=True)
         calculated_x = int((self.x - 16) / self.current_level.map.tilewidth) - 32
         calculated_x_limit = int((self.x - 264) / self.current_level.map.tilewidth) - 32
         calculated_y = self.y / self.current_level.map.tileheight - 18
 
-        result = 0
-        enemy_found = False
-        wall_found = False
+        enemy_result = -1
+        wall_result = -1
 
-        # if not wall_found:
         for e in enemies_in_sight:
             if (e.x < (self.x - 264) and e.x > (calculated_x_limit * 8)):
                 a = abs(((e.x + 8) / 8) - calculated_x) * 8
-                enemy_found = True
-                result = a
+                enemy_result = a
+                break
 
-        #if not enemy_found:
         for x in xrange(calculated_x, calculated_x_limit, -1):
             if self.current_level.is_hard(x, calculated_y):
                 a = abs(x - calculated_x) * 8
                 if self.x % 8 is 0:
                     a -= 4
-                wall_found = True
-                result = a
+                wall_result = a
+                break
 
-        if result > 256:
-            result = 256
-        return result
+        if enemy_result == -1:
+            enemy_result = 256
+
+        if wall_result == -1:
+            wall_result = 256
+
+        return wall_result if wall_result < enemy_result else enemy_result
 
     def __goes_down(self):
         for m in self.magnetic_fields:
