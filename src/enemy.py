@@ -13,6 +13,7 @@ class Enemy(object):
 
     def __init__(self, type, position, game_context):
         self.level = game_context.current_level
+        self.sound_player = game_context.sound_player
         self.x = position[0]
         self.y = position[1]
         self.active = True
@@ -22,69 +23,95 @@ class Enemy(object):
         self.direction = 1
         self.speed = random.randint(1, 4)
         self.move = random.randint(0, 1)
+        self.energy = 2
+        self.__adjust_energy()
+
+    def __adjust_energy(self):
+        print(self.type)
+        if self.type == 'jellyfish00':
+            self.energy = 2
+        elif self.type == 'devil00':
+            self.energy = 2
+        elif self.type == 'jellyfish01':
+            self.energy = 3
+        elif self.type == 'devil01':
+            self.energy = 1
+
 
     def run(self):
         positions = []
 
-        if self.move == Enemy.HORIZONTAL:
-            if self.direction == 1:
-                positions.append(
-                    ((self.x + 15 + self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
-                positions.append(
-                    ((self.x + 15 + self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight))
-                positions.append(
-                    ((self.x + 15 + self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight))
+        if self.active:
 
-                for p in positions:
-                    if self.level.is_hard(p[0], p[1]):
-                        self.direction = -1
+            if self.energy == 0:
+                self.active = False
+                self.sound_player.play_sample('exp')
+
+            if self.move == Enemy.HORIZONTAL:
+                if self.direction == 1:
+                    positions.append(
+                        ((self.x + 15 + self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
+                    positions.append(
+                        ((self.x + 15 + self.speed) / self.level.map.tilewidth,
+                         (self.y + 8) / self.level.map.tileheight))
+                    positions.append(
+                        ((self.x + 15 + self.speed) / self.level.map.tilewidth,
+                         (self.y + 15) / self.level.map.tileheight))
+
+                    for p in positions:
+                        if self.level.is_hard(p[0], p[1]):
+                            self.direction = -1
+                else:
+                    positions.append(
+                        ((self.x - self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
+                    positions.append(
+                        ((self.x - self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight))
+                    positions.append(
+                        ((self.x - self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight))
+
+                    for p in positions:
+                        if self.level.is_hard(p[0], p[1]):
+                            self.direction = 1
+
+                self.x += (self.speed * self.direction)
+
+            elif self.move == Enemy.VERTICAL:
+                if self.direction == 1:
+                    positions.append(
+                        (self.x / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
+                    positions.append(
+                        ((self.x + 8) / self.level.map.tilewidth,
+                         (self.y + 15 + self.speed) / self.level.map.tileheight))
+                    positions.append(
+                        ((self.x + 15) / self.level.map.tilewidth,
+                         (self.y + 15 + self.speed) / self.level.map.tileheight))
+
+                    for p in positions:
+                        if self.level.is_hard(p[0], p[1]):
+                            self.direction = -1
+                else:
+                    positions.append(
+                        (self.x / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+                    positions.append(
+                        ((self.x + 8) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+                    positions.append(
+                        ((self.x + 15) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+
+                    for p in positions:
+                        if self.level.is_hard(p[0], p[1]):
+                            self.direction = 1
+
+                self.y += (self.speed * self.direction)
+
+            if self.anim.counter < self.anim.frames[self.anim.active_frame].duration:
+                self.anim.counter += 1
             else:
-                positions.append(((self.x - self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
-                positions.append(
-                    ((self.x - self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight))
-                positions.append(
-                    ((self.x - self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight))
+                self.anim.counter = 0
 
-                for p in positions:
-                    if self.level.is_hard(p[0], p[1]):
-                        self.direction = 1
-
-            self.x += (self.speed * self.direction)
-
-        elif self.move == Enemy.VERTICAL:
-            if self.direction == 1:
-                positions.append(
-                    (self.x / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
-                positions.append(
-                    ((self.x + 8) / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
-                positions.append(
-                    ((self.x + 15) / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
-
-                for p in positions:
-                    if self.level.is_hard(p[0], p[1]):
-                        self.direction = -1
-            else:
-                positions.append((self.x / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
-                positions.append(
-                    ((self.x + 8) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
-                positions.append(
-                    ((self.x + 15) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
-
-                for p in positions:
-                    if self.level.is_hard(p[0], p[1]):
-                        self.direction = 1
-
-            self.y += (self.speed * self.direction)
-
-        if self.anim.counter < self.anim.frames[self.anim.active_frame].duration:
-            self.anim.counter += 1
-        else:
-            self.anim.counter = 0
-
-            if self.anim.active_frame < len(self.anim.frames) - 1:
-                self.anim.active_frame += 1
-            else:
-                self.anim.active_frame = 0
+                if self.anim.active_frame < len(self.anim.frames) - 1:
+                    self.anim.active_frame += 1
+                else:
+                    self.anim.active_frame = 0
 
     def render(self, screen):
         if self.active:
@@ -241,7 +268,8 @@ class EnemyUtils(object):
         y = position[1] - 152
 
         for e in enemies:
-            if (e.y < y + 16) and (e.y + e.size[1]) > y:
-                result.append(e)
+            if e.active:
+                if (e.y < y + 16) and (e.y + e.size[1]) > y:
+                    result.append(e)
 
         return result

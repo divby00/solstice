@@ -25,10 +25,14 @@ class GameScene(scene.Scene):
         self.current_level = None
         self.renderobj = None
         self.particlesmanager = particles_manager.ParticlesManager()
+        enemy_beam_particles = particles.EnemyBeamParticles(context, 'enemy_hit')
         beam_particles = particles.BeamParticles(context, 'hit')
+        enemy_death_particles = particles.EnemyExplosionParticles(context, 'enemy_death')
         exp_particles = particles.ExplosionParticles(context, 'exp')
         self.particlesmanager.register_particles(beam_particles)
         self.particlesmanager.register_particles(exp_particles)
+        self.particlesmanager.register_particles(enemy_beam_particles)
+        self.particlesmanager.register_particles(enemy_death_particles)
         context.particlesmanager = self.particlesmanager
         self.player = player.Player(context, self)
         self.board = board.Board(context, self.player)
@@ -36,7 +40,7 @@ class GameScene(scene.Scene):
         self.resourcemanager = context.resourcemanager
         self.sound_player = context.sound_player
         self.sound_player.load_sample([
-            'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song'
+            'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song', 'enemy_hit_sam'
         ])
         self.get_menu()
 

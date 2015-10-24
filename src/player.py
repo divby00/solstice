@@ -78,6 +78,7 @@ class Player(actor.Actor):
         self.laser_spr = []
         self.magnetic_fields = None
         self.current_level = None
+        self.sound_player = context.sound_player
         self.particlesmanager = context.particlesmanager
 
         player = ['player0', 'player1', 'player2', 'player3',
@@ -210,14 +211,46 @@ class Player(actor.Actor):
         laser = None
         self.shoot_avail = False
         if self.direction == 1:
-            colision_x = self.get_laser_right_collision()
-            beam_particles = self.particlesmanager.get('hit')
-            beam_particles.generate((self.x + 4 + colision_x, self.x + 12 + colision_x, self.y - 8, self.y))
+            colision_x, colision_type, damaged_enemy = self.get_laser_right_collision()
+            if 'wall' == colision_type:
+                beam_particles = self.particlesmanager.get('hit')
+                beam_particles.generate((self.x + 4 + colision_x, self.x + 12 + colision_x, self.y - 8, self.y))
+            else:
+                if damaged_enemy is not None:
+                    enemy_hit_particles = self.particlesmanager.get('enemy_hit')
+                    enemy_hit_particles.generate(
+                        (self.x + 4 + colision_x, self.x + 12 + colision_x, self.y - 8, self.y))
+                    damaged_enemy.energy -= 1
+                    self.sound_player.play_sample('enemy_hit_sam')
+
+                    if damaged_enemy.energy <= 0:
+                        enemy_death_particles = self.particlesmanager.get('enemy_death')
+                        enemy_death_particles.generate(
+                            (self.x + 4 + colision_x, self.x + 12 + colision_x, self.y - 8, self.y))
+                        # damaged_enemy.active = False
+
             laser = Laser(self.context, (self.x + 8, self.y - 8, self.x + 8 + colision_x), self.direction)
         else:
-            colision_x = self.get_laser_left_collision()
-            beam_particles = self.particlesmanager.get('hit')
-            beam_particles.generate((self.x - 20 - colision_x, self.x - 12 - colision_x, self.y - 8, self.y))
+            colision_x, colision_type, damaged_enemy = self.get_laser_left_collision()
+
+            if 'wall' == colision_type:
+                beam_particles = self.particlesmanager.get('hit')
+                beam_particles.generate((self.x - 20 - colision_x, self.x - 12 - colision_x, self.y - 8, self.y))
+            else:
+                if damaged_enemy is not None:
+                    enemy_hit_particles = self.particlesmanager.get('enemy_hit')
+                    enemy_hit_particles.generate(
+                        (self.x - 20 - colision_x, self.x - 12 - colision_x, self.y - 8, self.y))
+                    damaged_enemy.energy -= 1
+                    self.sound_player.play_sample('enemy_hit_sam')
+
+                    if damaged_enemy.energy <= 0:
+                        enemy_death_particles = self.particlesmanager.get('enemy_death')
+                        enemy_death_particles.generate(
+                            (self.x - 20 - colision_x, self.x - 12 - colision_x, self.y - 8, self.y))
+                        #damaged_enemy.active = False
+
+
             laser = Laser(self.context, (self.x - 16, self.y - 8, self.x - 16 - colision_x), self.direction)
 
         self.lasers.append(laser)
@@ -234,6 +267,7 @@ class Player(actor.Actor):
         calculated_x_limit = int((self.x + self.w + 248) / self.current_level.map.tilewidth) - 32
         calculated_y = self.y / self.current_level.map.tileheight - 18
 
+        damaged_enemy = None
         enemy_result = -1
         wall_result = -1
 
@@ -241,6 +275,7 @@ class Player(actor.Actor):
             if (e.x > (self.x - (264 + 16)) and (e.x + e.size[0]) < (calculated_x_limit * 8)):
                 a = abs(((e.x + 8) / 8) - calculated_x) * 8
                 enemy_result = a
+                damaged_enemy = e
                 break
 
         for x in xrange(calculated_x, calculated_x_limit):
@@ -257,7 +292,7 @@ class Player(actor.Actor):
         if wall_result == -1:
             wall_result = 256
 
-        return wall_result if wall_result < enemy_result else enemy_result
+        return (wall_result, 'wall', None) if wall_result < enemy_result else (enemy_result, 'enemy', damaged_enemy)
 
     def get_laser_left_collision(self):
         enemies_in_sight = sorted(enemy.EnemyUtils.get_nearby_enemies(self.enemies, (self.x, self.y)), reverse=True)
@@ -265,12 +300,14 @@ class Player(actor.Actor):
         calculated_x_limit = int((self.x - 264) / self.current_level.map.tilewidth) - 32
         calculated_y = self.y / self.current_level.map.tileheight - 18
 
+        damaged_enemy = None
         enemy_result = -1
         wall_result = -1
 
         for e in enemies_in_sight:
             if (e.x < (self.x - 264) and e.x > (calculated_x_limit * 8)):
                 a = abs(((e.x + 8) / 8) - calculated_x) * 8
+                damaged_enemy = e
                 enemy_result = a
                 break
 
@@ -288,7 +325,7 @@ class Player(actor.Actor):
         if wall_result == -1:
             wall_result = 256
 
-        return wall_result if wall_result < enemy_result else enemy_result
+        return (wall_result, 'wall', None) if wall_result < enemy_result else (enemy_result, 'enemy', damaged_enemy)
 
     def __goes_down(self):
         for m in self.magnetic_fields:

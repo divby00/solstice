@@ -33,6 +33,30 @@ class Particles(object):
         raise NotImplementedError('Implement this method')
 
 
+class EnemyExplosionParticles(Particles):
+    def __init__(self, context, name):
+        super(EnemyExplosionParticles, self).__init__(context, name)
+
+    def generate(self, position):
+        for x in xrange(0, 5):
+            particle = Particle(random.randint(position[0] - 2, position[1] - 2),
+                                random.randint(position[2] - 2, position[3] - 2),
+                                True, random.randint(-3, 0))
+            self.particle_list.append(particle)
+
+    def run(self):
+        for p in self.particle_list:
+            if p.frame < 6:
+                p.frame += 1
+            else:
+                self.particle_list.remove(p)
+
+    def render(self, screen):
+        for p in self.particle_list:
+            if -1 < p.frame < 6:
+                screen.blit(self.spr[p.frame], (p.x, p.y))
+
+
 class ExplosionParticles(Particles):
     def __init__(self, context, name):
         super(ExplosionParticles, self).__init__(context, name)
@@ -91,6 +115,29 @@ class BeamParticles(Particles):
 
     def generate(self, position):
         for x in xrange(0, 20):
+            particle = Particle(random.randint(position[0], position[1]), random.randint(position[2], position[3]),
+                                True, random.randint(-4, 0))
+            self.particle_list.append(particle)
+
+    def run(self):
+        for p in self.particle_list:
+            if p.frame < 3:
+                p.frame += 1
+            else:
+                self.particle_list.remove(p)
+
+    def render(self, screen):
+        for p in self.particle_list:
+            if -1 < p.frame < 3:
+                screen.blit(self.spr[p.frame], (p.x, p.y))
+
+
+class EnemyBeamParticles(Particles):
+    def __init__(self, context, name):
+        super(EnemyBeamParticles, self).__init__(context, name)
+
+    def generate(self, position):
+        for x in xrange(0, 10):
             particle = Particle(random.randint(position[0], position[1]), random.randint(position[2], position[3]),
                                 True, random.randint(-4, 0))
             self.particle_list.append(particle)
