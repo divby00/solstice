@@ -17,8 +17,11 @@ class Enemy(object):
         self.x = position[0]
         self.y = position[1]
         self.active = True
+        self.respawn = False
+        self.respawn_counter = random.randint(50, 200)
         self.type = type
         self.anim = EnemyAnimations.animations[self.type]
+        self.anim_respawn = EnemyAnimations.animations[self.type + '_init']
         self.size = self.anim.images[str(0)].get_size()
         self.direction = 1
         self.speed = random.randint(1, 4)
@@ -27,7 +30,6 @@ class Enemy(object):
         self.__adjust_energy()
 
     def __adjust_energy(self):
-        print(self.type)
         if self.type == 'jellyfish00':
             self.energy = 2
         elif self.type == 'devil00':
@@ -37,9 +39,32 @@ class Enemy(object):
         elif self.type == 'devil01':
             self.energy = 1
 
-
     def run(self):
         positions = []
+
+        if not self.active:
+            if self.respawn_counter > 0:
+                self.respawn_counter -= 1
+
+            if self.respawn_counter == 0:
+                self.respawn = True
+
+            if self.respawn:
+                # if self.anim_respawn.counter < self.anim_respawn.frames[self.anim_respawn.active_frame].duration:
+                if self.anim_respawn.counter < 2:
+                    self.anim_respawn.counter += 1
+                else:
+                    self.anim_respawn.counter = 0
+
+                    if self.anim_respawn.active_frame < len(self.anim_respawn.frames) - 1:
+                        self.anim_respawn.active_frame += 1
+                    else:
+                        self.respawn = False
+                        self.respawn_counter = random.randint(50, 200)
+                        self.anim.active_frame = 0
+                        self.active = True
+                        self.energy = 2
+                        self.anim_respawn.active_frame = 0
 
         if self.active:
 
@@ -118,6 +143,10 @@ class Enemy(object):
             screen.blit(self.anim.images[str(self.anim.active_frame)],
                         (self.x + 256 + self.anim.frames[self.anim.active_frame].offsetx,
                          self.y + 144 + self.anim.frames[self.anim.active_frame].offsety))
+        if self.respawn:
+            screen.blit(self.anim_respawn.images[str(self.anim_respawn.active_frame)],
+                        (self.x + 256 + self.anim_respawn.frames[self.anim_respawn.active_frame].offsetx,
+                         self.y + 144 + self.anim_respawn.frames[self.anim_respawn.active_frame].offsety))
 
     def __cmp__(self, enemy):
         if self.x < enemy.x:
@@ -258,6 +287,7 @@ class EnemyAnimations(object):
     def init(game_context):
         for e in EnemyBuilder.enemy_list:
             EnemyAnimations.animations[e] = game_context.resourcemanager.get(e)
+            EnemyAnimations.animations[e + '_init'] = game_context.resourcemanager.get(e + '_init')
 
 
 class EnemyUtils(object):
