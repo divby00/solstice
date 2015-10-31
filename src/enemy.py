@@ -16,17 +16,23 @@ class Enemy(object):
         self.sound_player = game_context.sound_player
         self.x = position[0]
         self.y = position[1]
-        self.active = True
-        self.respawn = False
-        self.respawn_counter = random.randint(50, 200)
         self.type = type
         self.anim = EnemyAnimations.animations[self.type]
         self.anim_respawn = EnemyAnimations.animations[self.type + '_init']
         self.size = self.anim.images[str(0)].get_size()
+        self.init_enemy()
+
+    def init_enemy(self):
+        self.anim.active_frame = 0
+        self.anim_respawn.active_frame = 0
+        self.shock_counter = 0
+        self.active = True
+        self.change_movement = 0
+        self.respawn = False
+        self.respawn_counter = random.randint(50, 200)
         self.direction = 1
         self.speed = random.randint(1, 4)
         self.move = random.randint(0, 1)
-        self.energy = 2
         self.__adjust_energy()
 
     def __adjust_energy(self):
@@ -38,6 +44,48 @@ class Enemy(object):
             self.energy = 3
         elif self.type == 'devil01':
             self.energy = 1
+
+    def __get_collision_list(self, facing):
+        if facing == 'left':
+            return self.__get_left_collision_list()
+        elif facing == 'right':
+            return self.__get_right_collision_list()
+        elif facing == 'top':
+            return self.__get_upper_collision_list()
+        else:
+            return self.__get_bottom_collision_list()
+
+    def __get_left_collision_list(self):
+        positions = []
+        positions.append(((self.x - self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
+        positions.append(((self.x - self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight))
+        positions.append(((self.x - self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight))
+        return positions
+
+    def __get_right_collision_list(self):
+        positions = []
+        positions.append(((self.x + 15 + self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
+        positions.append(
+            ((self.x + 15 + self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight))
+        positions.append(
+            ((self.x + 15 + self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight))
+        return positions
+
+    def __get_upper_collision_list(self):
+        positions = []
+        positions.append((self.x / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+        positions.append(((self.x + 8) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+        positions.append(((self.x + 15) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+        return positions
+
+    def __get_bottom_collision_list(self):
+        positions = []
+        positions.append((self.x / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
+        positions.append(
+            ((self.x + 8) / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
+        positions.append(
+            ((self.x + 15) / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
+        return positions
 
     def run(self):
         positions = []
@@ -59,14 +107,15 @@ class Enemy(object):
                     if self.anim_respawn.active_frame < len(self.anim_respawn.frames) - 1:
                         self.anim_respawn.active_frame += 1
                     else:
-                        self.respawn = False
-                        self.respawn_counter = random.randint(50, 200)
-                        self.anim.active_frame = 0
-                        self.active = True
-                        self.energy = 2
-                        self.anim_respawn.active_frame = 0
+                        self.init_enemy()
 
         if self.active:
+
+            if self.shock_counter > 0:
+                self.shock_counter -= 1
+
+            if self.change_movement < 11:
+                self.change_movement += 1
 
             if self.energy == 0:
                 self.active = False
@@ -74,59 +123,235 @@ class Enemy(object):
 
             if self.move == Enemy.HORIZONTAL:
                 if self.direction == 1:
-                    positions.append(
-                        ((self.x + 15 + self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
-                    positions.append(
-                        ((self.x + 15 + self.speed) / self.level.map.tilewidth,
-                         (self.y + 8) / self.level.map.tileheight))
-                    positions.append(
-                        ((self.x + 15 + self.speed) / self.level.map.tilewidth,
-                         (self.y + 15) / self.level.map.tileheight))
+                    positions = self.__get_collision_list('right')
 
                     for p in positions:
                         if self.level.is_hard(p[0], p[1]):
+                            self.move = Enemy.VERTICAL
+
+                            # if self.change_movement > 10:
+                            '''
+                            Start vertical movement, check for obstacles both at the top and at the bottom to decide
+                            direction.
+                            '''
+                            bottom_obstacle_found = False
+                            top_obstacle_found = False
+                            vertical_positions = self.__get_collision_list('bottom')
+
+                            for vp in vertical_positions:
+                                if self.level.is_hard(vp[0], vp[1]):
+                                    bottom_obstacle_found = True
+
+                            vertical_positions = self.__get_collision_list('top')
+
+                            for vp in vertical_positions:
+                                if self.level.is_hard(vp[0], vp[1]):
+                                    top_obstacle_found = True
+
+                            if (top_obstacle_found and bottom_obstacle_found):
+                                self.move = Enemy.HORIZONTAL
+                                self.direction = -1
+                                self.change_movement = 0
+                            elif top_obstacle_found and not bottom_obstacle_found:
+                                self.move = Enemy.VERTICAL
+                                self.direction = 1
+                                self.change_movement = 0
+                            elif not top_obstacle_found and bottom_obstacle_found:
+                                self.move = Enemy.VERTICAL
+                                self.direction = -1
+                                self.change_movement = 0
+                            else:
+                                self.move = Enemy.VERTICAL
+                                self.direction = -1 if random.randint(0, 1) == 0 else 1
+                                self.change_movement = 0
+                            '''
+                            else:
+                                self.move = Enemy.HORIZONTAL
+                                self.direction = -1
+                                self.change_movement = 0
+                            '''
+                            self.move = Enemy.HORIZONTAL
                             self.direction = -1
+                            self.change_movement = 0
+
                 else:
-                    positions.append(
-                        ((self.x - self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
-                    positions.append(
-                        ((self.x - self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight))
-                    positions.append(
-                        ((self.x - self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight))
+
+                    positions = self.__get_collision_list('left')
 
                     for p in positions:
                         if self.level.is_hard(p[0], p[1]):
+                            self.move = Enemy.VERTICAL
+
+                            # if self.change_movement > 10:
+
+                            '''
+                            Start vertical movement, check for obstacles both at the top and at the bottom to decide
+                            direction.
+                            '''
+                            bottom_obstacle_found = False
+                            top_obstacle_found = False
+                            vertical_positions = self.__get_collision_list('bottom')
+
+                            for vp in vertical_positions:
+                                if self.level.is_hard(vp[0], vp[1]):
+                                    bottom_obstacle_found = True
+
+                            vertical_positions = self.__get_collision_list('top')
+
+                            for vp in vertical_positions:
+                                if self.level.is_hard(vp[0], vp[1]):
+                                    top_obstacle_found = True
+
+                            if (top_obstacle_found and bottom_obstacle_found):
+                                self.move = Enemy.HORIZONTAL
+                                self.change_movement = 0
+                                self.direction = 1
+                            elif top_obstacle_found and not bottom_obstacle_found:
+                                self.move = Enemy.VERTICAL
+                                self.direction = 1
+                                self.change_movement = 0
+                            elif not top_obstacle_found and bottom_obstacle_found:
+                                self.move = Enemy.VERTICAL
+                                self.direction = -1
+                                self.change_movement = 0
+                            else:
+                                self.move = Enemy.VERTICAL
+                                self.direction = -1 if random.randint(0, 1) == 0 else 1
+                                self.change_movement = 0
+                            '''
+                            else:
+                                self.move = Enemy.HORIZONTAL
+                                self.change_movement = 0
+                                self.direction = 1
+                            '''
+                            self.move = Enemy.HORIZONTAL
+                            self.change_movement = 0
                             self.direction = 1
 
-                self.x += (self.speed * self.direction)
+                speed = self.speed
+
+                if self.shock_counter > 0:
+                    speed = 1
+
+                self.x += (speed * self.direction)
 
             elif self.move == Enemy.VERTICAL:
                 if self.direction == 1:
-                    positions.append(
-                        (self.x / self.level.map.tilewidth, (self.y + 15 + self.speed) / self.level.map.tileheight))
-                    positions.append(
-                        ((self.x + 8) / self.level.map.tilewidth,
-                         (self.y + 15 + self.speed) / self.level.map.tileheight))
-                    positions.append(
-                        ((self.x + 15) / self.level.map.tilewidth,
-                         (self.y + 15 + self.speed) / self.level.map.tileheight))
+
+                    positions = self.__get_collision_list('bottom')
 
                     for p in positions:
                         if self.level.is_hard(p[0], p[1]):
+                            self.move = Enemy.HORIZONTAL
+
+                            # if self.change_movement > 10:
+                            '''
+                            Start horizontal movement, check for obstacles both at the left and at the right to decide
+                            direction.
+                            '''
+                            left_obstacle_found = False
+                            right_obstacle_found = False
+                            horizontal_positions = self.__get_collision_list('left')
+
+                            for hp in horizontal_positions:
+                                if self.level.is_hard(hp[0], hp[1]):
+                                    left_obstacle_found = True
+
+                            horizontal_positions = self.__get_collision_list('right')
+                            horizontal_positions.append(((self.x + 15 + self.speed) / self.level.map.tilewidth,
+                                                         self.y / self.level.map.tileheight))
+                            horizontal_positions.append(((self.x + 15 + self.speed) / self.level.map.tilewidth,
+                                                         (self.y + 8) / self.level.map.tileheight))
+                            horizontal_positions.append(((self.x + 15 + self.speed) / self.level.map.tilewidth,
+                                                         (self.y + 15) / self.level.map.tileheight))
+
+                            for hp in horizontal_positions:
+                                if self.level.is_hard(hp[0], hp[1]):
+                                    right_obstacle_found = True
+
+                            if (left_obstacle_found and right_obstacle_found):
+                                self.change_movement = 0
+                                self.move = Enemy.VERTICAL
+                                self.direction = -1
+                            elif left_obstacle_found and not right_obstacle_found:
+                                self.direction = 1
+                                self.move = Enemy.HORIZONTAL
+                                self.change_movement = 0
+                            elif not left_obstacle_found and right_obstacle_found:
+                                self.direction = -1
+                                self.move = Enemy.HORIZONTAL
+                                self.change_movement = 0
+                            else:
+                                self.direction = -1 if random.randint(0, 1) == 0 else 1
+                                self.move = Enemy.HORIZONTAL
+                                self.change_movement = 0
+                            '''
+                            else:
+                                self.change_movement = 0
+                                self.move = Enemy.VERTICAL
+                                self.direction = -1
+                            '''
+                            self.change_movement = 0
+                            self.move = Enemy.VERTICAL
                             self.direction = -1
+
                 else:
-                    positions.append(
-                        (self.x / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
-                    positions.append(
-                        ((self.x + 8) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
-                    positions.append(
-                        ((self.x + 15) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+                    positions = self.__get_collision_list('top')
 
                     for p in positions:
                         if self.level.is_hard(p[0], p[1]):
+                            self.move = Enemy.HORIZONTAL
+
+                            # if self.change_movement > 10:
+                            '''
+                            Start horizontal movement, check for obstacles both at the left and at the right to decide
+                            direction.
+                            '''
+                            left_obstacle_found = False
+                            right_obstacle_found = False
+                            horizontal_positions = self.__get_collision_list('left')
+
+                            for hp in horizontal_positions:
+                                if self.level.is_hard(hp[0], hp[1]):
+                                    left_obstacle_found = True
+
+                            horizontal_positions = self.__get_collision_list('right')
+
+                            for hp in horizontal_positions:
+                                if self.level.is_hard(hp[0], hp[1]):
+                                    right_obstacle_found = True
+
+                            if (left_obstacle_found and right_obstacle_found):
+                                self.change_movement = 0
+                                self.move = Enemy.VERTICAL
+                                self.direction = 1
+                            elif left_obstacle_found and not right_obstacle_found:
+                                self.direction = 1
+                                self.move = Enemy.HORIZONTAL
+                                self.change_movement = 0
+                            elif not left_obstacle_found and right_obstacle_found:
+                                self.direction = -1
+                                self.move = Enemy.HORIZONTAL
+                                self.change_movement = 0
+                            else:
+                                self.direction = -1 if random.randint(0, 1) == 0 else 1
+                                self.change_movement = 0
+                                self.move = Enemy.HORIZONTAL
+                            '''
+                            else:
+                                self.change_movement = 0
+                                self.move = Enemy.VERTICAL
+                                self.direction = 1
+                            '''
+                            self.change_movement = 0
+                            self.move = Enemy.VERTICAL
                             self.direction = 1
 
-                self.y += (self.speed * self.direction)
+                speed = self.speed
+
+                if self.shock_counter > 0:
+                    speed = 1
+                self.y += (speed * self.direction)
 
             if self.anim.counter < self.anim.frames[self.anim.active_frame].duration:
                 self.anim.counter += 1
@@ -140,9 +365,15 @@ class Enemy(object):
 
     def render(self, screen):
         if self.active:
-            screen.blit(self.anim.images[str(self.anim.active_frame)],
-                        (self.x + 256 + self.anim.frames[self.anim.active_frame].offsetx,
-                         self.y + 144 + self.anim.frames[self.anim.active_frame].offsety))
+            if self.shock_counter > 0:
+                screen.blit(self.anim_respawn.images['3'],
+                            (self.x + 256 + self.anim_respawn.frames[3].offsetx,
+                             self.y + 144 + self.anim_respawn.frames[3].offsety))
+            else:
+                screen.blit(self.anim.images[str(self.anim.active_frame)],
+                            (self.x + 256 + self.anim.frames[self.anim.active_frame].offsetx,
+                             self.y + 144 + self.anim.frames[self.anim.active_frame].offsety))
+
         if self.respawn:
             screen.blit(self.anim_respawn.images[str(self.anim_respawn.active_frame)],
                         (self.x + 256 + self.anim_respawn.frames[self.anim_respawn.active_frame].offsetx,

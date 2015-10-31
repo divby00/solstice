@@ -228,6 +228,8 @@ class Player(actor.Actor):
                         enemy_death_particles.generate(
                             (self.x + 4 + colision_x, self.x + 12 + colision_x, self.y - 8, self.y))
                         # damaged_enemy.active = False
+                    else:
+                        damaged_enemy.shock_counter = 14
 
             laser = Laser(self.context, (self.x + 8, self.y - 8, self.x + 8 + colision_x), self.direction)
         else:
@@ -249,7 +251,8 @@ class Player(actor.Actor):
                         enemy_death_particles.generate(
                             (self.x - 20 - colision_x, self.x - 12 - colision_x, self.y - 8, self.y))
                         #damaged_enemy.active = False
-
+                    else:
+                        damaged_enemy.shock_counter = 14
 
             laser = Laser(self.context, (self.x - 16, self.y - 8, self.x - 16 - colision_x), self.direction)
 

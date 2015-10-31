@@ -38,10 +38,10 @@ class EnemyExplosionParticles(Particles):
         super(EnemyExplosionParticles, self).__init__(context, name)
 
     def generate(self, position):
-        for x in xrange(0, 5):
-            particle = Particle(random.randint(position[0] - 2, position[1] - 2),
-                                random.randint(position[2] - 2, position[3] - 2),
-                                True, random.randint(-3, 0))
+        for x in xrange(0, 10):
+            particle = Particle(random.randint(position[0] - 5, position[1] - 5),
+                                random.randint(position[2] - 5, position[3] - 5),
+                                True, random.randint(-5, 0))
             self.particle_list.append(particle)
 
     def run(self):
