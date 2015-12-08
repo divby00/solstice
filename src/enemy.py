@@ -375,7 +375,7 @@ class Enemy(object):
                 player_crap_particles = PlayerUtils.get_particles_manager(self.game_context).get('crap')
                 player_crap_particles.generate((player.x - 5, player.x + 2, player.y - 5, player.y + 2))
                 player.hit = True
-                # TODO: Add sound
+                self.sound_player.play_sample('player_hit_sam')
 
     def render(self, screen):
         if self.active:

@@ -42,7 +42,7 @@ class GameScene(scene.Scene):
         self.resourcemanager = context.resourcemanager
         self.sound_player = context.sound_player
         self.sound_player.load_sample([
-            'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song', 'enemy_hit_sam'
+            'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song', 'enemy_hit_sam', 'player_hit_sam'
         ])
         self.get_menu()
 
