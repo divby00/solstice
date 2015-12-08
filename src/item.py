@@ -214,7 +214,6 @@ class ItemBuilder(object):
                 item = ItemWaste(game_context, position, size)
 
             sprite = ''.join(['item_', item_name])
-            print('Sprite:' + sprite)
             item.sprite = resourcemanager.get(sprite)
             results.append(item)
 

@@ -73,108 +73,110 @@ class GameScene(scene.Scene):
             self.menu_group.run()
         else:
 
-            self.player.flying = False
+            if not self.player.dying:
 
-            if self.player.get_item_counter < 5:
-                self.player.get_item_counter += 1
+                self.player.flying = False
 
-                if self.player.get_item_counter == 5:
-                    self.player.get_item_available = True
+                if self.player.get_item_counter < 5:
+                    self.player.get_item_counter += 1
 
-            if not self.player.recovery_mode and self.player.life < 100:
+                    if self.player.get_item_counter == 5:
+                        self.player.get_item_available = True
 
-                if self.player.recovery_counter < 100:
-                    self.player.recovery_counter += 1
+                if not self.player.recovery_mode and self.player.life < 100:
 
-                if self.player.recovery_counter == 100:
-                    self.player.recovery_mode = True
+                    if self.player.recovery_counter < 100:
+                        self.player.recovery_counter += 1
 
-            if self.control.on(control.Control.RIGHT):
-                self.player.recovery_counter = 0
-                self.player.recovery_mode = False
+                    if self.player.recovery_counter == 100:
+                        self.player.recovery_mode = True
 
-                if not self.player.check_right_collision(self.current_level):
-                    self.player.direction = 1
-                    self.player.x += self.renderobj.speed[0]
+                if self.control.on(control.Control.RIGHT):
+                    self.player.recovery_counter = 0
+                    self.player.recovery_mode = False
 
-            if self.control.on(control.Control.LEFT):
-                self.player.recovery_counter = 0
-                self.player.recovery_mode = False
+                    if not self.player.check_right_collision(self.current_level):
+                        self.player.direction = 1
+                        self.player.x += self.renderobj.speed[0]
 
-                if not self.player.check_left_collision(self.current_level):
-                    self.player.direction = -1
-                    self.player.x -= self.renderobj.speed[0]
+                if self.control.on(control.Control.LEFT):
+                    self.player.recovery_counter = 0
+                    self.player.recovery_mode = False
 
-            if self.control.on(control.Control.UP) and self.player.thrust > 0:
-                self.player.recovery_counter = 0
-                self.player.recovery_mode = False
-                self.player.thrust -= .1
-                self.player.flying = True
+                    if not self.player.check_left_collision(self.current_level):
+                        self.player.direction = -1
+                        self.player.x -= self.renderobj.speed[0]
 
-                if not self.player.check_upper_collision(self.current_level):
-                    self.player.y -= self.renderobj.speed[1]
+                if self.control.on(control.Control.UP) and self.player.thrust > 0:
+                    self.player.recovery_counter = 0
+                    self.player.recovery_mode = False
+                    self.player.thrust -= .1
+                    self.player.flying = True
 
-                    # Check if player is in teleport
-                    if self.player.check_in_active_teleport(self.current_level):
-                        self.player.teleporting = True
-            else:
-                pass
-                '''
-                if not self.player.check_bottom_collision(self.current_level):
-                    self.player.y += self.renderobj.speed[1]
-                '''
+                    if not self.player.check_upper_collision(self.current_level):
+                        self.player.y -= self.renderobj.speed[1]
 
-            if self.control.on(control.Control.DOWN):
-                self.player.recovery_mode = False
-                self.player.recovery_counter = 0
+                        # Check if player is in teleport
+                        if self.player.check_in_active_teleport(self.current_level):
+                            self.player.teleporting = True
+                else:
+                    pass
+                    '''
+                    if not self.player.check_bottom_collision(self.current_level):
+                        self.player.y += self.renderobj.speed[1]
+                    '''
 
-                # Checks if player is over an item
-                if self.player.get_item_available:
-                    item_found = False
-                    x = self.player.x
-                    y = self.player.y
-                    w = self.player.w
-                    h = self.player.h
+                if self.control.on(control.Control.DOWN):
+                    self.player.recovery_mode = False
+                    self.player.recovery_counter = 0
 
-                    for i in self.items:
+                    # Checks if player is over an item
+                    if self.player.get_item_available:
+                        item_found = False
+                        x = self.player.x
+                        y = self.player.y
+                        w = self.player.w
+                        h = self.player.h
 
-                        if x + 8 >= i.x and x - 8 <= i.x + i.w and y + 8 >= i.y and y - 8 <= i.y + i.h:
-                            # Player is over an item
-                            item_found = True
-                            self.player.get_item_available = False
-                            self.player.get_item_counter = 0
-                            self.sound_player.play_sample('accept')
+                        for i in self.items:
 
-                            if not self.player.selected_item:
-                                self.player.selected_item = i
-                                self.items.remove(i)
-                                self.renderobj.change_animation((i.x, i.y), None)
-                            else:
-                                tmp_item = self.player.selected_item
-                                x, y = i.x, i.y
-                                self.player.selected_item = i
-                                self.items.remove(i)
-                                tmp_item.x, tmp_item.y = x, y
-                                self.items.append(tmp_item)
-                                self.renderobj.change_animation((i.x, i.y), tmp_item.name)
-                                break
+                            if x + 8 >= i.x and x - 8 <= i.x + i.w and y + 8 >= i.y and y - 8 <= i.y + i.h:
+                                # Player is over an item
+                                item_found = True
+                                self.player.get_item_available = False
+                                self.player.get_item_counter = 0
+                                self.sound_player.play_sample('accept')
 
-            if self.control.on(control.Control.ACTION1) \
-                    and self.player.shoot_avail and self.player.bullets > 0 and not self.player.teleporting:
-                self.player.recovery_counter = 0
-                self.player.recovery_mode = False
-                self.sound_player.play_sample('laser')
-                self.player.firing = True
-                self.player.bullets -= .3
+                                if not self.player.selected_item:
+                                    self.player.selected_item = i
+                                    self.items.remove(i)
+                                    self.renderobj.change_animation((i.x, i.y), None)
+                                else:
+                                    tmp_item = self.player.selected_item
+                                    x, y = i.x, i.y
+                                    self.player.selected_item = i
+                                    self.items.remove(i)
+                                    tmp_item.x, tmp_item.y = x, y
+                                    self.items.append(tmp_item)
+                                    self.renderobj.change_animation((i.x, i.y), tmp_item.name)
+                                    break
 
-            if self.control.on(control.Control.ACTION2) and not self.player.teleporting:
-                self.player.recovery_counter = 0
-                self.player.recovery_mode = False
+                if self.control.on(control.Control.ACTION1) \
+                        and self.player.shoot_avail and self.player.bullets > 0 and not self.player.teleporting:
+                    self.player.recovery_counter = 0
+                    self.player.recovery_mode = False
+                    self.sound_player.play_sample('laser')
+                    self.player.firing = True
+                    self.player.bullets -= .3
 
-                if self.player.selected_item is not None:
-                    self.player.life -= 1
-                    self.player.using_item = True
-                    self.sound_player.play_sample('accept')
+                if self.control.on(control.Control.ACTION2) and not self.player.teleporting:
+                    self.player.recovery_counter = 0
+                    self.player.recovery_mode = False
+
+                    if self.player.selected_item is not None:
+                        self.player.life -= 1
+                        self.player.using_item = True
+                        self.sound_player.play_sample('accept')
 
             if self.control.on(control.Control.START):
                 self.menu_group.visible = True

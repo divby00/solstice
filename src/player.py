@@ -200,20 +200,30 @@ class Player(actor.Actor):
                 self.shoot_avail_counter = 0
 
         if self.hit:
+            self.recovery_mode = False
+            self.recovery_counter = 0
             self.hit = False
+            self.life -= 1
+            if self.life <= 0 and self.dying == False:
+                self.dying = True
+                player_exp_particles = self.particlesmanager.get('exp')
+                player_exp_particles.generate((self.x - 8, self.x + 8, self.y - 8, self.y + 8))
+                self.sound_player.play_sample('exp')
+
 
     def render(self, screen):
-        if not self.recovery_mode and not self.teleporting:
-            if not self.hit:
-                screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
-            else:
-                screen.blit(self.sprites_hit[self.animation], (self.x - 8, self.y - 8))
-            for l in self.lasers:
-                l.render(screen)
-        elif self.recovery_mode:
-            screen.blit(self.recovery_spr[self.recovery_animation], (self.x - 8 - 16, self.y - 8 - 16))
-        elif self.teleporting:
-            screen.blit(self.teleport_spr[self.teleport_animation], (self.x - 8, self.y - 8))
+        if not self.dying:
+            if not self.recovery_mode and not self.teleporting:
+                if not self.hit:
+                    screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
+                else:
+                    screen.blit(self.sprites_hit[self.animation], (self.x - 8, self.y - 8))
+                for l in self.lasers:
+                    l.render(screen)
+            elif self.recovery_mode:
+                screen.blit(self.recovery_spr[self.recovery_animation], (self.x - 8 - 16, self.y - 8 - 16))
+            elif self.teleporting:
+                screen.blit(self.teleport_spr[self.teleport_animation], (self.x - 8, self.y - 8))
 
     def use_item(self):
         item = self.selected_item
