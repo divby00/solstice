@@ -73,6 +73,7 @@ class Player(actor.Actor):
         self.shoot_avail = True
         self.shoot_avail_counter = 0
         self.sprites = []
+        self.sprites_hit = []
         self.recovery_spr = []
         self.teleport_spr = []
         self.laser_spr = []
@@ -94,6 +95,9 @@ class Player(actor.Actor):
 
         for p in xrange(0, len(player)):
             self.sprites.insert(p, self.context.resourcemanager.get(player[p]))
+
+        for p in xrange(0, len(player)):
+            self.sprites_hit.insert(p, self.context.resourcemanager.get(''.join([player[p], '_hit'])))
 
         for l in xrange(0, len(laser)):
             self.laser_spr.insert(l, self.context.resourcemanager.get(laser[l]))
@@ -121,6 +125,8 @@ class Player(actor.Actor):
         self.teleport_animation = -1
         self.destiny = None
         self.firing = False
+        self.hit = False
+        self.dying = False
         self.using_item = False
         self.flying = False
         self.lasers = []
@@ -193,9 +199,15 @@ class Player(actor.Actor):
                 self.shoot_avail = True
                 self.shoot_avail_counter = 0
 
+        if self.hit:
+            self.hit = False
+
     def render(self, screen):
         if not self.recovery_mode and not self.teleporting:
-            screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
+            if not self.hit:
+                screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
+            else:
+                screen.blit(self.sprites_hit[self.animation], (self.x - 8, self.y - 8))
             for l in self.lasers:
                 l.render(screen)
         elif self.recovery_mode:

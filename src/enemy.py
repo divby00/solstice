@@ -12,6 +12,7 @@ class Enemy(object):
         return ''.join([str(self.type), ';', str(self.x), ';', str(self.y)])
 
     def __init__(self, type, position, game_context):
+        self.game_context = game_context
         self.level = game_context.current_level
         self.sound_player = game_context.sound_player
         self.x = position[0]
@@ -98,7 +99,6 @@ class Enemy(object):
                 self.respawn = True
 
             if self.respawn:
-                # if self.anim_respawn.counter < self.anim_respawn.frames[self.anim_respawn.active_frame].duration:
                 if self.anim_respawn.counter < 2:
                     self.anim_respawn.counter += 1
                 else:
@@ -363,6 +363,18 @@ class Enemy(object):
                 else:
                     self.anim.active_frame = 0
 
+            # Check if enemy hits the player
+            self._hits_player()
+
+    def _hits_player(self):
+        player = PlayerUtils.get_player(self.game_context)
+
+        if (self.x + self.size[0] + 256) >= (player.x - 8) and (self.x + 256) <= (player.x + 8) and (self.y + self.size[1] + 144) >= (player.y - 8) and (self.y + 144) <= (player.y + 8):
+            player_crap_particles = PlayerUtils.get_particles_manager(self.game_context).get('crap')
+            player_crap_particles.generate((player.x - 5, player.x + 2, player.y - 5, player.y + 2))
+            player.life -= 1
+            player.hit = True
+
     def render(self, screen):
         if self.active:
             if self.shock_counter > 0:
@@ -519,6 +531,16 @@ class EnemyAnimations(object):
         for e in EnemyBuilder.enemy_list:
             EnemyAnimations.animations[e] = game_context.resourcemanager.get(e)
             EnemyAnimations.animations[e + '_init'] = game_context.resourcemanager.get(e + '_init')
+
+
+class PlayerUtils(object):
+    @staticmethod
+    def get_player(game_context):
+        return game_context.player
+
+    @staticmethod
+    def get_particles_manager(game_context):
+        return game_context.particlesmanager
 
 
 class EnemyUtils(object):

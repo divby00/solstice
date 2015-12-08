@@ -194,3 +194,4 @@ class Renderer(object):
         text = self.font_white.get(('x:' + str(self.player.x - 264) + ' y:' + str(self.player.y - 152)), 100)
         self.screen.virt.blit(text, (5, 5))
         '''
+

@@ -29,10 +29,12 @@ class GameScene(scene.Scene):
         beam_particles = particles.BeamParticles(context, 'hit')
         enemy_death_particles = particles.EnemyExplosionParticles(context, 'enemy_death')
         exp_particles = particles.ExplosionParticles(context, 'exp')
+        player_crap_particles = particles.PlayerCrapParticles(context, 'crap')
         self.particlesmanager.register_particles(beam_particles)
         self.particlesmanager.register_particles(exp_particles)
         self.particlesmanager.register_particles(enemy_beam_particles)
         self.particlesmanager.register_particles(enemy_death_particles)
+        self.particlesmanager.register_particles(player_crap_particles)
         context.particlesmanager = self.particlesmanager
         self.player = player.Player(context, self)
         self.board = board.Board(context, self.player)
@@ -48,13 +50,13 @@ class GameScene(scene.Scene):
         self.menu_group.visible = False
         self.current_level = self.level01
         self.enemies_renderer = enemy.EnemyAnimations.init(self)
-        self.enemies = enemy.EnemyBuilder.build(self)
         self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
         self.teleports = teleport.TeleportBuilder.build(self.current_level.teleports)
         self.locks = lock.LockBuilder.build(self, self.resourcemanager, self.current_level.locks)
         self.items = item.ItemBuilder.build(self, self.resourcemanager, self.current_level.items)
-        self.renderobj = renderer.Renderer(self)
+        self.enemies = enemy.EnemyBuilder.build(self)
         self.player.on_start(self)
+        self.renderobj = renderer.Renderer(self)
         self.sound_player.play_sample('level01_song')
 
     def get_renderer(self):

@@ -81,6 +81,31 @@ class ExplosionParticles(Particles):
                 screen.blit(self.spr[p.frame], (p.x, p.y))
 
 
+class PlayerCrapParticles(Particles):
+    def __init__(self, context, name):
+        super(PlayerCrapParticles, self).__init__(context, name)
+
+    def generate(self, position):
+        for x in xrange(0, 5):
+            particle = Particle(random.randint(position[0], position[1]),
+                                random.randint(position[2], position[3]),
+                                True, random.randint(-4, 0))
+            self.particle_list.append(particle)
+
+    def run(self):
+        for p in self.particle_list:
+            if p.frame < 4:
+                p.frame += 1
+                p.y += 2
+            else:
+                self.particle_list.remove(p)
+
+    def render(self, screen):
+        for p in self.particle_list:
+            if -1 < p.frame < 4:
+                screen.blit(self.spr[p.frame], (p.x, p.y))
+
+
 class SmokeParticles(Particles):
     def __init__(self, context, name):
         super(SmokeParticles, self).__init__(context, name)
