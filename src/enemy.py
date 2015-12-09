@@ -373,7 +373,7 @@ class Enemy(object):
 
             if (self.x + self.size[0] + 256) >= (player.x - 8) and (self.x + 256) <= (player.x + 8) and (self.y + self.size[1] + 144) >= (player.y - 8) and (self.y + 144) <= (player.y + 8):
                 player_crap_particles = PlayerUtils.get_particles_manager(self.game_context).get('crap')
-                player_crap_particles.generate((player.x - 5, player.x + 2, player.y - 5, player.y + 2))
+                player_crap_particles.generate((player.x - 8, player.x + 5, player.y - 8, player.y + 5))
                 player.hit = True
                 self.sound_player.play_sample('player_hit_sam')
 

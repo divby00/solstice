@@ -86,6 +86,31 @@ class PlayerCrapParticles(Particles):
         super(PlayerCrapParticles, self).__init__(context, name)
 
     def generate(self, position):
+        for x in xrange(0, 10):
+            particle = Particle(random.randint(position[0], position[1]),
+                                random.randint(position[2], position[3]),
+                                True, random.randint(-4, 0))
+            self.particle_list.append(particle)
+
+    def run(self):
+        for p in self.particle_list:
+            if p.frame < 4:
+                p.frame += 1
+                p.y += random.randint(1, 4)
+            else:
+                self.particle_list.remove(p)
+
+    def render(self, screen):
+        for p in self.particle_list:
+            if -1 < p.frame < 4:
+                screen.blit(self.spr[p.frame], (p.x, p.y))
+
+
+class PlayerSmokeParticles(Particles):
+    def __init__(self, context, name):
+        super(PlayerSmokeParticles, self).__init__(context, name)
+
+    def generate(self, position):
         for x in xrange(0, 5):
             particle = Particle(random.randint(position[0], position[1]),
                                 random.randint(position[2], position[3]),
@@ -96,7 +121,14 @@ class PlayerCrapParticles(Particles):
         for p in self.particle_list:
             if p.frame < 4:
                 p.frame += 1
-                p.y += 2
+                p.y += 1
+                '''
+                direction = random.randint(0, 1)
+                if direction == 0:
+                    direction = -1
+                p.x += direction
+                '''
+
             else:
                 self.particle_list.remove(p)
 

@@ -30,11 +30,13 @@ class GameScene(scene.Scene):
         enemy_death_particles = particles.EnemyExplosionParticles(context, 'enemy_death')
         exp_particles = particles.ExplosionParticles(context, 'exp')
         player_crap_particles = particles.PlayerCrapParticles(context, 'crap')
+        player_smoke_particles = particles.PlayerSmokeParticles(context, 'thrust')
         self.particlesmanager.register_particles(beam_particles)
         self.particlesmanager.register_particles(exp_particles)
         self.particlesmanager.register_particles(enemy_beam_particles)
         self.particlesmanager.register_particles(enemy_death_particles)
         self.particlesmanager.register_particles(player_crap_particles)
+        self.particlesmanager.register_particles(player_smoke_particles)
         context.particlesmanager = self.particlesmanager
         self.player = player.Player(context, self)
         self.board = board.Board(context, self.player)
@@ -112,6 +114,9 @@ class GameScene(scene.Scene):
                     self.player.recovery_mode = False
                     self.player.thrust -= .1
                     self.player.flying = True
+                    player_smoke_particles = self.particlesmanager.get('thrust')
+                    player_smoke_particles.generate((self.player.x - 4, self.player.x + 1, self.player.y + 6, self.player.y + 7))
+
 
                     if not self.player.check_upper_collision(self.current_level):
                         self.player.y -= self.renderobj.speed[1]
