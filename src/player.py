@@ -126,6 +126,7 @@ class Player(actor.Actor):
         self.destiny = None
         self.firing = False
         self.hit = False
+        self.continuos_hit = 0
         self.dying = False
         self.using_item = False
         self.flying = False
@@ -203,12 +204,16 @@ class Player(actor.Actor):
             self.recovery_mode = False
             self.recovery_counter = 0
             self.hit = False
+            self.continuos_hit += 1
             self.life -= 1
             if self.life <= 0 and self.dying == False:
                 self.dying = True
                 player_exp_particles = self.particlesmanager.get('exp')
                 player_exp_particles.generate((self.x - 8, self.x + 8, self.y - 8, self.y + 8))
                 self.sound_player.play_sample('exp')
+        else:
+            if self.continuos_hit > 0:
+                self.continuos_hit -= 1
 
 
     def render(self, screen):
