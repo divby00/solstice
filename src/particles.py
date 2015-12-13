@@ -106,6 +106,21 @@ class PlayerCrapParticles(Particles):
                 screen.blit(self.spr[p.frame], (p.x, p.y))
 
 
+class RespawnParticles(Particles):
+
+    def __init__(self, context, name):
+        super(RespawnParticles, self).__init__(context, name)
+
+    def generate(self, position):
+        pass
+
+    def run(self):
+        pass
+
+    def render(self, screen):
+        pass
+
+
 class PlayerSmokeParticles(Particles):
     def __init__(self, context, name):
         super(PlayerSmokeParticles, self).__init__(context, name)

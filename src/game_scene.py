@@ -31,12 +31,14 @@ class GameScene(scene.Scene):
         exp_particles = particles.ExplosionParticles(context, 'exp')
         player_crap_particles = particles.PlayerCrapParticles(context, 'crap')
         player_smoke_particles = particles.PlayerSmokeParticles(context, 'thrust')
+        respawn_particles = particles.RespawnParticles(context, 'respawn_part')
         self.particlesmanager.register_particles(beam_particles)
         self.particlesmanager.register_particles(exp_particles)
         self.particlesmanager.register_particles(enemy_beam_particles)
         self.particlesmanager.register_particles(enemy_death_particles)
         self.particlesmanager.register_particles(player_crap_particles)
         self.particlesmanager.register_particles(player_smoke_particles)
+        self.particlesmanager.register_particles(respawn_particles)
         context.particlesmanager = self.particlesmanager
         self.player = player.Player(context, self)
         self.board = board.Board(context, self.player)
@@ -44,7 +46,7 @@ class GameScene(scene.Scene):
         self.resourcemanager = context.resourcemanager
         self.sound_player = context.sound_player
         self.sound_player.load_sample([
-            'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song', 'enemy_hit_sam', 'player_hit_sam'
+            'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song', 'enemy_hit_sam', 'player_hit_sam', 'teleport'
         ])
         self.get_menu()
 
@@ -124,6 +126,7 @@ class GameScene(scene.Scene):
                         # Check if player is in teleport
                         if self.player.check_in_active_teleport(self.current_level):
                             self.player.teleporting = True
+                            self.sound_player.play_sample('teleport')
                 else:
                     pass
                     '''

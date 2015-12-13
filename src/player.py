@@ -54,7 +54,7 @@ class Player(actor.Actor):
         self.h = 0
         self.thrust = 107
         self.bullets = 107
-        self.life = 100
+        self.life = 1
         self.lives = 3
         self.teleporting = False
         self.teleport_animation = -1
@@ -128,6 +128,8 @@ class Player(actor.Actor):
         self.hit = False
         self.continuos_hit = 0
         self.dying = False
+        self.respawn = False
+        self.respawn_frame = 0
         self.using_item = False
         self.flying = False
         self.lasers = []
@@ -206,14 +208,31 @@ class Player(actor.Actor):
             self.hit = False
             self.continuos_hit += 1
             self.life -= 1
+
             if self.life <= 0 and self.dying == False:
                 self.dying = True
                 player_exp_particles = self.particlesmanager.get('exp')
                 player_exp_particles.generate((self.x - 8, self.x + 8, self.y - 8, self.y + 8))
                 self.sound_player.play_sample('exp')
+                self.lives -= 1
+
+                if self.lives == 0:
+                    # TODO: Do GameOver!!!
+                    pass
+                else:
+                    self.respawn = True
         else:
             if self.continuos_hit > 0:
                 self.continuos_hit -= 1
+
+        if self.respawn:
+            self.respawn_frame += 1
+
+            if self.respawn_frame >= 100:
+                self.respawn_frame = 0
+                self.respawn  = False
+                self.life = 100
+                self.dying = False
 
 
     def render(self, screen):
@@ -229,6 +248,9 @@ class Player(actor.Actor):
                 screen.blit(self.recovery_spr[self.recovery_animation], (self.x - 8 - 16, self.y - 8 - 16))
             elif self.teleporting:
                 screen.blit(self.teleport_spr[self.teleport_animation], (self.x - 8, self.y - 8))
+
+        if self.respawn:
+            screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
 
     def use_item(self):
         item = self.selected_item

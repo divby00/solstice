@@ -5,6 +5,7 @@ class Board(object):
     def __init__(self, context, player):
         self.player = player
         self.board = context.resourcemanager.get('board')
+        self.board_font = context.resourcemanager.get('font_board')
         self.bluebar = []
         self.greenbar = []
         self.redbar = []
@@ -95,7 +96,7 @@ class Board(object):
                         screen.blit(self.red_dither[self.hit_mask_2[y][x]], (x * 8, y * 8))
 
         pygame.draw.rect(self.board, (0, 0, 0), (136, 17, 112, 22), 0)
-        pygame.draw.rect(self.board, (0, 0, 0), (44, 16, 16, 16), 0)
+        pygame.draw.rect(self.board, (0, 0, 0), (44, 16, 16, 24), 0)
         pygame.draw.rect(self.board, (0, 0, 0), (12, 16, 16, 16), 0)
 
         # Render player life
@@ -105,6 +106,11 @@ class Board(object):
         life = int(round(self.player.life))
         di = (life * 8) / 100
         self.board.blit(self.dronelife[8 - di], (44, 16))
+
+        # Render player lives
+        lives = int(round(self.player.lives))
+        lives_spr = self.board_font.get(str(lives))
+        self.board.blit(lives_spr, (51, 27))
 
         # Render thrust bar
         selected_bar = None
