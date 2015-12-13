@@ -369,7 +369,7 @@ class Enemy(object):
     def _hits_player(self):
         player = PlayerUtils.get_player(self.game_context)
 
-        if not player.dying:
+        if not player.dying and not player.inmortal:
 
             if (self.x + self.size[0] + 256) >= (player.x - 8) and (self.x + 256) <= (player.x + 8) and (self.y + self.size[1] + 144) >= (player.y - 8) and (self.y + 144) <= (player.y + 8):
                 player_crap_particles = PlayerUtils.get_particles_manager(self.game_context).get('crap')

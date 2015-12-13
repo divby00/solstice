@@ -76,6 +76,7 @@ class Player(actor.Actor):
         self.sprites_hit = []
         self.recovery_spr = []
         self.teleport_spr = []
+        self.sprites_inmortal = []
         self.laser_spr = []
         self.magnetic_fields = None
         self.current_level = None
@@ -98,6 +99,9 @@ class Player(actor.Actor):
 
         for p in xrange(0, len(player)):
             self.sprites_hit.insert(p, self.context.resourcemanager.get(''.join([player[p], '_hit'])))
+
+        for p in xrange(0, len(player)):
+            self.sprites_inmortal.insert(p, self.context.resourcemanager.get(''.join([player[p], '_inmortal'])))
 
         for l in xrange(0, len(laser)):
             self.laser_spr.insert(l, self.context.resourcemanager.get(laser[l]))
@@ -130,12 +134,14 @@ class Player(actor.Actor):
         self.dying = False
         self.respawn = False
         self.respawn_frame = 0
+        self.inmortal = False
+        self.inmortal_frame = 0
         self.using_item = False
         self.flying = False
         self.lasers = []
         self.thrust = 107
         self.bullets = 107
-        self.life = 100
+        self.life = 1
         self.lives = 3
         self.selected_item = None
         self.get_item_counter = 5
@@ -221,6 +227,8 @@ class Player(actor.Actor):
                     pass
                 else:
                     self.respawn = True
+                    player_respawn_particles = self.particlesmanager.get('respawn_part')
+                    player_respawn_particles.generate((self.x - 2, self.x, self.y - 2, self.y))
         else:
             if self.continuos_hit > 0:
                 self.continuos_hit -= 1
@@ -228,20 +236,31 @@ class Player(actor.Actor):
         if self.respawn:
             self.respawn_frame += 1
 
-            if self.respawn_frame >= 100:
+            if self.respawn_frame >= 50:
                 self.respawn_frame = 0
                 self.respawn  = False
+                self.inmortal = True
+                self.inmortal_frame = 0
                 self.life = 100
                 self.dying = False
+
+        if self.inmortal:
+            self.inmortal_frame += 1
+
+            if self.inmortal_frame >= 100:
+                self.inmortal = False
+                self.inmortal_frame = 0
 
 
     def render(self, screen):
         if not self.dying:
             if not self.recovery_mode and not self.teleporting:
-                if not self.hit:
+                if not self.hit and not self.inmortal:
                     screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
-                else:
+                elif self.hit and not self.inmortal:
                     screen.blit(self.sprites_hit[self.animation], (self.x - 8, self.y - 8))
+                elif self.inmortal:
+                    screen.blit(self.sprites_inmortal[self.animation], (self.x - 8, self.y - 8))
                 for l in self.lasers:
                     l.render(screen)
             elif self.recovery_mode:
@@ -250,7 +269,16 @@ class Player(actor.Actor):
                 screen.blit(self.teleport_spr[self.teleport_animation], (self.x - 8, self.y - 8))
 
         if self.respawn:
-            screen.blit(self.sprites[self.animation], (self.x - 8, self.y - 8))
+            if self.respawn_frame < 10:
+                screen.blit(self.teleport_spr[4], (self.x - 8, self.y - 8))
+            elif self.respawn_frame >= 10 and self.respawn_frame <= 20:
+                screen.blit(self.teleport_spr[3], (self.x - 8, self.y - 8))
+            elif self.respawn_frame >= 20 and self.respawn_frame <= 30:
+                screen.blit(self.teleport_spr[2], (self.x - 8, self.y - 8))
+            elif self.respawn_frame >= 30 and self.respawn_frame <= 40:
+                screen.blit(self.teleport_spr[1], (self.x - 8, self.y - 8))
+            elif self.respawn_frame >= 40 and self.respawn_frame <= 50:
+                screen.blit(self.teleport_spr[0], (self.x - 8, self.y - 8))
 
     def use_item(self):
         item = self.selected_item

@@ -112,13 +112,32 @@ class RespawnParticles(Particles):
         super(RespawnParticles, self).__init__(context, name)
 
     def generate(self, position):
-        pass
+        for x in xrange(0, 100):
+            dest_position = random.randint(position[0], position[1]), random.randint(position[2], position[3])
+            speed = (random.uniform(-2, 2), random.uniform(-2, 2))
+            iterations = random.randint(25, 50)
+            source_position = (dest_position[0] + (iterations * speed[0]), dest_position[1] + (iterations * speed[1]))
+            particle = Particle(source_position[0], source_position[1], True, random.randint(-50, 0))
+            particle.iterations = iterations
+            particle.speed = speed
+            particle.dest_position = dest_position
+            self.particle_list.append(particle)
 
     def run(self):
-        pass
+        for p in self.particle_list:
+            if p.iterations > 0:
+                p.x -= p.speed[0]
+                p.y -= p.speed[1]
+
+                if p.x + 2 >= p.dest_position[0] and p.x <= p.dest_position[0] + 2 and \
+                    p.y + 2 >= p.dest_position[1] and p.y <= p.dest_position[1] + 2:
+                        self.particle_list.remove(p)
+            else:
+                self.particle_list.remove(p)
 
     def render(self, screen):
-        pass
+        for p in self.particle_list:
+            screen.blit(self.spr[random.randint(0, 5)], (p.x, p.y))
 
 
 class PlayerSmokeParticles(Particles):
