@@ -154,7 +154,7 @@ class Player(actor.Actor):
         self.shoot_avail_counter = 0
 
     def run(self):
-        if not self.flying:
+        if not self.flying and not self.respawn:
             self.__goes_down()
 
         if self.recovery_mode:
