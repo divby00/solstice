@@ -54,7 +54,7 @@ class Player(actor.Actor):
         self.h = 0
         self.thrust = 107
         self.bullets = 107
-        self.life = 1
+        self.life = 100
         self.lives = 3
         self.teleporting = False
         self.teleport_animation = -1
@@ -127,7 +127,8 @@ class Player(actor.Actor):
         self.direction = 1
         self.teleporting = False
         self.teleport_animation = -1
-        self.destiny = None
+        self.teleport_destiny = None
+        self.teleport_source = None
         self.firing = False
         self.hit = False
         self.continuos_hit = 0
@@ -141,7 +142,7 @@ class Player(actor.Actor):
         self.lasers = []
         self.thrust = 107
         self.bullets = 107
-        self.life = 1
+        self.life = 100
         self.lives = 3
         self.selected_item = None
         self.get_item_counter = 5
@@ -172,13 +173,14 @@ class Player(actor.Actor):
             if self.teleport_animation >= 5:
                 self.teleport_animation = -1
                 self.teleporting = False
-                self.x = self.destiny.x + 8
-                self.y = self.destiny.y + 8
-                id = self.destiny.id
+                self.teleport_source.status = teleport.Teleport.INACTIVE
+                self.x = self.teleport_destiny.x + 8
+                self.y = self.teleport_destiny.y + 8
+                id = self.teleport_destiny.id
 
                 for destiny in self.teleports:
                     if id == destiny.id and destiny.x + 8 != self.x or destiny.y + 8 != self.y:
-                        self.destiny = destiny
+                        self.teleport_destiny = destiny
         else:
             self.animation += self.direction
 

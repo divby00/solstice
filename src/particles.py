@@ -112,7 +112,7 @@ class RespawnParticles(Particles):
         super(RespawnParticles, self).__init__(context, name)
 
     def generate(self, position):
-        for x in xrange(0, 100):
+        for x in xrange(0, 50):
             dest_position = random.randint(position[0], position[1]), random.randint(position[2], position[3])
             speed = (random.uniform(-2, 2), random.uniform(-2, 2))
             iterations = random.randint(25, 50)
@@ -224,6 +224,7 @@ class BeamParticles(Particles):
 
 
 class EnemyBeamParticles(Particles):
+
     def __init__(self, context, name):
         super(EnemyBeamParticles, self).__init__(context, name)
 

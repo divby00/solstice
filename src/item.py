@@ -131,10 +131,13 @@ class ItemTeleport(Item):
             if x + 8 >= t.x - 8 and x - 8 <= t.x + t.w + 16 and y + 8 >= t.y - 8 and y - 8 <= t.y + t.h + 8:
                 t.status = teleport.Teleport.ACTIVE
 
-                for destiny in self.teleports:
-                    if destiny.id == t.id and (destiny.x != t.x or destiny.y != t.y):
-                        destiny.status = teleport.Teleport.ACTIVE
-                        self.player.destiny = destiny
+                for tel in self.teleports:
+                    if tel.id == t.id and (tel.x != t.x or tel.y != t.y):
+                        tel.status = teleport.Teleport.ACTIVE
+                        self.player.teleport_destiny = tel
+                    if tel.id == t.id and tel.x == t.x and tel.y == t.y:
+                        tel.status = teleport.Teleport.ACTIVE
+                        self.player.teleport_source = tel
 
                 self.player.selected_item = None
 
