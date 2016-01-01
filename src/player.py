@@ -79,6 +79,7 @@ class Player(actor.Actor):
         self.sprites_inmortal = []
         self.laser_spr = []
         self.magnetic_fields = None
+        self.container = None
         self.current_level = None
         self.sound_player = context.sound_player
         self.particlesmanager = context.particlesmanager
@@ -116,6 +117,7 @@ class Player(actor.Actor):
 
     def on_start(self, game_context):
         self.magnetic_fields = game_context.magnetic_fields
+        self.container = game_context.container
         self.current_level = game_context.current_level
         self.teleports = game_context.teleports
         self.enemies = game_context.enemies
@@ -240,7 +242,7 @@ class Player(actor.Actor):
 
             if self.respawn_frame >= 50:
                 self.respawn_frame = 0
-                self.respawn  = False
+                self.respawn = False
                 self.inmortal = True
                 self.inmortal_frame = 0
                 self.life = 100
@@ -252,7 +254,6 @@ class Player(actor.Actor):
             if self.inmortal_frame >= 100:
                 self.inmortal = False
                 self.inmortal_frame = 0
-
 
     def render(self, screen):
         if not self.dying:
@@ -329,7 +330,7 @@ class Player(actor.Actor):
                         enemy_death_particles = self.particlesmanager.get('enemy_death')
                         enemy_death_particles.generate(
                             (self.x - 20 - colision_x, self.x - 12 - colision_x, self.y - 8, self.y))
-                        #damaged_enemy.active = False
+                        # damaged_enemy.active = False
                     else:
                         damaged_enemy.shock_counter = 14
 

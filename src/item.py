@@ -15,6 +15,7 @@ class Item(object):
         self.player = game_context.player
         self.locks = game_context.locks
         self.teleports = game_context.teleports
+        self.container = game_context.container
 
     def run(self):
         raise NotImplementedError('Implement this method')
@@ -155,8 +156,12 @@ class ItemWaste(Item):
         super(ItemWaste, self).__init__(game_context, 'waste', position, size, None)
 
     def run(self):
-        pass
-
+        # Check if player is close to the nuclear waste container
+        if self.player.x - 264 + 8 >= self.container.x and self.player.x - 264 - 8 <= self.container.x + self.container.w \
+               and self.player.y - 152 - 8 <= self.container.y + self.container.h and self.player.y - 152 + 8 >= self.container.y:
+            self.container.secured = True
+            self.player.selected_item = None
+            self.game_context.sound_player.play_sample('secured')
 
 class UnknownItemError(Exception):
     def __init__(self, value):

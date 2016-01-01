@@ -112,6 +112,7 @@ class TiledLevel(object):
         self.animated_tiles = {}
         self.items = {}
         self.locks = {}
+        self.container = None
         self.magnetic_fields = {}
         self.teleports = {}
         self.zf = zf
@@ -223,6 +224,13 @@ class TiledLevel(object):
             raise TiledLoaderError(_('Unable to find special layer in level data.'))
 
         return special
+
+    @staticmethod
+    def __parse_container_info(special):
+        for s in special:
+            for a in special[s]:
+                if a == 'container':
+                    return s
 
     @staticmethod
     def __parse_locks_info(special):
@@ -468,6 +476,7 @@ class TiledLevel(object):
         special = self.__load_special_info()
         self.teleports = self.__parse_teleports_info(special)
         self.magnetic_fields = self.__parse_magnetic_info(special)
+        self.container_info = self.__parse_container_info(special)
         self.locks = self.__parse_locks_info(special)
         self.items = self.__parse_items_info(special)
         after = pygame.time.get_ticks()

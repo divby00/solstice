@@ -1,5 +1,6 @@
 import board
 import control
+import container
 import magnetic
 import teleport
 import lock
@@ -20,6 +21,7 @@ class GameScene(scene.Scene):
         self.items = None
         self.teleports = None
         self.magnetic_fields = None
+        self.container = None
         self.enemies = None
         self.level01 = context.resourcemanager.get('level01')
         self.current_level = None
@@ -46,7 +48,8 @@ class GameScene(scene.Scene):
         self.resourcemanager = context.resourcemanager
         self.sound_player = context.sound_player
         self.sound_player.load_sample([
-            'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song', 'enemy_hit_sam', 'player_hit_sam', 'teleport'
+            'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song',
+            'enemy_hit_sam', 'player_hit_sam', 'teleport', 'secured'
         ])
         self.get_menu()
 
@@ -55,6 +58,7 @@ class GameScene(scene.Scene):
         self.current_level = self.level01
         self.enemies_renderer = enemy.EnemyAnimations.init(self)
         self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
+        self.container = container.ContainerBuilder.build(self.current_level.container_info)
         self.teleports = teleport.TeleportBuilder.build(self.current_level.teleports)
         self.locks = lock.LockBuilder.build(self, self.resourcemanager, self.current_level.locks)
         self.items = item.ItemBuilder.build(self, self.resourcemanager, self.current_level.items)
@@ -182,7 +186,6 @@ class GameScene(scene.Scene):
                     self.player.recovery_mode = False
 
                     if self.player.selected_item is not None:
-                        self.player.life -= 1
                         self.player.using_item = True
                         self.sound_player.play_sample('accept')
 
