@@ -365,6 +365,7 @@ class TiledLevel(object):
                             tiles.append(Tile(srfc, (t.tilew, t.tileh)))
                             img_count += 1
 
+        print('Loaded ' + str(img_count) + ' tiles')
         return tiles
 
     def __load_layers_info(self):
@@ -376,7 +377,7 @@ class TiledLevel(object):
             layerheight = int(layer.get(TiledLevel.HEIGHT))
             layername = layer.get(TiledLevel.NAME)
 
-            if layername in ['walls', 'background', 'hard']:
+            if layername in ['walls', 'background', 'hard', 'forepatterns']:
 
                 l = Layer(layername, (layerwidth, layerheight))
 

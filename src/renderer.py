@@ -22,7 +22,10 @@ class Renderer(object):
         self.board = context.board
         self.speed = 4, 4
         self.start_point = self.__get_start_point()
-        self.source = self.__init_source_image()
+        self.source, self.fore_source = self.__init_source_image()
+
+        pygame.image.save(self.fore_source, "salida.png")
+
         self.backpatterns = []
         self.forepatterns = []
         self.__init_patterns()
@@ -36,6 +39,8 @@ class Renderer(object):
         level_size = self.level.map.width_pixels, self.level.map.height_pixels
         back = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert()
         back.fill((0, 0, 0))
+        fore = pygame.Surface(level_size).convert_alpha()
+        fore.fill((0, 0, 0, 0))
         back_img = self.level.back
         walls = pygame.Surface(level_size).convert_alpha()
         walls.fill((0, 0, 0, 0))
@@ -90,10 +95,23 @@ class Renderer(object):
         '''
         # End debugging walls
 
+        # Draw the foreground static images in the fore buffer
+        for l in self.level.layers:
+            if l.name == 'forepatterns':
+                posx = posy = 0
+                for a in xrange(0, level_size[1] / 8):
+                    for i in xrange(0, level_size[0] / 8):
+                        gid = l.get_gid(i, a)
+                        if gid > 0:
+                            fore.blit(self.level.tiles[gid - 1].srfc, (posx, posy))
+                        posx += 8
+                    posx = 0
+                    posy += 8
+
         x = (back.get_width() / 2) - (walls.get_width() / 2)
         y = (back.get_height() / 2) - (walls.get_height() / 2)
         back.blit(walls, (x, y))
-        return back
+        return back, fore
 
     def __init_patterns(self):
 
@@ -175,6 +193,17 @@ class Renderer(object):
         # Particles rendering
         self.particlesmanager.render(self.tmp)
 
+        # Foreground Source rendering
+        '''
+        self.tmp.blit(self.fore_source,
+                      (self.player.x - 128, self.player.y - 72),
+                      (self.player.x - 128, self.player.y - 72, 256, 144))
+        self.tmp.blit(self.fore_source,
+                      (256, 144), (self.player.x, self.player.y, 256, 144))
+        '''
+        self.tmp.blit(self.fore_source,
+                      (256, 144), (self.player.x - 264, self.player.y - 152, 256, 144))
+
         # Forepattern rendering
         for b in self.forepatterns:
             anim = self.animations.get(b.animation_name)
@@ -194,4 +223,5 @@ class Renderer(object):
         text = self.font_white.get(('x:' + str(self.player.x - 264) + ' y:' + str(self.player.y - 152)), 100)
         self.screen.virt.blit(text, (5, 5))
         '''
+
 
