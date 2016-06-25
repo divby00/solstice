@@ -23,7 +23,7 @@ class GameScene(scene.Scene):
         self.magnetic_fields = None
         self.container = None
         self.enemies = None
-        self.level01 = context.resourcemanager.get('level02')
+        self.level01 = context.resourcemanager.get('level03')
         self.current_level = None
         self.renderobj = None
         self.particlesmanager = particles_manager.ParticlesManager()

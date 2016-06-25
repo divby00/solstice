@@ -36,6 +36,9 @@ class Renderer(object):
         return ((self.level.start_point[0]) + 256 + 8) - 128, ((self.level.start_point[1]) + 144 + 8) - 72
 
     def __init_source_image(self):
+        wall_tiles_overflow = []
+        back_tiles_overflow = []
+        fore_tiles_overflow = []
         level_size = self.level.map.width_pixels, self.level.map.height_pixels
         back = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert()
         back.fill((0, 0, 0))
@@ -57,8 +60,11 @@ class Renderer(object):
                 for a in xrange(0, level_size[1] / 8):
                     for i in xrange(0, level_size[0] / 8):
                         gid = l.get_gid(i, a)
-                        if gid > 0:
+                        if gid > 0 and gid < len(self.level.tiles):
                             walls.blit(self.level.tiles[gid - 1].srfc, (posx, posy))
+                        else:
+                            if gid > 0:
+                                back_tiles_overflow.append(gid)
                         posx += 8
                     posx = 0
                     posy += 8
@@ -70,8 +76,11 @@ class Renderer(object):
                 for a in xrange(0, level_size[1] / 8):
                     for i in xrange(0, level_size[0] / 8):
                         gid = l.get_gid(i, a)
-                        if gid > 0:
+                        if gid > 0 and gid < len(self.level.tiles):
                             walls.blit(self.level.tiles[gid - 1].srfc, (posx, posy))
+                        else:
+                            if gid > 0:
+                                fore_tiles_overflow.append(gid)
                         posx += 8
                     posx = 0
                     posy += 8
@@ -87,8 +96,6 @@ class Renderer(object):
                         gid = l.get_gid(i, a)
                         if gid in self.level.hard_tiles:
                             walls.blit(self.level.tiles[518].srfc, (posx, posy))
-                        else:
-                            walls.blit(self.level.tiles[1].srfc,(posx, posy))
                         posx += 8
                     posx = 0
                     posy += 8
@@ -102,8 +109,11 @@ class Renderer(object):
                 for a in xrange(0, level_size[1] / 8):
                     for i in xrange(0, level_size[0] / 8):
                         gid = l.get_gid(i, a)
-                        if gid > 0:
+                        if gid > 0 and gid < len(self.level.tiles):
                             fore.blit(self.level.tiles[gid - 1].srfc, (posx, posy))
+                        else:
+                            if gid > 0:
+                                fore_tiles_overflow.append(gid)
                         posx += 8
                     posx = 0
                     posy += 8
@@ -111,6 +121,9 @@ class Renderer(object):
         x = (back.get_width() / 2) - (walls.get_width() / 2)
         y = (back.get_height() / 2) - (walls.get_height() / 2)
         back.blit(walls, (x, y))
+        print(set(wall_tiles_overflow))
+        print(set(back_tiles_overflow))
+        print(set(fore_tiles_overflow))
         return back, fore
 
     def __init_patterns(self):
