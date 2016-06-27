@@ -79,6 +79,7 @@ class Player(actor.Actor):
         self.sprites_inmortal = []
         self.laser_spr = []
         self.magnetic_fields = None
+        self.nothrust = None
         self.container = None
         self.current_level = None
         self.sound_player = context.sound_player
@@ -117,6 +118,7 @@ class Player(actor.Actor):
 
     def on_start(self, game_context):
         self.magnetic_fields = game_context.magnetic_fields
+        self.nothrust = game_context.nothrust
         self.container = game_context.container
         self.current_level = game_context.current_level
         self.teleports = game_context.teleports
@@ -461,6 +463,14 @@ class Player(actor.Actor):
                 result = True
 
         return result
+
+    def check_in_nothrust(self):
+        for m in self.nothrust:
+            if self.x - 8 >= m.position[0] and self.x + 8 <= m.position[0] + m.size[0] and \
+                    self.y - 8 <= m.position[1] + m.size[1]:
+                        return True
+
+        return False
 
     def check_upper_collision(self, level):
         calculated_y = int((self.y - 9) / level.map.tileheight) - 18

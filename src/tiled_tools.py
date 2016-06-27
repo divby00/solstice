@@ -114,6 +114,7 @@ class TiledLevel(object):
         self.locks = {}
         self.container = None
         self.magnetic_fields = {}
+        self.nothrust = {}
         self.teleports = {}
         self.zf = zf
         self.start_tile = 0
@@ -273,6 +274,16 @@ class TiledLevel(object):
                 if a == 'magnetic':
                     magnetic_fields.append(s)
         return magnetic_fields
+
+    @staticmethod
+    def __parse_nothrust_info(special):
+        nothrust = []
+
+        for s in special:
+            for a in special[s]:
+                if a == 'nothrust':
+                    nothrust.append(s)
+        return nothrust
 
     @staticmethod
     def __parse_items_info(special):
@@ -480,6 +491,8 @@ class TiledLevel(object):
         self.container_info = self.__parse_container_info(special)
         self.locks = self.__parse_locks_info(special)
         self.items = self.__parse_items_info(special)
+        self.nothrust = self.__parse_nothrust_info(special)
+
         after = pygame.time.get_ticks()
         print('\tLEVEL: Special info loaded in %d milliseconds.' % (after - before))
 
@@ -509,5 +522,10 @@ class TiledLevel(object):
 
     def is_hard(self, x, y):
         if self.get_gid(x, y, TiledLevel.HARD) in self.hard_tiles:
+            return True
+        return False
+
+    def is_nothrust(self, x, y):
+        if self.get_gid(x, y, TiledLevel.SPECIAL):
             return True
         return False

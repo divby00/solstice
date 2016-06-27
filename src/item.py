@@ -66,6 +66,14 @@ class ItemUnlocker(Item):
                     self.game_context.sound_player.play_sample('exp')
 
 
+class ItemFuse(Item):
+    def __init__(self, game_context, position, size):
+        super(ItemFuse, self).__init__(game_context, 'fuse', position, size, None)
+
+    def run(self):
+        pass
+
+
 class ItemBomb(Item):
     def __init__(self, game_context, position, size):
         super(ItemBomb, self).__init__(game_context, 'bomb', position, size, None)
@@ -185,7 +193,7 @@ class ItemBuilder(object):
             item_w = int(item_elements[3])
             item_h = int(item_elements[4])
 
-            if item_name not in ['barrel', 'battery', 'drill', 'key', 'teleport_pass', 'tnt', 'waste', 'bomb'] and not \
+            if item_name not in ['barrel', 'battery', 'drill', 'key', 'teleport_pass', 'tnt', 'waste', 'bomb', 'fuse'] and not \
                     item_name.startswith('card'):
                 raise UnknownItemError(_('Unable to build %s item') % item_name)
 
@@ -201,6 +209,9 @@ class ItemBuilder(object):
 
             if item_name == 'bomb':
                 item = ItemBomb(game_context, position, size)
+
+            if item_name == 'fuse':
+                item = ItemFuse(game_context, position, size)
 
             if item_name.startswith('card'):
                 card_id = item_name[-2:]
