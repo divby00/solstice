@@ -1,9 +1,10 @@
 class Lock(object):
-    def __init__(self, game_context, id, position, size):
+    def __init__(self, game_context, id, position, size, type):
         self.id = id
         self.x, self.y = position[0] + 256, position[1] + 144
         self.w, self.h = size
         self.active = True
+        self.type = type
 
 
 class LockBuilder(object):
@@ -19,11 +20,12 @@ class LockBuilder(object):
             y = int(lock_elements[2])
             w = int(lock_elements[3])
             h = int(lock_elements[4])
+            type = lock_elements[5]
 
             lock = None
             position = (x, y)
             size = (w, h)
-            lock = Lock(game_context, id, (x, y), (w, h))
+            lock = Lock(game_context, id, (x, y), (w, h), type)
             results.append(lock)
 
         # Rebuild hard tiles destroyed when player unlocks some gate.

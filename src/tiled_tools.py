@@ -115,6 +115,7 @@ class TiledLevel(object):
         self.container = None
         self.magnetic_fields = {}
         self.nothrust = {}
+        self.rails = {}
         self.teleports = {}
         self.zf = zf
         self.start_tile = 0
@@ -244,8 +245,11 @@ class TiledLevel(object):
                 if a == 'lock':
                     lock_id = special[s].get(a)
 
-                    if lock_id is not None:
-                        locks.append(''.join([lock_id, ' ', s]))
+                if a == 'type':
+                    lock_type = special[s].get(a)
+
+                    if lock_id is not None and lock_type is not None:
+                        locks.append(''.join([lock_id, ' ', s, ' ', lock_type]))
 
         return locks
 
@@ -264,6 +268,26 @@ class TiledLevel(object):
                         teleports.append(''.join([teleport_id, ' ', s]))
 
         return teleports
+
+    @staticmethod
+    def __parse_rails_info(special):
+        rails = []
+
+        for s in special:
+            rail = None
+            direction = None
+
+            for a in special[s]:
+                if a == 'rails':
+                    rail = special[s].get(a)
+
+                if a == 'direction':
+                    direction = special[s].get(a)
+
+                if rail is not None and direction is not None:
+                    rails.append(''.join([s, ' ', direction]))
+
+        return rails
 
     @staticmethod
     def __parse_magnetic_info(special):
@@ -492,6 +516,7 @@ class TiledLevel(object):
         self.locks = self.__parse_locks_info(special)
         self.items = self.__parse_items_info(special)
         self.nothrust = self.__parse_nothrust_info(special)
+        self.rails = self.__parse_rails_info(special)
 
         after = pygame.time.get_ticks()
         print('\tLEVEL: Special info loaded in %d milliseconds.' % (after - before))

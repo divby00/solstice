@@ -3,6 +3,7 @@ import control
 import container
 import magnetic
 import nothrust
+import rails
 import teleport
 import lock
 import item
@@ -23,11 +24,13 @@ class GameScene(scene.Scene):
         self.teleports = None
         self.magnetic_fields = None
         self.nothrust = None
+        self.rails = None
         self.container = None
         self.enemies = None
         self.level01 = context.resourcemanager.get('level03')
         self.current_level = None
         self.renderobj = None
+        self.enemies_renderer = None
         self.particlesmanager = particles_manager.ParticlesManager()
         enemy_beam_particles = particles.EnemyBeamParticles(context, 'enemy_hit')
         beam_particles = particles.BeamParticles(context, 'hit')
@@ -61,6 +64,7 @@ class GameScene(scene.Scene):
         self.enemies_renderer = enemy.EnemyAnimations.init(self)
         self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
         self.nothrust = nothrust.NoThrustBuilder.build(self.current_level.nothrust)
+        self.rails = rails.RailsBuilder.build(self.current_level.rails)
         self.container = container.ContainerBuilder.build(self.current_level.container_info)
         self.teleports = teleport.TeleportBuilder.build(self.current_level.teleports)
         self.locks = lock.LockBuilder.build(self, self.resourcemanager, self.current_level.locks)
@@ -108,7 +112,9 @@ class GameScene(scene.Scene):
 
                     if not self.player.check_right_collision(self.current_level):
                         self.player.direction = 1
-                        self.player.x += self.renderobj.speed[0]
+
+                        if not self.player.check_in_rails(-1):
+                            self.player.x += self.renderobj.speed[0]
 
                 if self.control.on(control.Control.LEFT):
                     self.player.recovery_counter = 0
@@ -116,7 +122,9 @@ class GameScene(scene.Scene):
 
                     if not self.player.check_left_collision(self.current_level):
                         self.player.direction = -1
-                        self.player.x -= self.renderobj.speed[0]
+
+                        if not self.player.check_in_rails(1):
+                            self.player.x -= self.renderobj.speed[0]
 
                 if self.control.on(control.Control.UP) and self.player.thrust > 0:
                     self.player.recovery_counter = 0
@@ -125,7 +133,6 @@ class GameScene(scene.Scene):
                     self.player.flying = True
                     player_smoke_particles = self.particlesmanager.get('thrust')
                     player_smoke_particles.generate((self.player.x - 4, self.player.x + 1, self.player.y + 6, self.player.y + 7))
-
 
                     if not self.player.check_upper_collision(self.current_level) and not self.player.check_in_nothrust():
                         self.player.y -= self.renderobj.speed[1]

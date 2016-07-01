@@ -80,6 +80,7 @@ class Player(actor.Actor):
         self.laser_spr = []
         self.magnetic_fields = None
         self.nothrust = None
+        self.rails = None
         self.container = None
         self.current_level = None
         self.sound_player = context.sound_player
@@ -119,6 +120,7 @@ class Player(actor.Actor):
     def on_start(self, game_context):
         self.magnetic_fields = game_context.magnetic_fields
         self.nothrust = game_context.nothrust
+        self.rails = game_context.rails
         self.container = game_context.container
         self.current_level = game_context.current_level
         self.teleports = game_context.teleports
@@ -466,8 +468,17 @@ class Player(actor.Actor):
 
     def check_in_nothrust(self):
         for m in self.nothrust:
-            if self.x - 8 >= m.position[0] and self.x + 8 <= m.position[0] + m.size[0] and \
-                    self.y - 8 <= m.position[1] + m.size[1]:
+            if self.x - 8 >= m.position[0] and self.x + 8 <= m.position[0] + m.size[0] \
+                    and self.y - 8 <= m.position[1] + m.size[1] \
+                    and self.y >= m.position[1]:
+                        return True
+
+        return False
+
+    def check_in_rails(self, direction):
+        for rail in self.rails:
+            if self.x - 8 >= rail.position[0] and self.x + 8 <= rail.position[0] + rail.size[0] \
+                    and self.y + 8 == rail.position[1] and direction == rail.direction:
                         return True
 
         return False

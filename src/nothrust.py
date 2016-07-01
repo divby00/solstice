@@ -5,6 +5,7 @@ class NoThrust(object):
 
 
 class NoThrustBuilder(object):
+
     @staticmethod
     def build(nothrust):
         results = []
@@ -21,9 +22,6 @@ class NoThrustBuilder(object):
             size = (w, h)
             nothrust_field = NoThrust(position, size)
 
-            print('Nothrust')
-            print(nothrust_field.position)
-            print(nothrust_field.size)
             results.append(nothrust_field)
 
         return results
