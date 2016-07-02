@@ -109,22 +109,26 @@ class GameScene(scene.Scene):
                 if self.control.on(control.Control.RIGHT):
                     self.player.recovery_counter = 0
                     self.player.recovery_mode = False
+                    self.player.direction = 1
 
-                    if not self.player.check_right_collision(self.current_level):
-                        self.player.direction = 1
-
-                        if not self.player.check_in_rails(-1):
-                            self.player.x += self.renderobj.speed[0]
+                    if not self.player.check_right_collision(self.current_level) and self.player.check_in_rails() == 0:
+                        self.player.x += self.renderobj.speed[0]
 
                 if self.control.on(control.Control.LEFT):
                     self.player.recovery_counter = 0
                     self.player.recovery_mode = False
+                    self.player.direction = -1
 
-                    if not self.player.check_left_collision(self.current_level):
-                        self.player.direction = -1
+                    if not self.player.check_left_collision(self.current_level) and self.player.check_in_rails() == 0:
+                        self.player.x -= self.renderobj.speed[0]
 
-                        if not self.player.check_in_rails(1):
-                            self.player.x -= self.renderobj.speed[0]
+                rail_direction = self.player.check_in_rails()
+
+                if rail_direction != 0:
+                    if not self.player.check_right_collision(self.current_level) and rail_direction == 1:
+                        self.player.x += self.renderobj.speed[0]
+                    if not self.player.check_left_collision(self.current_level) and rail_direction == -1:
+                        self.player.x -= self.renderobj.speed[0]
 
                 if self.control.on(control.Control.UP) and self.player.thrust > 0:
                     self.player.recovery_counter = 0

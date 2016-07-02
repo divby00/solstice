@@ -475,13 +475,13 @@ class Player(actor.Actor):
 
         return False
 
-    def check_in_rails(self, direction):
+    def check_in_rails(self):
         for rail in self.rails:
             if self.x - 8 >= rail.position[0] and self.x + 8 <= rail.position[0] + rail.size[0] \
-                    and self.y + 8 == rail.position[1] and direction == rail.direction:
-                        return True
+                    and self.y + 8 == rail.position[1]:
+                        return rail.direction
 
-        return False
+        return 0
 
     def check_upper_collision(self, level):
         calculated_y = int((self.y - 9) / level.map.tileheight) - 18
