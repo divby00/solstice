@@ -42,7 +42,7 @@ class Renderer(object):
         level_size = self.level.map.width_pixels, self.level.map.height_pixels
         back = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert()
         back.fill((0, 0, 0))
-        fore = pygame.Surface(level_size).convert_alpha()
+        fore = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert_alpha()
         fore.fill((0, 0, 0, 0))
         back_img = self.level.back
         walls = pygame.Surface(level_size).convert_alpha()
@@ -104,7 +104,7 @@ class Renderer(object):
 
         # Draw the foreground static images in the fore buffer
         for l in self.level.layers:
-            if l.name == 'forepatterns':
+            if l.name == 'foreground':
                 posx = posy = 0
                 for a in xrange(0, level_size[1] / 8):
                     for i in xrange(0, level_size[0] / 8):
@@ -207,15 +207,9 @@ class Renderer(object):
         self.particlesmanager.render(self.tmp)
 
         # Foreground Source rendering
-        '''
         self.tmp.blit(self.fore_source,
                       (self.player.x - 128, self.player.y - 72),
-                      (self.player.x - 128, self.player.y - 72, 256, 144))
-        self.tmp.blit(self.fore_source,
-                      (256, 144), (self.player.x, self.player.y, 256, 144))
-        '''
-        self.tmp.blit(self.fore_source,
-                      (256, 144), (self.player.x - 264, self.player.y - 152, 256, 144))
+                      (self.player.x - 384 , self.player.y - 216, 256, 144))
 
         # Forepattern rendering
         for b in self.forepatterns:

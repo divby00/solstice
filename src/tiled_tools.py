@@ -412,7 +412,7 @@ class TiledLevel(object):
             layerheight = int(layer.get(TiledLevel.HEIGHT))
             layername = layer.get(TiledLevel.NAME)
 
-            if layername in ['walls', 'background', 'hard', 'forepatterns']:
+            if layername in ['walls', 'background', 'hard', 'foreground']:
 
                 l = Layer(layername, (layerwidth, layerheight))
 
