@@ -16,7 +16,7 @@ import enemy
 
 
 class GameScene(scene.Scene):
-    def __init__(self, context, name='game', scene_speed=25):
+    def __init__(self, context, name='game', scene_speed=26):
         super(GameScene, self).__init__(context, name, scene_speed)
         self.screen = context.scr
         self.locks = None
@@ -27,7 +27,7 @@ class GameScene(scene.Scene):
         self.rails = None
         self.container = None
         self.enemies = None
-        self.level01 = context.resourcemanager.get('level03')
+        self.level01 = context.resourcemanager.get('level01')
         self.current_level = None
         self.renderobj = None
         self.enemies_renderer = None
