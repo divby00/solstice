@@ -82,7 +82,7 @@ class Stars(object):
 class Credits(object):
     def __init__(self, font, font_dither):
         self.credits_text = [
-            _('2015 Love4Retro Games'),
+            _('2016 Love4Retro Games'),
             _('Solstice is an Equinox remake'),
             _('Program and graphics by:'),
             _('Jesus Chicharro'),
