@@ -1,5 +1,4 @@
 from gettext import gettext as _
-
 import teleport
 
 
@@ -11,9 +10,12 @@ class Item(object):
         self.active = True
         self.sprite = None
         self.unlocks = unlocks
+        self.position = position
+        self.size = size
         self.game_context = game_context
         self.player = game_context.player
         self.locks = game_context.locks
+        self.beam_barriers = game_context.beam_barriers
         self.teleports = game_context.teleports
         self.container = game_context.container
 
@@ -32,8 +34,6 @@ class ItemUnlocker(Item):
     def run(self):
         x = self.player.x
         y = self.player.y
-        w = self.player.w
-        h = self.player.h
 
         # Check if player is near a lock
         for l in self.locks:
@@ -66,12 +66,43 @@ class ItemUnlocker(Item):
                     self.game_context.sound_player.play_sample('exp')
 
 
-class ItemFuse(Item):
-    def __init__(self, game_context, position, size):
-        super(ItemFuse, self).__init__(game_context, 'fuse', position, size, None)
+class ItemFuse(ItemUnlocker):
+    def __init__(self, game_context, position, size, unlocks):
+        super(ItemFuse, self).__init__(game_context, 'fuse', position, size, unlocks)
 
     def run(self):
-        pass
+        x = self.player.x
+        y = self.player.y
+
+        # Check if player is near a lock
+        for l in self.locks:
+            if x + 8 >= l.x - 8 and x - 8 <= l.x + l.w + 8 and y + 8 >= l.y - 8 and y - 8 <= l.y + l.h + 8:
+
+                # Check if selected_item unlocks the nearby lock
+                if self.player.selected_item.unlocks == l.id:
+
+                    # TODO: Change sprite for fuse box
+
+                    # Remove beam barrier
+                    for barrier in self.beam_barriers:
+                        if barrier.locked_by == l.id:
+
+                            # Remove beam barrier animation
+                            for y in xrange(barrier.y, barrier.y + barrier.h):
+                                self.game_context.get_renderer().change_animation((barrier.x, y), None)
+
+                            # Remove hard zones
+                            hard_layer = [layer for layer in self.game_context.get_layers() if layer.name == 'hard'][0]
+                            if hard_layer:
+                                gx, gy = (barrier.x - 256) / 8, (barrier.y - 144) / 8
+                                gw, gh = barrier.w / 8, barrier.h / 8
+
+                                for a in xrange(gy, gy + gh):
+                                    for i in xrange(gx, gx + gw):
+                                        hard_layer.set_gid(i, a, 0)
+
+                    # Delete item
+                    self.player.selected_item = None
 
 
 class ItemBomb(Item):
@@ -132,8 +163,6 @@ class ItemTeleport(Item):
     def run(self):
         x = self.player.x
         y = self.player.y
-        w = self.player.w
-        h = self.player.h
 
         # Check if player is near a teleport machine, in that case prepare both teleport machines
         for t in self.teleports:
@@ -171,6 +200,7 @@ class ItemWaste(Item):
             self.player.selected_item = None
             self.game_context.sound_player.play_sample('secured')
 
+
 class UnknownItemError(Exception):
     def __init__(self, value):
         self.value = value
@@ -180,6 +210,7 @@ class UnknownItemError(Exception):
 
 
 class ItemBuilder(object):
+
     @staticmethod
     def build(game_context, resourcemanager, items):
 
@@ -211,7 +242,7 @@ class ItemBuilder(object):
                 item = ItemBomb(game_context, position, size)
 
             if item_name == 'fuse':
-                item = ItemFuse(game_context, position, size)
+                item = ItemFuse(game_context, position, size, item_elements[5])
 
             if item_name.startswith('card'):
                 card_id = item_name[-2:]

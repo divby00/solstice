@@ -72,7 +72,10 @@ class Control(object):
 
     def __init__(self, context):
         self.cfg = context.cfg
+        '''
         joysticks = [pygame.joystick.Joystick(j) for j in range(pygame.joystick.get_count())]
+        '''
+        joysticks = []
         self.devices = self.__register_devices(joysticks)
 
     def __register_devices(self, joysticks):

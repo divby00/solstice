@@ -20,6 +20,7 @@ class GameScene(scene.Scene):
         super(GameScene, self).__init__(context, name, scene_speed)
         self.screen = context.scr
         self.locks = None
+        self.beam_barriers = None
         self.items = None
         self.teleports = None
         self.magnetic_fields = None
@@ -27,7 +28,7 @@ class GameScene(scene.Scene):
         self.rails = None
         self.container = None
         self.enemies = None
-        self.level01 = context.resourcemanager.get('level03')
+        self.level = context.resourcemanager.get('level03')
         self.current_level = None
         self.renderobj = None
         self.enemies_renderer = None
@@ -60,7 +61,7 @@ class GameScene(scene.Scene):
 
     def on_start(self):
         self.menu_group.visible = False
-        self.current_level = self.level01
+        self.current_level = self.level
         self.enemies_renderer = enemy.EnemyAnimations.init(self)
         self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
         self.nothrust = nothrust.NoThrustBuilder.build(self.current_level.nothrust)
@@ -68,6 +69,7 @@ class GameScene(scene.Scene):
         self.container = container.ContainerBuilder.build(self.current_level.container_info)
         self.teleports = teleport.TeleportBuilder.build(self.current_level.teleports)
         self.locks = lock.LockBuilder.build(self, self.resourcemanager, self.current_level.locks)
+        self.beam_barriers = lock.BeamBarriersBuilder.build(self, self.resourcemanager, self.current_level.beam_barriers)
         self.items = item.ItemBuilder.build(self, self.resourcemanager, self.current_level.items)
         self.enemies = enemy.EnemyBuilder.build(self)
         self.player.on_start(self)
@@ -158,17 +160,12 @@ class GameScene(scene.Scene):
 
                     # Checks if player is over an item
                     if self.player.get_item_available:
-                        item_found = False
                         x = self.player.x
                         y = self.player.y
-                        w = self.player.w
-                        h = self.player.h
 
                         for i in self.items:
-
                             if x + 8 >= i.x and x - 8 <= i.x + i.w and y + 8 >= i.y and y - 8 <= i.y + i.h:
                                 # Player is over an item
-                                item_found = True
                                 self.player.get_item_available = False
                                 self.player.get_item_counter = 0
                                 self.sound_player.play_sample('accept')
@@ -208,8 +205,8 @@ class GameScene(scene.Scene):
 
             self.player.run()
 
-        for enemy in self.enemies:
-            enemy.run()
+        for ene in self.enemies:
+            ene.run()
 
         self.particlesmanager.run()
         self.renderobj.run()

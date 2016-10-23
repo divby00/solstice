@@ -5,6 +5,7 @@ import ConfigParser
 
 class ConfigurationError(Exception):
     def __init__(self, value):
+        super(ConfigurationError, self).__init__()
         self.value = value
 
     def __str__(self):

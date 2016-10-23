@@ -111,7 +111,8 @@ class TiledLevel(object):
         self.hard_tiles = []
         self.animated_tiles = {}
         self.items = {}
-        self.locks = {}
+        self.locks = []
+        self.beam_barriers = []
         self.container = None
         self.magnetic_fields = {}
         self.nothrust = {}
@@ -211,7 +212,6 @@ class TiledLevel(object):
                     objw = o.get('width')
                     objh = o.get('height')
 
-                    item_name = ''
                     properties = {}
 
                     for prop in o.findall('properties'):
@@ -233,6 +233,16 @@ class TiledLevel(object):
             for a in special[s]:
                 if a == 'container':
                     return s
+
+    @staticmethod
+    def __parse_beam_barriers_info(special):
+        beam_barriers = []
+
+        for s in special:
+            if 'beam_barrier_locked_by' in special[s]:
+                beam_barriers.append(''.join([special[s]['beam_barrier_locked_by'], ' ', s]))
+
+        return beam_barriers
 
     @staticmethod
     def __parse_locks_info(special):
@@ -514,6 +524,7 @@ class TiledLevel(object):
         self.magnetic_fields = self.__parse_magnetic_info(special)
         self.container_info = self.__parse_container_info(special)
         self.locks = self.__parse_locks_info(special)
+        self.beam_barriers = self.__parse_beam_barriers_info(special)
         self.items = self.__parse_items_info(special)
         self.nothrust = self.__parse_nothrust_info(special)
         self.rails = self.__parse_rails_info(special)

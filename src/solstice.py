@@ -4,9 +4,13 @@ import gettext
 from gettext import gettext as _
 import os
 import platform
-import pygame
 import sys
-
+'''
+Everything works correctly with pygame_sdl2 except sound
+import pygame_sdl2
+pygame_sdl2.import_as_pygame()
+'''
+import pygame
 import config
 import control
 import resource_manager
@@ -26,10 +30,14 @@ class Solstice(object):
         gettext.bindtextdomain('solstice', self.cfg.locale_path)
         gettext.textdomain('solstice')
 
+        '''
         if self.cfg.sound or self.cfg.music:
             pygame.mixer.pre_init(22050, -16, 2, 1024)
+        '''
 
         pygame.init()
+        if self.cfg.sound or self.cfg.music:
+            pygame.mixer.pre_init(22050, -16, 2, 2048)
         self.scr = screen.Screen(self.cfg, _('Solstice'))
         self.control = control.Control(self)
         self.resourcemanager = resource_manager.ResourceManager(self,

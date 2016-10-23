@@ -85,7 +85,7 @@ class Renderer(object):
                     posx = 0
                     posy += 8
 
-        # Draws hard zones. 
+        # Draws hard zones.
         # TODO Remove this. Only for debugging purpose!!
         '''
         for l in self.level.layers:
@@ -121,9 +121,12 @@ class Renderer(object):
         x = (back.get_width() / 2) - (walls.get_width() / 2)
         y = (back.get_height() / 2) - (walls.get_height() / 2)
         back.blit(walls, (x, y))
+        '''
+        # Debugging purposes
         print(set(wall_tiles_overflow))
         print(set(back_tiles_overflow))
         print(set(fore_tiles_overflow))
+        '''
         return back, fore
 
     def __init_patterns(self):
@@ -209,7 +212,7 @@ class Renderer(object):
         # Foreground Source rendering
         self.tmp.blit(self.fore_source,
                       (self.player.x - 128, self.player.y - 72),
-                      (self.player.x - 384 , self.player.y - 216, 256, 144))
+                      (self.player.x - 384, self.player.y - 216, 256, 144))
 
         # Forepattern rendering
         for b in self.forepatterns:
@@ -230,5 +233,3 @@ class Renderer(object):
         text = self.font_white.get(('x:' + str(self.player.x - 264) + ' y:' + str(self.player.y - 152)), 100)
         self.screen.virt.blit(text, (5, 5))
         '''
-
-

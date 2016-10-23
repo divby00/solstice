@@ -1,10 +1,40 @@
 class Lock(object):
+
     def __init__(self, game_context, id, position, size, type):
         self.id = id
         self.x, self.y = position[0] + 256, position[1] + 144
         self.w, self.h = size
         self.active = True
         self.type = type
+
+
+class BeamBarrier(object):
+
+    def __init__(self, game_context, locked_by, position, size):
+        self.locked_by = locked_by
+        self.x, self.y = position[0] + 256, position[1] + 144
+        self.w, self.h = size
+
+
+class BeamBarriersBuilder(object):
+
+    @staticmethod
+    def build(game_context, resourcemanager, beam_barriers):
+
+        results = []
+
+        for bbar in beam_barriers:
+            beam_elements = bbar.split(' ')
+            locked_by = beam_elements[0]
+            x = int(beam_elements[1])
+            y = int(beam_elements[2])
+            w = int(beam_elements[3])
+            h = int(beam_elements[4])
+
+            beam_barrier = BeamBarrier(game_context, locked_by, (x, y), (w, h))
+            results.append(beam_barrier)
+
+        return results
 
 
 class LockBuilder(object):
