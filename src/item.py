@@ -81,7 +81,8 @@ class ItemFuse(ItemUnlocker):
                 # Check if selected_item unlocks the nearby lock
                 if self.player.selected_item.unlocks == l.id:
 
-                    # TODO: Change sprite for fuse box
+                    # Change sprite for fuse box
+                    self.game_context.get_renderer().change_animation((l.x, l.y), 'object014')
 
                     # Remove beam barrier
                     for barrier in self.beam_barriers:
