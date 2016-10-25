@@ -189,6 +189,14 @@ class ItemTnt(ItemUnlocker):
         super(ItemTnt, self).run()
 
 
+class ItemDetonator(ItemUnlocker):
+    def __init__(self, game_context, position, size, unlocks):
+        super(ItemDetonator, self).__init__(game_context, 'detonator', position, size, unlocks)
+
+    def run(self):
+        super(ItemDetonator, self).run()
+
+
 class ItemWaste(Item):
     def __init__(self, game_context, position, size):
         super(ItemWaste, self).__init__(game_context, 'waste', position, size, None)
@@ -225,7 +233,7 @@ class ItemBuilder(object):
             item_w = int(item_elements[3])
             item_h = int(item_elements[4])
 
-            if item_name not in ['barrel', 'battery', 'drill', 'key', 'teleport_pass', 'tnt', 'waste', 'bomb', 'fuse'] and not \
+            if item_name not in ['barrel', 'battery', 'drill', 'key', 'teleport_pass', 'tnt', 'waste', 'bomb', 'fuse', 'detonator'] and not \
                     item_name.startswith('card'):
                 raise UnknownItemError(_('Unable to build %s item') % item_name)
 
@@ -260,6 +268,9 @@ class ItemBuilder(object):
 
             if item_name == 'tnt':
                 item = ItemTnt(game_context, position, size, item_elements[5])
+
+            if item_name == 'detonator':
+                item = ItemDetonator(game_context, position, size, item_elements[5])
 
             if item_name == 'waste':
                 item = ItemWaste(game_context, position, size)
