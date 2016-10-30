@@ -114,7 +114,7 @@ class TiledLevel(object):
         self.locks = []
         self.beam_barriers = []
         self.container = None
-        self.magnetic_fields = {}
+        self.magnetic_fields = []
         self.nothrust = {}
         self.rails = {}
         self.teleports = {}

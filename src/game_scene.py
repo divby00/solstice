@@ -28,7 +28,7 @@ class GameScene(scene.Scene):
         self.rails = None
         self.container = None
         self.enemies = None
-        self.level = context.resourcemanager.get('level03')
+        self.level = context.resourcemanager.get('level05')
         self.current_level = None
         self.renderobj = None
         self.enemies_renderer = None
