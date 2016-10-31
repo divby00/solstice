@@ -415,15 +415,17 @@ class Player(actor.Actor):
         return (wall_result, 'wall', None) if wall_result < enemy_result else (enemy_result, 'enemy', damaged_enemy)
 
     def __goes_down(self):
-        for m in self.magnetic_fields:
+        if not self.magnetic_fields:
+            if not self.check_bottom_collision(self.current_level):
+                self.y += 4
+                return
 
+        for m in self.magnetic_fields:
             if self.x - 8 >= m.position[0] and self.x + 8 <= m.position[0] + m.size[0] and \
                                     self.y - 8 >= m.position[1] and self.y + 8 <= m.position[1] + m.size[1]:
-
                 if not self.check_upper_collision(self.current_level):
                     self.y -= 4
             else:
-
                 if not self.check_bottom_collision(self.current_level):
                     self.y += 4
 
