@@ -420,14 +420,18 @@ class Player(actor.Actor):
                 self.y += 4
                 return
 
+        inside_magnetic_field = False
+
         for m in self.magnetic_fields:
             if self.x - 8 >= m.position[0] and self.x + 8 <= m.position[0] + m.size[0] and \
                                     self.y - 8 >= m.position[1] and self.y + 8 <= m.position[1] + m.size[1]:
-                if not self.check_upper_collision(self.current_level):
-                    self.y -= 4
-            else:
-                if not self.check_bottom_collision(self.current_level):
-                    self.y += 4
+                inside_magnetic_field = True
+
+        if inside_magnetic_field and not self.check_upper_collision(self.current_level):
+            self.y -= 4
+
+        if not self.check_bottom_collision(self.current_level) and not inside_magnetic_field:
+            self.y += 4
 
     def check_in_active_teleport(self, level):
         for t in self.teleports:
