@@ -15,7 +15,7 @@ Good luck.
 Installation
 ============
 At the moment there is no binary distribution of this project, to run this game install Python 2.7 and Pygame 1.9,
-clone the project with git or download the source code from the button at the right and run python src/solstice.py.
+clone the project with git or download the source code from the button at the right and run python src/solstice.py from project's root folder.
 
 Screenshots
 ===========
