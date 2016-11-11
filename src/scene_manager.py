@@ -39,7 +39,9 @@ class SceneManager(object):
             self.scene.run()
             self.scene.render(self.screen)
             pygame.transform.scale(self.screen.virt,
-                                   self.screen.screen_size,
-                                   self.screen.display)
+                                   self.screen.scaling_resolution,
+                                   self.screen.scaled_virt)
+            self.screen.display.blit(self.screen.scaled_virt, (self.screen.final_offset))
+
             pygame.display.update()
             self.clock.tick(self.fps)

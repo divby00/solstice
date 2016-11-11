@@ -1,3 +1,4 @@
+from __future__ import division
 import pygame
 from gettext import gettext as _
 
@@ -32,13 +33,56 @@ class Screen(object):
             self.icon = None
             print(_('Unable to find the file solstice.png needed for the loading screen.'))
 
-        self.display = pygame.display.set_mode(self.screen_size,
+        native_info = pygame.display.Info()
+        self.native_w = native_info.current_w
+        self.native_h = native_info.current_h
+        self.design_w = self.screen_size[0]
+        self.design_h = self.screen_size[1]
+        self.scaling_resolution = None
+        self.final_offset = None
+
+        width_fits = self.check_width_fits_screen()
+        if not width_fits:
+            height_fits = self.check_height_fits_screen()
+            if not height_fits:
+                # TODO Throw exception here
+                print('This should never happen')
+                exit(-1)
+
+        graphics_params = 0
+        graphics_params = pygame.FULLSCREEN
+        self.display = pygame.display.set_mode((self.native_w, self.native_h),
                                                graphics_params)
         self.display_info = pygame.display.Info()
         self.virt = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
+        self.scaled_virt = pygame.Surface(self.scaling_resolution, 0).convert()
         pygame.display.set_caption(caption)
         pygame.mouse.set_visible(False)
         pygame.event.set_allowed([pygame.QUIT])
+
+    def check_width_fits_screen(self):
+        x = int((self.design_w * self.native_h) / self.design_h)
+        if x <= self.native_w:
+            self.scaling_resolution = x, self.native_h
+            self.final_offset = self.get_horizontal_offset()
+            return True
+
+        return False
+
+    def check_height_fits_screen(self):
+        y = int((self.design_h * self.native_w) / self.design_w)
+        if y <= self.native_h:
+            self.scaling_resolution = self.native_w, y
+            self.final_offset = self.get_vertical_offset()
+            return True
+
+        return False
+
+    def get_horizontal_offset(self):
+        return ((self.native_w - self.scaling_resolution[0]) / 2), 0
+
+    def get_vertical_offset(self):
+        return 0, ((self.native_h - self.scaling_resolution[1]) / 2)
 
     def toggle_fullscreen(self, fullscreen):
 

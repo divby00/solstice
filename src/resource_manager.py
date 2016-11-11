@@ -77,8 +77,9 @@ class ResourceManager(object):
         pygame.draw.rect(scr.virt, (85, 255, 85), (102, 96, bar_size, 1), 1)
         pygame.draw.rect(scr.virt, (0, 170, 0), (102, 97, bar_size, 1), 1)
         pygame.transform.scale(scr.virt,
-                               scr.screen_size,
-                               scr.display)
+                               scr.scaling_resolution,
+                               scr.scaled_virt)
+        scr.display.blit(scr.scaled_virt, (scr.final_offset))
         pygame.display.update()
 
     def __load_gfx(self, resource):
