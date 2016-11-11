@@ -28,9 +28,13 @@ class SceneManager(object):
 
         while self.scene.running:
 
+            self.scene.keyboard_event = None
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.scene.running = False
+                if event.type == pygame.KEYDOWN:
+                    self.scene.keyboard_event = event
 
             self.scene.run()
             self.scene.render(self.screen)

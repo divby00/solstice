@@ -12,6 +12,7 @@ class Scene(object):
         self.scene_speed = scene_speed
         self.scenemanager = None
         self.screen = None
+        self._keyboard_event = None
         self.running = False
         self.cfg = context.cfg
         self.control = context.control
@@ -38,6 +39,14 @@ class Scene(object):
                              (self.font_white, self.font_blue, self.font_yellow),
                              self.sound_player,
                              self.control)
+
+    @property
+    def keyboard_event(self):
+        return self._keyboard_event
+
+    @keyboard_event.setter
+    def keyboard_event(self, value):
+        self._keyboard_event = value
 
     def on_start(self):
         raise NotImplementedError('Implement this method')
@@ -179,6 +188,7 @@ class Scene(object):
             self.scenemanager.set('game')
         else:
             self.menu_group.visible = False
+            self.control.event_driven = False
 
     def quit_game(self):
         if self.name == 'intro':
