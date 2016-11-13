@@ -1,4 +1,5 @@
 from __future__ import division
+import pdb
 import pygame
 import config
 from gettext import gettext as _
@@ -28,6 +29,7 @@ class Screen(object):
             self.fullscreen = False
 
         self.screen_size = self.cfg.screen_size
+        self.last_resize_size = self.screen_size
 
         try:
             self.icon = pygame.image.load("solstice.png")
@@ -54,13 +56,12 @@ class Screen(object):
 
         if self.fullscreen:
             self.display = pygame.display.set_mode((self.native_w, self.native_h),
-                                                    graphics_params)
+                                                   graphics_params)
         else:
             self.final_offset = 0, 0
-            self.last_resize_size = self.screen_size
             self.scaling_resolution = self.screen_size
             self.display = pygame.display.set_mode((self.screen_size[0], self.screen_size[1]),
-                                                    graphics_params)
+                                                   graphics_params)
         self.virt = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
         self.scaled_virt = pygame.Surface(self.scaling_resolution, 0).convert()
         pygame.display.set_caption(self.caption)
@@ -97,6 +98,7 @@ class Screen(object):
             graphics_params = pygame.DOUBLEBUF | pygame.FULLSCREEN
             self.scaling_resolution = None
             self.final_offset = None
+            self.last_resize_size = self.screen_size
 
             width_fits = self.check_width_fits_screen()
             if not width_fits:
@@ -107,15 +109,15 @@ class Screen(object):
                     exit(-1)
 
             self.display = pygame.display.set_mode((self.native_w, self.native_h),
-                                                    graphics_params)
+                                                   graphics_params)
             self.virt = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
             self.scaled_virt = pygame.Surface(self.scaling_resolution, 0).convert()
         else:
-            graphics_params = pygame.DOUBLEBUF | pygame.RESIZABLE
+            graphics_params = pygame.DOUBLEBUF
             self.final_offset = 0, 0
             self.scaling_resolution = self.last_resize_size
             self.display = pygame.display.set_mode((self.last_resize_size[0], self.last_resize_size[1]),
-                                                    graphics_params)
+                                                   graphics_params)
             self.virt = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
             self.scaled_virt = pygame.Surface(self.scaling_resolution, 0).convert()
             pygame.display.set_caption(self.caption)
@@ -135,7 +137,7 @@ class Screen(object):
         self.last_resize_size = self.screen_size
         self.scaling_resolution = self.screen_size
         self.display = pygame.display.set_mode((self.screen_size[0], self.screen_size[1]),
-                                                graphics_params)
+                                               graphics_params)
         self.virt = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
         self.scaled_virt = pygame.Surface(self.scaling_resolution, 0).convert()
         pygame.mouse.set_visible(False)
