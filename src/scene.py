@@ -105,15 +105,11 @@ class Scene(object):
             menu.MenuItem('define_keys_item', _('define keys'),
                           None, None)
         ]
-        fullscreen_options = [
+        graphics_options = [
             menu.MenuItem('fullscreen_item', _('fullscreen'),
                           self.fullscreen_mode_selected, None),
             menu.MenuItem('window_item', _('windowed'),
                           self.fullscreen_mode_selected, None)
-        ]
-        graphics_options = [
-            menu.MenuItem('fullscreen_item', _('fullscreen'),
-                          None, 'fullscreen_menu')
         ]
         options_options = [
             menu.MenuItem('graphics_item', _('graphics'),
@@ -131,9 +127,6 @@ class Scene(object):
         graphics_menu = menu.Menu('graphics_menu',
                                   graphics_options,
                                   'options_menu')
-        fullscreen_menu = menu.Menu('fullscreen_menu',
-                                    fullscreen_options,
-                                    'graphics_menu')
         sound_menu = menu.Menu('sound_menu',
                                sound_options,
                                'options_menu')
@@ -159,8 +152,7 @@ class Scene(object):
         menu_list = [
             main_menu, options_menu, graphics_menu,
             sound_menu, sound_active_menu, sound_volume_menu,
-            music_active_menu, music_volume_menu, control_menu,
-            fullscreen_menu
+            music_active_menu, music_volume_menu, control_menu
         ]
 
         self.menu_group = menu.MenuGroup(menu_list,
