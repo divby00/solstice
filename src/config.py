@@ -209,10 +209,10 @@ class Configuration(object):
             if read_value not in ['keyboard', 'joystick', 'autodetect']:
                 raise ConfigurationError(_('Control must be keyboard, joystick or autodetect.'))
         elif option == Configuration.OPT_SCREEN_WIDTH:
-            if read_value not in list(xrange(1, 1441)):
+            if read_value < 1:
                 raise ConfigurationError(_('Screen width must be between 1 and 1440.'))
         elif option == Configuration.OPT_SCREEN_HEIGHT:
-            if read_value not in list(xrange(1, 901)):
+            if read_value < 1:
                 raise ConfigurationError(_('Screen height must be between 1 and 900.'))
 
     def save(self):

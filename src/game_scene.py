@@ -75,6 +75,7 @@ class GameScene(scene.Scene):
         self.player.on_start(self)
         self.renderobj = renderer.Renderer(self)
         self.sound_player.play_sample('level01_song')
+        self.control.event_driven = False
 
     def get_renderer(self):
         return self.renderobj
@@ -87,8 +88,11 @@ class GameScene(scene.Scene):
 
     def run(self):
         if self.menu_group.visible:
+            self.control.keyboard_event = self.keyboard_event
+            self.control.event_driven = True
             self.menu_group.run()
         else:
+            self.control.event_driven = False
 
             if not self.player.dying:
 
@@ -205,11 +209,11 @@ class GameScene(scene.Scene):
 
             self.player.run()
 
-        for ene in self.enemies:
-            ene.run()
+            for ene in self.enemies:
+                ene.run()
 
-        self.particlesmanager.run()
-        self.renderobj.run()
+            self.particlesmanager.run()
+            self.renderobj.run()
 
     def render(self, scr):
         self.renderobj.render()

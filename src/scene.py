@@ -12,6 +12,7 @@ class Scene(object):
         self.scene_speed = scene_speed
         self.scenemanager = None
         self.screen = None
+        self._keyboard_event = None
         self.running = False
         self.cfg = context.cfg
         self.control = context.control
@@ -20,11 +21,6 @@ class Scene(object):
         self.font_yellow = context.resourcemanager.get('font_yellow')
         self.sound_player = context.sound_player
         self.sound_player.load_sample(['blip', 'accept', 'cancel'])
-        '''
-        self.blip = context.resourcemanager.get('blip')
-        self.accept = context.resourcemanager.get('accept')
-        self.cancel = context.resourcemanager.get('cancel')
-        '''
         self.panel_imgs = []
         panel = ['panel0', 'panel1', 'panel2',
                  'panel3', 'panel4', 'panel5',
@@ -38,6 +34,14 @@ class Scene(object):
                              (self.font_white, self.font_blue, self.font_yellow),
                              self.sound_player,
                              self.control)
+
+    @property
+    def keyboard_event(self):
+        return self._keyboard_event
+
+    @keyboard_event.setter
+    def keyboard_event(self, value):
+        self._keyboard_event = value
 
     def on_start(self):
         raise NotImplementedError('Implement this method')
@@ -101,22 +105,11 @@ class Scene(object):
             menu.MenuItem('define_keys_item', _('define keys'),
                           None, None)
         ]
-        fullscreen_options = [
+        graphics_options = [
             menu.MenuItem('fullscreen_item', _('fullscreen'),
                           self.fullscreen_mode_selected, None),
             menu.MenuItem('window_item', _('windowed'),
                           self.fullscreen_mode_selected, None)
-        ]
-        resolution_options = [
-            menu.MenuItem('small_item', _('256 x 192'), self.resolution_selected, None),
-            menu.MenuItem('medium_item', _('512 x 384'), self.resolution_selected, None),
-            menu.MenuItem('large_item', _('1024 x 768'), self.resolution_selected, None)
-        ]
-        graphics_options = [
-            menu.MenuItem('resolution_item', _('resolution'),
-                          None, 'resolution_menu'),
-            menu.MenuItem('fullscreen_item', _('fullscreen'),
-                          None, 'fullscreen_menu')
         ]
         options_options = [
             menu.MenuItem('graphics_item', _('graphics'),
@@ -134,12 +127,6 @@ class Scene(object):
         graphics_menu = menu.Menu('graphics_menu',
                                   graphics_options,
                                   'options_menu')
-        fullscreen_menu = menu.Menu('fullscreen_menu',
-                                    fullscreen_options,
-                                    'graphics_menu')
-        resolution_menu = menu.Menu('resolution_menu',
-                                    resolution_options,
-                                    'graphics_menu')
         sound_menu = menu.Menu('sound_menu',
                                sound_options,
                                'options_menu')
@@ -165,8 +152,7 @@ class Scene(object):
         menu_list = [
             main_menu, options_menu, graphics_menu,
             sound_menu, sound_active_menu, sound_volume_menu,
-            music_active_menu, music_volume_menu, control_menu,
-            resolution_menu, fullscreen_menu
+            music_active_menu, music_volume_menu, control_menu
         ]
 
         self.menu_group = menu.MenuGroup(menu_list,
@@ -179,6 +165,7 @@ class Scene(object):
             self.scenemanager.set('game')
         else:
             self.menu_group.visible = False
+            self.control.event_driven = False
 
     def quit_game(self):
         if self.name == 'intro':
@@ -239,13 +226,3 @@ class Scene(object):
                                 config.Configuration.OPT_FULLSCREEN,
                                 False)
             self.cfg.fullscreen = False
-
-    def resolution_selected(self):
-        option = self.menu_group.selected_menu.selected_option
-        new_resolution = self.screen.change_resolution(option)
-        self.cfg.parser.set(config.Configuration.SECTION[1],
-                            config.Configuration.OPT_SCREEN_WIDTH,
-                            new_resolution[0])
-        self.cfg.parser.set(config.Configuration.SECTION[1],
-                            config.Configuration.OPT_SCREEN_HEIGHT,
-                            new_resolution[1])

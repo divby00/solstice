@@ -171,12 +171,14 @@ class IntroScene(scene.Scene):
         self.credits.on_start()
         self.menu_group.visible = False
         self.sound_player.play_music()
+        self.control.event_driven = True
 
     def on_quit(self):
         self.sound_player.stop_music()
 
     def run(self):
         self.menu_group.run()
+        self.control.keyboard_event = self.keyboard_event
 
         if self.control.on(control.Control.START):
             self.title_anim = 12

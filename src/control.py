@@ -31,11 +31,15 @@ class KeyboardInput(ControlInput):
     def update(self):
         self.keys = pygame.key.get_pressed()
 
-    def on(self, action_name):
+    def on(self, action_name, keyboard_event=None):
         for a in self.actions:
             if a.name == action_name:
-                if self.keys[a.mapping]:
-                    return True
+                if keyboard_event:
+                    if keyboard_event.key == a.mapping:
+                        return True
+                else:
+                    if self.keys[a.mapping]:
+                        return True
         return False
 
 
@@ -72,6 +76,9 @@ class Control(object):
 
     def __init__(self, context):
         self.cfg = context.cfg
+        self._keyboard_event = None
+        self._event_driven = True
+        pygame.key.set_repeat()
         '''
         joysticks = [pygame.joystick.Joystick(j) for j in range(pygame.joystick.get_count())]
         '''
@@ -101,12 +108,34 @@ class Control(object):
 
         return devices
 
+    @property
+    def keyboard_event(self):
+        return self._keyboard_event
+
+    @keyboard_event.setter
+    def keyboard_event(self, value):
+        self._keyboard_event = value
+
+    @property
+    def event_driven(self):
+        return self._event_driven
+
+    @event_driven.setter
+    def event_driven(self, value):
+        self._event_driven = value
+
     def on(self, action_name):
-        pygame.event.pump()
+        if self.event_driven:
+            if self.keyboard_event:
+                for d in self.devices:
+                    if d.on(action_name, self.keyboard_event):
+                        return True
+        else:
+            pygame.event.pump()
 
-        for d in self.devices:
-            d.update()
+            for d in self.devices:
+                d.update()
 
-            if d.on(action_name):
-                return True
+                if d.on(action_name):
+                    return True
         return False
