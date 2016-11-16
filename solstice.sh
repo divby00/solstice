@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-/usr/bin/env python2 src/solstice.py
+/usr/bin/env python src/solstice.py
