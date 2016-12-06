@@ -9,13 +9,11 @@ class ElevatorScene(scene.Scene):
         self._context = context
         self._screen = context.scr
         self._board = None
-        self.scene_data = None
-
-    def _create_fake_player(self):
-        pass
 
     def on_start(self):
         # Note that at this point, self.scene_data has been 'injected' from scene_manager
+        # Scene data contains the player info
+        self.scene_data.continuos_hit = 0
         self._board = board.Board(self._context, self.scene_data)
 
     def render(self, scr):
