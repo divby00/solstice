@@ -163,6 +163,7 @@ class Scene(object):
     def enter_elevator(self, player):
         self.scenemanager.set('elevator', player)
         self.menu_group.visible = False
+        self.control.event_driven = True
 
     def enter_game(self):
         if self.name == 'intro':

@@ -64,6 +64,8 @@ class GameScene(scene.Scene):
     def on_start(self):
         self.on_elevator = False
         self.menu_group.visible = False
+        if self.scene_data:
+            self.level = self.resourcemanager.get('level0' + str(self.scene_data))
         self.current_level = self.level
         self.exit_point = self.level.exit_point[0] + 256, self.level.exit_point[1] + 144, self.level.exit_point[2], self.level.exit_point[3]
         self.enemies_renderer = enemy.EnemyAnimations.init(self)
