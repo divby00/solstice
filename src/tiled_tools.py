@@ -471,6 +471,8 @@ class TiledLevel(object):
                 for o in obj.findall('object'):
                     objx = o.get('x')
                     objy = o.get('y')
+                    objw = o.get('width')
+                    objh = o.get('height')
 
                     for prop in o.findall('properties'):
                         for p in prop.findall('property'):
@@ -478,7 +480,7 @@ class TiledLevel(object):
                             pvalue = p.get(TiledLevel.VALUE)
 
                             if pname == TiledLevel.EXIT_POINT:
-                                exit_point = int(objx), int(objy)
+                                exit_point = int(objx), int(objy), int(objw), int(objh)
 
         if not exit_point:
             raise TiledLoaderError(_('Unable to find exit point in level data.'))

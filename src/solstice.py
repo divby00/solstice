@@ -19,6 +19,7 @@ import logo_scene
 import intro_scene
 import game_scene
 import game_over_scene
+import elevator_scene
 import screen
 import sound_player
 
@@ -47,7 +48,8 @@ class Solstice(object):
             'logo': logo_scene.LogoScene(self),
             'intro': intro_scene.IntroScene(self),
             'game': game_scene.GameScene(self),
-            'gameover': game_over_scene.GameOverScene(self)
+            'gameover': game_over_scene.GameOverScene(self),
+            'elevator': elevator_scene.ElevatorScene(self)
         }
 
         self.scenemanager = scene_manager.SceneManager(self, 'logo')

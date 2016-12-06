@@ -11,6 +11,7 @@ class Scene(object):
         self.exit = context.exit
         self.scene_speed = scene_speed
         self.scenemanager = None
+        self.scene_data = None
         self.screen = None
         self._keyboard_event = None
         self.running = False
@@ -158,6 +159,10 @@ class Scene(object):
         self.menu_group = menu.MenuGroup(menu_list,
                                          'main_menu',
                                          self.menu_context)
+
+    def enter_elevator(self, player):
+        self.scenemanager.set('elevator', player)
+        self.menu_group.visible = False
 
     def enter_game(self):
         if self.name == 'intro':

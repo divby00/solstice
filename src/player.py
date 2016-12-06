@@ -60,6 +60,7 @@ class Player(actor.Actor):
         self.teleport_animation = -1
         self.destiny = None
         self.flying = False
+        self.continuos_hit = 0
         self.using_item = False
         self.get_item_available = True
         self.get_item_counter = 5

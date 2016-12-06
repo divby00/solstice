@@ -1,6 +1,4 @@
-import screen
 import board
-import player
 import scene
 
 
@@ -8,27 +6,17 @@ class ElevatorScene(scene.Scene):
 
     def __init__(self, context, name='elevator', scene_speed=25):
         super(ElevatorScene, self).__init__(context, name, scene_speed)
-        print(self.data)
+        self._context = context
         self._screen = context.scr
-        self._transition = True
-        self._player = player.Player(context, self)
-        self._board = board.Board(context, self._player)
-
-        self._transition_mask = [
-            [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
-            [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-            [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        ]
+        self._board = None
+        self.scene_data = None
 
     def _create_fake_player(self):
         pass
 
     def on_start(self):
-        self._transition = True
-        self._fading = 100
+        # Note that at this point, self.scene_data has been 'injected' from scene_manager
+        self._board = board.Board(self._context, self.scene_data)
 
     def render(self, scr):
         scr.virt.fill((0, 0, 0))
@@ -36,10 +24,7 @@ class ElevatorScene(scene.Scene):
         self._board.render(self._screen.virt)
 
     def run(self):
-        if self._transition:
-            if self._fading > 0:
-                self._fading = self._fading - 1
-            self._transition = self._fading > 0
+        pass
 
 
 

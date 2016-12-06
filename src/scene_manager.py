@@ -16,20 +16,21 @@ class SceneManager(object):
                 self.current_scene = self.scene
                 self.set(start_scene)
 
-    def set(self, scene_name):
+    def set(self, scene_name, scene_data=None):
         self.name = scene_name
         self.current_scene.on_quit()
         self.scene = self.scenes[scene_name]
         self.current_scene = self.scene
         self.fps = self.scene.scene_speed
+        # Horrible injection of custom data to scenes after their constructors have been called.
+        # I will burn in hell for this.
+        self.scenes[scene_name].scene_data = scene_data
         self.clock = pygame.time.Clock()
         self.scene.running = True
         self.scene.on_start()
 
     def run(self):
-
         while self.scene.running:
-
             self.scene.keyboard_event = None
 
             for event in pygame.event.get():

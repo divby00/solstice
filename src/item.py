@@ -136,9 +136,17 @@ class ItemCard(Item):
     def __init__(self, game_context, position, size, card_id):
         super(ItemCard, self).__init__(game_context, ''.join(['card', card_id]), position, size, None)
         self.card_id = card_id
+        self.exit_point = game_context.exit_point
+        self.game_context = game_context
 
     def run(self):
-        pass
+        x = self.player.x
+        y = self.player.y
+
+        # Checks player is at exit point
+        if x + 8 >= self.exit_point[0] and x - 8 <= self.exit_point[0] + self.exit_point[2] and y - 8 <= self.exit_point[1] + self.exit_point[3] and y + 8 >= self.exit_point[1]:
+            # Change to elevator scene
+            self.game_context.on_elevator = True
 
 
 class ItemDrill(ItemUnlocker):

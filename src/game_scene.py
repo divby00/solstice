@@ -28,10 +28,12 @@ class GameScene(scene.Scene):
         self.rails = None
         self.container = None
         self.enemies = None
-        self.level = context.resourcemanager.get('level06')
+        self.level = context.resourcemanager.get('level01')
         self.current_level = None
         self.renderobj = None
         self.enemies_renderer = None
+        self.exit_point = None
+        self.on_elevator = False
         self.particlesmanager = particles_manager.ParticlesManager()
         enemy_beam_particles = particles.EnemyBeamParticles(context, 'enemy_hit')
         beam_particles = particles.BeamParticles(context, 'hit')
@@ -60,8 +62,10 @@ class GameScene(scene.Scene):
         self.get_menu()
 
     def on_start(self):
+        self.on_elevator = False
         self.menu_group.visible = False
         self.current_level = self.level
+        self.exit_point = self.level.exit_point[0] + 256, self.level.exit_point[1] + 144, self.level.exit_point[2], self.level.exit_point[3]
         self.enemies_renderer = enemy.EnemyAnimations.init(self)
         self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
         self.nothrust = nothrust.NoThrustBuilder.build(self.current_level.nothrust)
@@ -87,6 +91,9 @@ class GameScene(scene.Scene):
         self.sound_player.stop()
 
     def run(self):
+        if self.on_elevator:
+            self.enter_elevator(self.player)
+
         if self.menu_group.visible:
             self.control.keyboard_event = self.keyboard_event
             self.control.event_driven = True
