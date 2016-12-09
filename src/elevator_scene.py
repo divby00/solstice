@@ -1,8 +1,8 @@
 import pygame
-import board
-import scene
-import control
 
+import board
+import control
+import scene
 
 floors = {
     '01': True, '02': False,
@@ -12,15 +12,26 @@ floors = {
 }
 
 
-class UIManager(object):
-
+class ElevatorUiManager(object):
     def __init__(self, context, sound_player):
         self._resource_manager = context.resourcemanager
         self._sound_player = sound_player
+        self._panel = self._init_panel()
         self._buttons = self._init_buttons()
+        self._floor_sprites = self._init_floors()
         self._tabindex = 0
         self._max_tabindex = len(self._buttons) - 1
         self._set_focus()
+
+    def _init_panel(self):
+        return ElevatorPanel(self._resource_manager, (16, 16))
+
+    def _init_floors(self):
+        floor_positions = [
+            (111, 27), (111, 41), (111, 52), (111, 67),
+            (111, 77), (111, 87), (111, 105), (111, 115),
+        ]
+        return [ElevatorFloor(self._resource_manager, i, floor_positions[i - 1]) for i in xrange(1, 9)]
 
     def _init_buttons(self):
         button_positions = [
@@ -42,7 +53,8 @@ class UIManager(object):
         for index, val in enumerate(button_labels):
             disabled_spr = self._resource_manager.get('disabled_btn' + val)
             pressed_spr = self._resource_manager.get('pressed_btn' + val)
-            buttons.append(ElevatorButton(index, (pressed_spr, disabled_spr), button_positions[index], button_sizes[index]))
+            buttons.append(
+                ElevatorButton(index, (pressed_spr, disabled_spr), button_positions[index], button_sizes[index]))
         return buttons
 
     def _render_buttons(self, scr):
@@ -61,27 +73,35 @@ class UIManager(object):
         pygame.draw.rect(scr.virt, (49, 162, 242),
                          (position[0] - 1, position[1] - 1, size[0] + 2, size[1] + 2), 1)
 
+        # Render the selected level
+
+    def _render_panel(self, scr):
+        scr.virt.blit(self._panel.sprite, self._panel.position)
+
     def _set_focus(self):
         for btn in self._buttons:
             btn.focus = False
         self._buttons[self._tabindex].focus = True
 
     def render(self, scr):
+        self._render_panel(scr)
         self._render_buttons(scr)
         self._render_focus(scr)
 
     def run(self, ctrl):
         if ctrl.on(control.Control.UP) or ctrl.on(control.Control.LEFT):
-            self._tabindex = self._tabindex - 1
+            self._tabindex -= 1
             self._sound_player.play_sample('blip')
             if self._tabindex == -1:
                 self._tabindex = self._max_tabindex
+            self._set_focus()
 
         if ctrl.on(control.Control.DOWN) or ctrl.on(control.Control.RIGHT):
-            self._tabindex = self._tabindex + 1
+            self._tabindex += 1
             self._sound_player.play_sample('blip')
             if self._tabindex == self._max_tabindex + 1:
                 self._tabindex = 0
+            self._set_focus()
 
         if ctrl.on(control.Control.ACTION1):
             for btn in self._buttons:
@@ -91,10 +111,42 @@ class UIManager(object):
                 self._buttons[self._tabindex].pressed = True
                 self._sound_player.play_sample('accept')
 
-        self._set_focus()
+
+class ElevatorPanel(object):
+    def __init__(self, resource_manager, position):
+        self._sprite = resource_manager.get('elev_panel')
+        self._position = position
+
+    @property
+    def sprite(self):
+        return self._sprite
+
+    @property
+    def position(self):
+        return self._position
+
+
+class ElevatorFloor(object):
+    def __init__(self, resource_manager, floor, position):
+        self._selected = False
+        self._sprite = resource_manager.get('selected_lvl0' + str(floor))
+        self._floor = floor
+        self._position = position
+
+    @property
+    def sprite(self):
+        return self._sprite
+
+    @property
+    def selected(self):
+        return self._selected
+
+    @property
+    def position(self):
+        return self._position
+
 
 class ElevatorButton(object):
-
     def __init__(self, index, sprites, position, size):
         self._disabled = False
         self._pressed = False
@@ -145,7 +197,6 @@ class ElevatorButton(object):
 
 
 class DummyPlayer(object):
-
     def __init__(self):
         self.continuos_hit = 0
         self.lives = 3
@@ -155,21 +206,16 @@ class DummyPlayer(object):
 
 
 class ElevatorScene(scene.Scene):
-
     def __init__(self, context, name='elevator', scene_speed=25):
         super(ElevatorScene, self).__init__(context, name, scene_speed)
         self._context = context
         self._screen = context.scr
-        self._ui_manager = UIManager(context, self.sound_player)
+        self._ui_manager = ElevatorUiManager(context, self.sound_player)
         self._board = None
         self.select_floor = self.font_white.get('Elevator - select floor', 240)
-        self._selected_levels = self._get_selected_levels_spr()
-        self._panel = context.resourcemanager.get('elev_panel')
 
-    def _get_selected_levels_spr(self):
-        return [self._context.resourcemanager.get('selected_lvl0' + str(btn)) for btn in xrange(1, 9)]
-
-    def _open_floor(self, card_id):
+    @staticmethod
+    def open_floor(card_id):
         for key in floors.iterkeys():
             if key == card_id:
                 floors[key] = True
@@ -182,11 +228,10 @@ class ElevatorScene(scene.Scene):
         # Note that at this point, self.scene_data has been 'injected' from scene_manager
         # Scene data contains the player info, it's needed to properly render the board
         self.scene_data.continuos_hit = 0
-        self._open_floor('02')
-        #self._open_floor(self.scene_data.selected_item.card_id)
+        ElevatorScene.open_floor('02')
+        # ElevatorScene.open_floor(self.scene_data.selected_item.card_id)
         self.scene_data.selected_item = None
         self._board = board.Board(self._context, self.scene_data)
-        self._cursor_position = 0
         self.control.event_driven = True
 
     def on_quit(self):
@@ -195,10 +240,7 @@ class ElevatorScene(scene.Scene):
     def render(self, scr):
         # scr.virt.fill((47, 72, 78))
         scr.virt.fill((0, 0, 0))
-        scr.virt.blit(self.select_floor, (36, 4))
-        scr.virt.blit(self._panel, (16, 16))
         self._ui_manager.render(scr)
-        # Board rendering
         self._board.render(self._screen.virt)
 
     def run(self):
