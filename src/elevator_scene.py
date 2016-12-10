@@ -15,14 +15,42 @@ floors = {
 class ElevatorUiManager(object):
     def __init__(self, context, sound_player):
         self._resource_manager = context.resourcemanager
+        self._blue_font = self._resource_manager.get('font_blue')
+        self._red_font = self._resource_manager.get('font_red')
+        self._small_blue_font = self._resource_manager.get('font_small_blue')
+        self._small_red_font = self._resource_manager.get('font_small_red')
         self._sound_player = sound_player
         self._panel = self._init_panel()
         self._buttons = self._init_buttons()
         self._floors = self._init_floors()
+        self._info = self._init_info()
+        self._txt_access_denied = self._red_font.get('Access denied', 1)
+        self._txt_access_allowed = self._blue_font.get('Access allowed', 1)
         self._selected_floor = self._floors[0]
         self._tabindex = 0
         self._max_tabindex = len(self._buttons) - 1
         self._set_focus()
+
+    def _init_info(self):
+        level_info = [
+            {
+                'enemies': 'Alpha Medusoid, Green Devil',
+                'frequency': 'low',
+                'teleporters': '2',
+                'tips': "First approach. Enemy concentration is lower than it's in areas below"
+            },
+            {
+                'enemies': 'Alpha Medusoid, Splitter, High Devil',
+                'frequency': 'low',
+                'teleporters': '4'
+            },
+            {
+                'enemies': 'Gamma Medusoid, Alpha Medusoid, Splitter',
+                'frequency': 'normal',
+                'teleporters': '4'
+            }
+        ]
+        return level_info
 
     def _init_panel(self):
         return ElevatorPanel(self._resource_manager, (16, 16))
@@ -51,13 +79,17 @@ class ElevatorUiManager(object):
         for index, val in enumerate(button_labels):
             disabled_spr = self._resource_manager.get('disabled_btn' + val)
             pressed_spr = self._resource_manager.get('pressed_btn' + val)
-            buttons.append(
-                ElevatorButton(index, (pressed_spr, disabled_spr), button_positions[index], button_sizes[index]))
+            buttons.append(ElevatorButton(index, (pressed_spr, disabled_spr),
+                                          button_positions[index], button_sizes[index]))
 
         for index, btn in enumerate(buttons):
             btn.disabled = False if floors[button_labels[index]] else True
 
         return buttons
+
+    def _render_info(self, scr):
+        txt = self._txt_access_allowed if not self._buttons[self._tabindex].disabled else self._txt_access_denied
+        scr.virt.blit(txt, (148, 24))
 
     def _render_buttons(self, scr):
         for btn in self._buttons:
@@ -76,9 +108,9 @@ class ElevatorUiManager(object):
                          (position[0] - 1, position[1] - 1, size[0] + 2, size[1] + 2), 1)
 
         # Render the selected level
-        floor_sprite = self._selected_floor.sprite if not self._buttons[self._tabindex].disabled else self._selected_floor.blocked_sprite
+        floor_sprite = self._selected_floor.sprite if not self._buttons[self._tabindex].disabled \
+            else self._selected_floor.blocked_sprite
         scr.virt.blit(floor_sprite, self._selected_floor.position)
-
 
     def _render_panel(self, scr):
         scr.virt.blit(self._panel.sprite, self._panel.position)
@@ -90,6 +122,7 @@ class ElevatorUiManager(object):
 
     def render(self, scr):
         self._render_panel(scr)
+        self._render_info(scr)
         self._render_buttons(scr)
         self._render_focus(scr)
 
@@ -164,7 +197,6 @@ class ElevatorFloor(object):
 
 
 class ElevatorButton(object):
-
     def __init__(self, index, sprites, position, size):
         self._pressed = False
         self._focus = False
@@ -228,7 +260,6 @@ class DummyPlayer(object):
 
 
 class ElevatorScene(scene.Scene):
-
     @staticmethod
     def open_floor(card_id):
         for key in floors.iterkeys():
@@ -241,7 +272,7 @@ class ElevatorScene(scene.Scene):
         self._screen = context.scr
         self._ui_manager = None
         self._board = None
-        self.select_floor = self.font_white.get('Elevator - select floor', 240)
+        self._txt_select_floor = self.font_white.get('Elevator - select floor', 240)
 
     def dummy_scene_data(self):
         self.scene_data = DummyPlayer()
@@ -264,6 +295,7 @@ class ElevatorScene(scene.Scene):
     def render(self, scr):
         # scr.virt.fill((47, 72, 78))
         scr.virt.fill((0, 0, 0))
+        scr.virt.blit(self._txt_select_floor, (36, 4))
         self._ui_manager.render(scr)
         self._board.render(self._screen.virt)
 

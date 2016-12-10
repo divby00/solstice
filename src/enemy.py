@@ -57,26 +57,21 @@ class Enemy(object):
             return self.__get_bottom_collision_list()
 
     def __get_left_collision_list(self):
-        positions = []
-        positions.append(((self.x - self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
-        positions.append(((self.x - self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight))
-        positions.append(((self.x - self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight))
+        positions = [((self.x - self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight),
+                     ((self.x - self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight),
+                     ((self.x - self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight)]
         return positions
 
     def __get_right_collision_list(self):
-        positions = []
-        positions.append(((self.x + 15 + self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight))
-        positions.append(
-            ((self.x + 15 + self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight))
-        positions.append(
-            ((self.x + 15 + self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight))
+        positions = [((self.x + 15 + self.speed) / self.level.map.tilewidth, self.y / self.level.map.tileheight),
+                     ((self.x + 15 + self.speed) / self.level.map.tilewidth, (self.y + 8) / self.level.map.tileheight),
+                     ((self.x + 15 + self.speed) / self.level.map.tilewidth, (self.y + 15) / self.level.map.tileheight)]
         return positions
 
     def __get_upper_collision_list(self):
-        positions = []
-        positions.append((self.x / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
-        positions.append(((self.x + 8) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
-        positions.append(((self.x + 15) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight))
+        positions = [(self.x / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight),
+                     ((self.x + 8) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight),
+                     ((self.x + 15) / self.level.map.tilewidth, (self.y - self.speed) / self.level.map.tileheight)]
         return positions
 
     def __get_bottom_collision_list(self):
