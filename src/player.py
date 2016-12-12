@@ -86,6 +86,7 @@ class Player(actor.Actor):
         self.current_level = None
         self.sound_player = context.sound_player
         self.particlesmanager = context.particlesmanager
+        self.floor = game_context.scene_data if game_context.scene_data else 0
 
         player = ['player0', 'player1', 'player2', 'player3',
                   'player4', 'player5', 'player6', 'player7',
@@ -344,12 +345,6 @@ class Player(actor.Actor):
         self.lasers.append(laser)
 
     def get_laser_right_collision(self):
-        # TODO: Please check this 'optimization', do we really need to iterate through all the layers??
-        # I have removed this loop from both player and laser collisions
-        '''
-        for l in self.current_level.layers:
-            if l.name == 'hard':
-        '''
         enemies_in_sight = sorted(enemy.EnemyUtils.get_nearby_enemies(self.enemies, (self.x, self.y)))
         calculated_x = int((self.x - 8 + self.w) / self.current_level.map.tilewidth) - 32
         calculated_x_limit = int((self.x + self.w + 248) / self.current_level.map.tilewidth) - 32

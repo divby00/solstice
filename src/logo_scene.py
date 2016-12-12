@@ -46,7 +46,7 @@ class LogoScene(scene.Scene):
 
         # Exit condition
         if self.dither_anim == len(self.dither) and self.fading == 1:
-            self.scenemanager.set('elevator')
+            self.scenemanager.set('intro')
 
     def render(self, scr):
 

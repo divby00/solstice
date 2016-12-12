@@ -13,8 +13,9 @@ floors = {
 
 
 class ElevatorUiManager(object):
-    def __init__(self, context, sound_player):
+    def __init__(self, context, player_floor, sound_player):
         self._resource_manager = context.resourcemanager
+        self._scene_manager = context.scenemanager
         self._blue_font = self._resource_manager.get('font_blue')
         self._red_font = self._resource_manager.get('font_red')
         self._small_blue_font = self._resource_manager.get('font_small_blue')
@@ -26,8 +27,10 @@ class ElevatorUiManager(object):
         self._info = self._init_info()
         self._txt_access_denied = self._red_font.get('Access denied', 1)
         self._txt_access_allowed = self._blue_font.get('Access allowed', 1)
-        self._selected_floor = self._floors[0]
-        self._tabindex = 0
+        self._player_floor = player_floor
+        self._player_mark = self._init_player_mark()
+        self._selected_floor = self._floors[self._player_floor]
+        self._tabindex = self._player_floor
         self._max_tabindex = len(self._buttons) - 1
         self._set_focus()
 
@@ -37,7 +40,7 @@ class ElevatorUiManager(object):
                 'enemies': 'Alpha Medusoid, Green Devil',
                 'frequency': 'low',
                 'teleporters': '2',
-                'tips': "First approach. Enemy concentration is lower than it's in areas below"
+                'tips': "First approach. Enemy concentration is higher in areas below"
             },
             {
                 'enemies': 'Alpha Medusoid, Splitter, High Devil',
@@ -51,6 +54,9 @@ class ElevatorUiManager(object):
             }
         ]
         return level_info
+
+    def _init_player_mark(self):
+        return ElevatorPlayerMark(self._resource_manager, self._player_floor)
 
     def _init_panel(self):
         return ElevatorPanel(self._resource_manager, (16, 16))
@@ -115,6 +121,9 @@ class ElevatorUiManager(object):
     def _render_panel(self, scr):
         scr.virt.blit(self._panel.sprite, self._panel.position)
 
+    def _render_player_mark(self, scr):
+        self._player_mark.render(scr)
+
     def _set_focus(self):
         for btn in self._buttons:
             btn.focus = False
@@ -125,6 +134,7 @@ class ElevatorUiManager(object):
         self._render_info(scr)
         self._render_buttons(scr)
         self._render_focus(scr)
+        self._render_player_mark(scr)
 
     def run(self, ctrl):
         if ctrl.on(control.Control.UP) or ctrl.on(control.Control.LEFT):
@@ -155,6 +165,9 @@ class ElevatorUiManager(object):
                         btn.pressed = False
                 self._buttons[self._tabindex].pressed = True
                 self._sound_player.play_sample('accept')
+                self._scene_manager.set('game', self._tabindex)
+
+        self._player_mark.run()
 
 
 class ElevatorPanel(object):
@@ -169,6 +182,30 @@ class ElevatorPanel(object):
     @property
     def position(self):
         return self._position
+
+
+class ElevatorPlayerMark(object):
+    def __init__(self, resource_manager, player_floor):
+        positions = [
+            (116, 33), (116, 40), (116, 33), (116, 40),
+            (116, 33), (116, 40), (116, 33), (116, 40)
+        ]
+        self._sprites = [resource_manager.get('mark' + str(index)) for index in xrange(0, 5)]
+        self._position = positions[player_floor]
+        self._frame = 0
+
+    @property
+    def position(self):
+        return self._position
+
+    def render(self, scr):
+        if self._frame < 5:
+            scr.virt.blit(self._sprites[self._frame], self._position)
+
+    def run(self):
+        self._frame += 1
+        if self._frame == 7:
+            self._frame = 0
 
 
 class ElevatorFloor(object):
@@ -257,6 +294,7 @@ class DummyPlayer(object):
         self.life = 100
         self.thrust = 100
         self.bullets = 50
+        self.floor = 2
 
 
 class ElevatorScene(scene.Scene):
@@ -272,19 +310,21 @@ class ElevatorScene(scene.Scene):
         self._screen = context.scr
         self._ui_manager = None
         self._board = None
+        self._player_floor = 0
         self._txt_select_floor = self.font_white.get('Elevator - select floor', 240)
 
     def dummy_scene_data(self):
         self.scene_data = DummyPlayer()
 
     def on_start(self):
-        self.dummy_scene_data()
+        # self.dummy_scene_data()
         # Note that at this point, self.scene_data has been 'injected' from scene_manager
         # Scene data contains the player info, it's needed to properly render the board
         self.scene_data.continuos_hit = 0
-        ElevatorScene.open_floor('02')
-        # ElevatorScene.open_floor(self.scene_data.selected_item.card_id)
-        self._ui_manager = ElevatorUiManager(self._context, self.sound_player)
+        self._player_floor = self.scene_data.floor
+        if self.scene_data.selected_item.card_id:
+            ElevatorScene.open_floor(self.scene_data.selected_item.card_id)
+        self._ui_manager = ElevatorUiManager(self._context, self._player_floor, self.sound_player)
         self.scene_data.selected_item = None
         self._board = board.Board(self._context, self.scene_data)
         self.control.event_driven = True
@@ -293,8 +333,8 @@ class ElevatorScene(scene.Scene):
         pass
 
     def render(self, scr):
-        # scr.virt.fill((47, 72, 78))
-        scr.virt.fill((0, 0, 0))
+        scr.virt.fill((47, 72, 78))
+        # scr.virt.fill((0, 0, 0))
         scr.virt.blit(self._txt_select_floor, (36, 4))
         self._ui_manager.render(scr)
         self._board.render(self._screen.virt)
