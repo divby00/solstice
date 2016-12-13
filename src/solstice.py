@@ -38,7 +38,7 @@ class Solstice(object):
 
         pygame.init()
         if self.cfg.sound or self.cfg.music:
-            pygame.mixer.pre_init(22050, -16, 2, 2048)
+            pygame.mixer.pre_init(22050, -16, 2, 4096)
         self.scr = screen.Screen(self.cfg, _('Solstice'))
         self.control = control.Control(self)
         self.resourcemanager = resource_manager.ResourceManager(self,

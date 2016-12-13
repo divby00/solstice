@@ -1,18 +1,18 @@
 import board
-import control
 import container
+import control
+import enemy
+import item
+import lock
 import magnetic
 import nothrust
-import rails
-import teleport
-import lock
-import item
-import player
-import scene
-import particles_manager
 import particles
+import particles_manager
+import player
+import rails
 import renderer
-import enemy
+import scene
+import teleport
 
 
 class GameScene(scene.Scene):
@@ -68,7 +68,8 @@ class GameScene(scene.Scene):
         if self.scene_data:
             self.level = self.resourcemanager.get('level0' + str(self.scene_data + 1))
         self.current_level = self.level
-        self.exit_point = self.level.exit_point[0] + 256, self.level.exit_point[1] + 144, self.level.exit_point[2], self.level.exit_point[3]
+        self.exit_point = self.level.exit_point[0] + 256, self.level.exit_point[1] + 144, self.level.exit_point[2], \
+                          self.level.exit_point[3]
         self.enemies_renderer = enemy.EnemyAnimations.init(self)
         self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
         self.nothrust = nothrust.NoThrustBuilder.build(self.current_level.nothrust)
@@ -76,7 +77,8 @@ class GameScene(scene.Scene):
         self.container = container.ContainerBuilder.build(self.current_level.container_info)
         self.teleports = teleport.TeleportBuilder.build(self.current_level.teleports)
         self.locks = lock.LockBuilder.build(self, self.resourcemanager, self.current_level.locks)
-        self.beam_barriers = lock.BeamBarriersBuilder.build(self, self.resourcemanager, self.current_level.beam_barriers)
+        self.beam_barriers = lock.BeamBarriersBuilder.build(self, self.resourcemanager,
+                                                            self.current_level.beam_barriers)
         self.items = item.ItemBuilder.build(self, self.resourcemanager, self.current_level.items)
         self.enemies = enemy.EnemyBuilder.build(self)
         self.player.on_start(self)
@@ -152,9 +154,11 @@ class GameScene(scene.Scene):
                     self.player.thrust -= .1
                     self.player.flying = True
                     player_smoke_particles = self.particlesmanager.get('thrust')
-                    player_smoke_particles.generate((self.player.x - 4, self.player.x + 1, self.player.y + 6, self.player.y + 7))
+                    player_smoke_particles.generate(
+                        (self.player.x - 4, self.player.x + 1, self.player.y + 6, self.player.y + 7))
 
-                    if not self.player.check_upper_collision(self.current_level) and not self.player.check_in_nothrust():
+                    if not self.player.check_upper_collision(
+                            self.current_level) and not self.player.check_in_nothrust():
                         self.player.y -= self.renderobj.speed[1]
 
                         # Check if player is in teleport
@@ -198,13 +202,16 @@ class GameScene(scene.Scene):
                                     self.renderobj.change_animation((i.x, i.y), tmp_item.name)
                                     break
 
-                if self.control.on(control.Control.ACTION1) \
-                        and self.player.shoot_avail and self.player.bullets > 0 and not self.player.teleporting:
-                    self.player.recovery_counter = 0
-                    self.player.recovery_mode = False
-                    self.sound_player.play_sample('laser')
-                    self.player.firing = True
-                    self.player.bullets -= .3
+                if self.control.on(control.Control.ACTION1) and not self.player.teleporting:
+                    if self._check_player_is_in_elevator():
+                        self.on_elevator = True
+
+                    if self.player.shoot_avail and self.player.bullets > 0:
+                        self.player.recovery_counter = 0
+                        self.player.recovery_mode = False
+                        self.sound_player.play_sample('laser')
+                        self.player.firing = True
+                        self.player.bullets -= .3
 
                 if self.control.on(control.Control.ACTION2) and not self.player.teleporting:
                     self.player.recovery_counter = 0
@@ -230,3 +237,9 @@ class GameScene(scene.Scene):
 
         if self.menu_group.visible:
             self.menu_group.render(scr.virt, (128, 70))
+
+    def _check_player_is_in_elevator(self):
+        return self.player.x + 8 >= self.exit_point[0] \
+               and self.player.x - 8 <= self.exit_point[0] + self.exit_point[2] \
+               and self.player.y - 8 <= self.exit_point[1] + self.exit_point[3] \
+               and self.player.y + 8 >= self.exit_point[1]

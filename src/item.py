@@ -140,13 +140,7 @@ class ItemCard(Item):
         self.game_context = game_context
 
     def run(self):
-        x = self.player.x
-        y = self.player.y
-
-        # Checks player is at exit point
-        if x + 8 >= self.exit_point[0] and x - 8 <= self.exit_point[0] + self.exit_point[2] and y - 8 <= self.exit_point[1] + self.exit_point[3] and y + 8 >= self.exit_point[1]:
-            # Change to elevator scene
-            self.game_context.on_elevator = True
+        pass
 
 
 class ItemDrill(ItemUnlocker):

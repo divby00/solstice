@@ -322,7 +322,7 @@ class ElevatorScene(scene.Scene):
         # Scene data contains the player info, it's needed to properly render the board
         self.scene_data.continuos_hit = 0
         self._player_floor = self.scene_data.floor
-        if self.scene_data.selected_item.card_id:
+        if self.scene_data and self.scene_data.selected_item and self.scene_data.selected_item.card_id:
             ElevatorScene.open_floor(self.scene_data.selected_item.card_id)
         self._ui_manager = ElevatorUiManager(self._context, self._player_floor, self.sound_player)
         self.scene_data.selected_item = None
@@ -342,4 +342,12 @@ class ElevatorScene(scene.Scene):
     def run(self):
         self.control.event_driven = True
         self.control.keyboard_event = self.keyboard_event
+
+        # Fill player energy, laser & thrust
+        if self.scene_data.life < 100:
+            self.scene_data.life += 1
+        if self.scene_data.thrust < 106:
+            self.scene_data.thrust += 1
+        if self.scene_data.bullets < 106:
+            self.scene_data.bullets += 1
         self._ui_manager.run(self.control)

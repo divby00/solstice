@@ -151,7 +151,6 @@ class Player(actor.Actor):
         self.thrust = 107
         self.bullets = 107
         self.life = 100
-        self.lives = 3
         self.selected_item = None
         self.get_item_counter = 5
         self.get_item_available = True
