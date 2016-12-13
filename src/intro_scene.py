@@ -1,6 +1,6 @@
-from gettext import gettext as _
 import pygame
 import random
+from gettext import gettext as _
 
 import control
 import particles
