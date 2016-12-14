@@ -36,7 +36,11 @@ class SceneManager(object):
         self.clock = pygame.time.Clock()
         self.scene.running = True
         self.scene.on_start()
-        self._transition_manager.set('squares_in')
+
+        if scene_name == 'logo':
+            self._transition_manager.set('dummy')
+        else:
+            self._transition_manager.set('squares_in')
         self._transition_manager.start()
 
     def run(self):
