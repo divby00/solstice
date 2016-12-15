@@ -10,7 +10,7 @@ class TransitionManager(object):
 
     def _init_transitions(self):
         transition_factory = TransitionFactory(self._resource_manager)
-        transition_list = ['squares_in', 'dummy']
+        transition_list = ['circles_in', 'squares_in', 'dummy']
         return {transition: transition_factory.get(transition) for transition in transition_list}
 
     def set(self, transition_name):
@@ -40,6 +40,9 @@ class TransitionFactory(object):
         self._resource_manager = resource_manager
 
     def get(self, transition_type):
+        if transition_type == 'circles_in':
+            sprites = [self._resource_manager.get('circle_transition' + str(index)) for index in xrange(6, -1, -1)]
+            return TransitionCirclesIn(6, sprites, Transition.START_SCENE)
         if transition_type == 'squares_in':
             sprites = [self._resource_manager.get('transition' + str(index)) for index in xrange(8, -1, -1)]
             return TransitionSquaresIn(32, sprites, Transition.START_SCENE)
@@ -95,16 +98,28 @@ class Transition(object):
 
 class TransitionDummy(Transition):
 
-    def __init__(self, total_frames, sprites,type):
+    def __init__(self, total_frames, sprites, type):
         super(TransitionDummy, self).__init__(total_frames, sprites, type)
 
     def render(self, screen):
         pass
 
 
+class TransitionCirclesIn(Transition):
+
+    def __init__(self, total_frames, sprites, type):
+        super(TransitionCirclesIn, self).__init__(total_frames, sprites, type)
+
+    def render(self, screen):
+        if not (self._status == Transition.IDLE or self._status == Transition.FINISHED):
+            for y in xrange(0, 24):
+                for x in xrange(0, 32):
+                    screen.virt.blit(self._sprites[self._frame], (x * 8, y * 8))
+
+
 class TransitionSquaresIn(Transition):
 
-    def __init__(self, total_frames, sprites,type):
+    def __init__(self, total_frames, sprites, type):
         super(TransitionSquaresIn, self).__init__(total_frames, sprites, type)
         self._offset = 256
         self._matrix = [

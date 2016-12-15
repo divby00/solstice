@@ -39,6 +39,8 @@ class SceneManager(object):
 
         if scene_name == 'logo':
             self._transition_manager.set('dummy')
+        elif scene_name == 'intro':
+            self._transition_manager.set('circles_in')
         else:
             self._transition_manager.set('squares_in')
         self._transition_manager.start()

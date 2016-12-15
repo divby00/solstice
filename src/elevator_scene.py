@@ -322,10 +322,10 @@ class ElevatorScene(scene.Scene):
         # Scene data contains the player info, it's needed to properly render the board
         self.scene_data.continuos_hit = 0
         self._player_floor = self.scene_data.floor
-        if self.scene_data and self.scene_data.selected_item and self.scene_data.selected_item.card_id:
+        if self.scene_data and self.scene_data.selected_item and 'card' in self.scene_data.selected_item.name:
             ElevatorScene.open_floor(self.scene_data.selected_item.card_id)
+            self.scene_data.selected_item = None
         self._ui_manager = ElevatorUiManager(self._context, self._player_floor, self.sound_player)
-        self.scene_data.selected_item = None
         self._board = board.Board(self._context, self.scene_data)
         self.control.event_driven = True
 
