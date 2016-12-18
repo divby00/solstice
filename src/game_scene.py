@@ -18,23 +18,23 @@ import teleport
 class GameScene(scene.Scene):
     def __init__(self, context, name='game', scene_speed=26):
         super(GameScene, self).__init__(context, name, scene_speed)
-        self.screen = context.scr
-        self.locks = None
-        self.beam_barriers = None
-        self.items = None
-        self.teleports = None
-        self.magnetic_fields = None
-        self.nothrust = None
-        self.rails = None
-        self.container = None
-        self.enemies = None
-        self.level = context.resourcemanager.get('level01')
-        self.current_level = None
-        self.renderobj = None
-        self.enemies_renderer = None
-        self.exit_point = None
-        self.on_elevator = False
-        self.particlesmanager = particles_manager.ParticlesManager()
+        self._screen = context.screen
+        self._locks = None
+        self._beam_barriers = None
+        self._items = None
+        self._teleports = None
+        self._magnetic_fields = None
+        self._nothrust = None
+        self._rails = None
+        self._container = None
+        self._enemies = None
+        self._level = context.resource_manager.get('level01')
+        self._current_level = None
+        self._renderer_object = None
+        self._enemies_renderer = None
+        self._exit_point = None
+        self._on_elevator = False
+        self._particles_manager = particles_manager.ParticlesManager()
         enemy_beam_particles = particles.EnemyBeamParticles(context, 'enemy_hit')
         beam_particles = particles.BeamParticles(context, 'hit')
         enemy_death_particles = particles.EnemyExplosionParticles(context, 'enemy_death')
@@ -42,129 +42,144 @@ class GameScene(scene.Scene):
         player_crap_particles = particles.PlayerCrapParticles(context, 'crap')
         player_smoke_particles = particles.PlayerSmokeParticles(context, 'thrust')
         respawn_particles = particles.RespawnParticles(context, 'respawn_part')
-        self.particlesmanager.register_particles(beam_particles)
-        self.particlesmanager.register_particles(exp_particles)
-        self.particlesmanager.register_particles(enemy_beam_particles)
-        self.particlesmanager.register_particles(enemy_death_particles)
-        self.particlesmanager.register_particles(player_crap_particles)
-        self.particlesmanager.register_particles(player_smoke_particles)
-        self.particlesmanager.register_particles(respawn_particles)
-        context.particlesmanager = self.particlesmanager
-        self.player = player.Player(context, self)
-        self.board = board.Board(context, self.player)
-        self.animations = context.resourcemanager.animations
-        self.resourcemanager = context.resourcemanager
-        self.sound_player = context.sound_player
-        self.sound_player.load_sample([
+        self._particles_manager.register_particles(beam_particles)
+        self._particles_manager.register_particles(exp_particles)
+        self._particles_manager.register_particles(enemy_beam_particles)
+        self._particles_manager.register_particles(enemy_death_particles)
+        self._particles_manager.register_particles(player_crap_particles)
+        self._particles_manager.register_particles(player_smoke_particles)
+        self._particles_manager.register_particles(respawn_particles)
+        # TODO Check what is this!
+        context.particles_manager = self._particles_manager
+        self._player = player.Player(context, self)
+        self._board = board.Board(context, self._player)
+        self._animations = context.resource_manager.animations
+        self._resource_manager = context.resource_manager
+        self._sound_player = context.sound_player
+        self._sound_player.load_sample([
             'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song',
             'enemy_hit_sam', 'player_hit_sam', 'teleport', 'secured'
         ])
         self.get_menu()
 
+    '''
+    Private methods
+    '''
+
+    def _check_player_is_in_elevator(self):
+        return self._player.x + 8 >= self._exit_point[0] \
+               and self._player.x - 8 <= self._exit_point[0] + self._exit_point[2] \
+               and self._player.y - 8 <= self._exit_point[1] + self._exit_point[3] \
+               and self._player.y + 8 >= self._exit_point[1]
+
+    '''
+    Public methods
+    '''
+
     def on_start(self):
-        self.on_elevator = False
+        self._on_elevator = False
         self.menu_group.visible = False
         # If the scene is set from elevator scene, scene_data will contain the selected floor
-        if self.scene_data:
-            self.level = self.resourcemanager.get('level0' + str(self.scene_data + 1))
-        self.current_level = self.level
-        self.exit_point = self.level.exit_point[0] + 256, self.level.exit_point[1] + 144, self.level.exit_point[2], \
-                          self.level.exit_point[3]
-        self.enemies_renderer = enemy.EnemyAnimations.init(self)
-        self.magnetic_fields = magnetic.MagneticBuilder.build(self.current_level.magnetic_fields)
-        self.nothrust = nothrust.NoThrustBuilder.build(self.current_level.nothrust)
-        self.rails = rails.RailsBuilder.build(self.current_level.rails)
-        self.container = container.ContainerBuilder.build(self.current_level.container_info)
-        self.teleports = teleport.TeleportBuilder.build(self.current_level.teleports)
-        self.locks = lock.LockBuilder.build(self, self.resourcemanager, self.current_level.locks)
-        self.beam_barriers = lock.BeamBarriersBuilder.build(self, self.resourcemanager,
-                                                            self.current_level.beam_barriers)
-        self.items = item.ItemBuilder.build(self, self.resourcemanager, self.current_level.items)
-        self.enemies = enemy.EnemyBuilder.build(self)
-        self.player.on_start(self)
-        self.renderobj = renderer.Renderer(self)
-        self.sound_player.play_sample('level01_song')
-        self.control.event_driven = False
+        if self._scene_data:
+            self._level = self._resource_manager.get('level0' + str(self._scene_data + 1))
+        self._current_level = self._level
+        self._exit_point = self._level.exit_point[0] + 256, self._level.exit_point[1] + 144, self._level.exit_point[2], \
+                           self._level.exit_point[3]
+        self._enemies_renderer = enemy.EnemyAnimations.init(self)
+        self._magnetic_fields = magnetic.MagneticBuilder.build(self._current_level.magnetic_fields)
+        self._nothrust = nothrust.NoThrustBuilder.build(self._current_level.nothrust)
+        self._rails = rails.RailsBuilder.build(self._current_level.rails)
+        self._container = container.ContainerBuilder.build(self._current_level.container_info)
+        self._teleports = teleport.TeleportBuilder.build(self._current_level.teleports)
+        self._locks = lock.LockBuilder.build(self, self._resource_manager, self._current_level.locks)
+        self._beam_barriers = lock.BeamBarriersBuilder.build(self, self._resource_manager,
+                                                             self._current_level.beam_barriers)
+        self._items = item.ItemBuilder.build(self, self._resource_manager, self._current_level.items)
+        self._enemies = enemy.EnemyBuilder.build(self)
+        self._player.on_start(self)
+        self._renderer_object = renderer.Renderer(self)
+        self._sound_player.play_sample('level01_song')
+        self._control.event_driven = False
 
     def get_renderer(self):
-        return self.renderobj
+        return self._renderer_object
 
     def get_layers(self):
-        return self.current_level.layers
+        return self._current_level.layers
 
     def on_quit(self):
-        self.sound_player.stop()
+        self._sound_player.stop()
 
     def run(self):
-        if self.on_elevator:
-            self.enter_elevator(self.player)
+        if self._on_elevator:
+            self.enter_elevator(self._player)
 
-        if self.menu_group.visible:
-            self.control.keyboard_event = self.keyboard_event
-            self.control.event_driven = True
-            self.menu_group.run()
+        if self._menu_group.visible:
+            self._control.keyboard_event = self.keyboard_event
+            self._control.event_driven = True
+            self._menu_group.run()
         else:
-            self.control.event_driven = False
+            self._control.event_driven = False
 
-            if not self.player.dying:
+            if not self._player.dying:
 
-                self.player.flying = False
+                self._player.flying = False
 
-                if self.player.get_item_counter < 5:
-                    self.player.get_item_counter += 1
+                if self._player.get_item_counter < 5:
+                    self._player.get_item_counter += 1
 
-                    if self.player.get_item_counter == 5:
-                        self.player.get_item_available = True
+                    if self._player.get_item_counter == 5:
+                        self._player.get_item_available = True
 
-                if not self.player.recovery_mode and self.player.life < 100:
+                if not self._player.recovery_mode and self._player.life < 100:
 
-                    if self.player.recovery_counter < 100:
-                        self.player.recovery_counter += 1
+                    if self._player.recovery_counter < 100:
+                        self._player.recovery_counter += 1
 
-                    if self.player.recovery_counter == 100:
-                        self.player.recovery_mode = True
+                    if self._player.recovery_counter == 100:
+                        self._player.recovery_mode = True
 
-                if self.control.on(control.Control.RIGHT):
-                    self.player.recovery_counter = 0
-                    self.player.recovery_mode = False
-                    self.player.direction = 1
+                if self._control.on(control.Control.RIGHT):
+                    self._player.recovery_counter = 0
+                    self._player.recovery_mode = False
+                    self._player.direction = 1
 
-                    if not self.player.check_right_collision(self.current_level) and self.player.check_in_rails() == 0:
-                        self.player.x += self.renderobj.speed[0]
+                    if not self._player.check_right_collision(self._current_level) and self._player.check_in_rails() == 0:
+                        self._player.x += self._renderer_object.speed[0]
 
-                if self.control.on(control.Control.LEFT):
-                    self.player.recovery_counter = 0
-                    self.player.recovery_mode = False
-                    self.player.direction = -1
+                if self._control.on(control.Control.LEFT):
+                    self._player.recovery_counter = 0
+                    self._player.recovery_mode = False
+                    self._player.direction = -1
 
-                    if not self.player.check_left_collision(self.current_level) and self.player.check_in_rails() == 0:
-                        self.player.x -= self.renderobj.speed[0]
+                    if not self._player.check_left_collision(self._current_level) and self._player.check_in_rails() == 0:
+                        self._player.x -= self._renderer_object.speed[0]
 
-                rail_direction = self.player.check_in_rails()
+                rail_direction = self._player.check_in_rails()
 
                 if rail_direction != 0:
-                    if not self.player.check_right_collision(self.current_level) and rail_direction == 1:
-                        self.player.x += self.renderobj.speed[0]
-                    if not self.player.check_left_collision(self.current_level) and rail_direction == -1:
-                        self.player.x -= self.renderobj.speed[0]
+                    if not self._player.check_right_collision(self._current_level) and rail_direction == 1:
+                        self._player.x += self._renderer_object.speed[0]
+                    if not self._player.check_left_collision(self._current_level) and rail_direction == -1:
+                        self._player.x -= self._renderer_object.speed[0]
 
-                if self.control.on(control.Control.UP) and self.player.thrust > 0:
-                    self.player.recovery_counter = 0
-                    self.player.recovery_mode = False
-                    self.player.thrust -= .1
-                    self.player.flying = True
-                    player_smoke_particles = self.particlesmanager.get('thrust')
+                if self._control.on(control.Control.UP) and self._player.thrust > 0:
+                    self._player.recovery_counter = 0
+                    self._player.recovery_mode = False
+                    self._player.thrust -= .1
+                    self._player.flying = True
+                    player_smoke_particles = self._particles_manager.get('thrust')
                     player_smoke_particles.generate(
-                        (self.player.x - 4, self.player.x + 1, self.player.y + 6, self.player.y + 7))
+                        (self._player.x - 4, self._player.x + 1, self._player.y + 6, self._player.y + 7))
 
-                    if not self.player.check_upper_collision(
-                            self.current_level) and not self.player.check_in_nothrust():
-                        self.player.y -= self.renderobj.speed[1]
+                    if not self._player.check_upper_collision(
+                            self._current_level) and not self._player.check_in_nothrust():
+                        self._player.y -= self._renderer_object.speed[1]
 
                         # Check if player is in teleport
-                        if self.player.check_in_active_teleport(self.current_level):
-                            self.player.teleporting = True
-                            self.sound_player.play_sample('teleport')
+                        if self._player.check_in_active_teleport(self._current_level):
+                            self._player.teleporting = True
+                            self._sound_player.play_sample('teleport')
                 else:
                     pass
                     '''
@@ -172,74 +187,137 @@ class GameScene(scene.Scene):
                         self.player.y += self.renderobj.speed[1]
                     '''
 
-                if self.control.on(control.Control.DOWN):
-                    self.player.recovery_mode = False
-                    self.player.recovery_counter = 0
+                if self._control.on(control.Control.DOWN):
+                    self._player.recovery_mode = False
+                    self._player.recovery_counter = 0
 
                     # Checks if player is over an item
-                    if self.player.get_item_available:
-                        x = self.player.x
-                        y = self.player.y
+                    if self._player.get_item_available:
+                        x = self._player.x
+                        y = self._player.y
 
-                        for i in self.items:
+                        for i in self._items:
                             if x + 8 >= i.x and x - 8 <= i.x + i.w and y + 8 >= i.y and y - 8 <= i.y + i.h:
                                 # Player is over an item
-                                self.player.get_item_available = False
-                                self.player.get_item_counter = 0
-                                self.sound_player.play_sample('accept')
+                                self._player.get_item_available = False
+                                self._player.get_item_counter = 0
+                                self._sound_player.play_sample('accept')
 
-                                if not self.player.selected_item:
-                                    self.player.selected_item = i
-                                    self.items.remove(i)
-                                    self.renderobj.change_animation((i.x, i.y), None)
+                                if not self._player.selected_item:
+                                    self._player.selected_item = i
+                                    self._items.remove(i)
+                                    self._renderer_object.change_animation((i.x, i.y), None)
                                 else:
-                                    tmp_item = self.player.selected_item
+                                    tmp_item = self._player.selected_item
                                     x, y = i.x, i.y
-                                    self.player.selected_item = i
-                                    self.items.remove(i)
+                                    self._player.selected_item = i
+                                    self._items.remove(i)
                                     tmp_item.x, tmp_item.y = x, y
-                                    self.items.append(tmp_item)
-                                    self.renderobj.change_animation((i.x, i.y), tmp_item.name)
+                                    self._items.append(tmp_item)
+                                    self._renderer_object.change_animation((i.x, i.y), tmp_item.name)
                                     break
 
-                if self.control.on(control.Control.ACTION1) and not self.player.teleporting:
+                if self._control.on(control.Control.ACTION1) and not self._player.teleporting:
                     if self._check_player_is_in_elevator():
-                        self.on_elevator = True
+                        self._on_elevator = True
 
-                    if self.player.shoot_avail and self.player.bullets > 0:
-                        self.player.recovery_counter = 0
-                        self.player.recovery_mode = False
-                        self.sound_player.play_sample('laser')
-                        self.player.firing = True
-                        self.player.bullets -= .3
+                    if self._player.shoot_avail and self._player.bullets > 0:
+                        self._player.recovery_counter = 0
+                        self._player.recovery_mode = False
+                        self._sound_player.play_sample('laser')
+                        self._player.firing = True
+                        self._player.bullets -= .3
 
-                if self.control.on(control.Control.ACTION2) and not self.player.teleporting:
-                    self.player.recovery_counter = 0
-                    self.player.recovery_mode = False
+                if self._control.on(control.Control.ACTION2) and not self._player.teleporting:
+                    self._player.recovery_counter = 0
+                    self._player.recovery_mode = False
 
-                    if self.player.selected_item is not None:
-                        self.player.using_item = True
-                        self.sound_player.play_sample('accept')
+                    if self._player.selected_item is not None:
+                        self._player.using_item = True
+                        self._sound_player.play_sample('accept')
 
-            if self.control.on(control.Control.START):
+            if self._control.on(control.Control.START):
                 self.menu_group.visible = True
 
-            self.player.run()
+            self._player.run()
 
-            for ene in self.enemies:
+            for ene in self._enemies:
                 ene.run()
 
-            self.particlesmanager.run()
-            self.renderobj.run()
+            self._particles_manager.run()
+            self._renderer_object.run()
 
-    def render(self, scr):
-        self.renderobj.render()
+    def render(self, screen):
+        self._renderer_object.render()
 
-        if self.menu_group.visible:
-            self.menu_group.render(scr.virt, (128, 70))
+        if self._menu_group.visible:
+            self._menu_group.render(screen.virt, (128, 70))
 
-    def _check_player_is_in_elevator(self):
-        return self.player.x + 8 >= self.exit_point[0] \
-               and self.player.x - 8 <= self.exit_point[0] + self.exit_point[2] \
-               and self.player.y - 8 <= self.exit_point[1] + self.exit_point[3] \
-               and self.player.y + 8 >= self.exit_point[1]
+    @property
+    def resource_manager(self):
+        return self._resource_manager
+
+    @property
+    def current_level(self):
+        return self._current_level
+
+    @property
+    def player(self):
+        return self._player
+
+    @property
+    def locks(self):
+        return self._locks
+
+    @property
+    def beam_barriers(self):
+        return self._beam_barriers
+
+    @property
+    def teleports(self):
+        return self._teleports
+
+    @property
+    def container(self):
+        return self._container
+
+    @property
+    def exit_point(self):
+        return self._exit_point
+
+    @property
+    def sound_player(self):
+        return self._sound_player
+
+    @property
+    def magnetic_fields(self):
+        return self._magnetic_fields
+
+    @property
+    def nothrust(self):
+        return self._nothrust
+
+    @property
+    def rails(self):
+        return self._rails
+
+    @property
+    def enemies(self):
+        return self._enemies
+
+    @property
+    def items(self):
+        return self._items
+
+    @property
+    def animations(self):
+        return self._animations
+
+    @property
+    def particles_manager(self):
+        return self._particles_manager
+
+    @property
+    def board(self):
+        return self._board
+

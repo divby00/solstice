@@ -1,20 +1,24 @@
 class ParticlesManager(object):
     def __init__(self):
-        self.particles = {}
+        self._particles = {}
+
+    '''
+    Public methods
+    '''
 
     def get(self, name):
-        return self.particles[name]
+        return self._particles[name]
 
     def register_particles(self, particles):
-        self.particles[particles.name] = particles
+        self._particles[particles.name] = particles
 
     def unregister_particles(self, name):
-        del (self.particles[name])
+        del (self._particles[name])
 
     def run(self):
-        for key in self.particles:
-            self.particles[key].run()
+        for key in self._particles:
+            self._particles[key].run()
 
     def render(self, screen):
-        for key in self.particles:
-            self.particles[key].render(screen)
+        for key in self._particles:
+            self._particles[key].render(screen)

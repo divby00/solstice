@@ -85,7 +85,7 @@ class Player(actor.Actor):
         self.container = None
         self.current_level = None
         self.sound_player = context.sound_player
-        self.particlesmanager = context.particlesmanager
+        self.particlesmanager = context.particles_manager
         self.floor = game_context.scene_data if game_context.scene_data else 0
 
         player = ['player0', 'player1', 'player2', 'player3',
@@ -100,22 +100,22 @@ class Player(actor.Actor):
         self.lasers = []
 
         for p in xrange(0, len(player)):
-            self.sprites.insert(p, self.context.resourcemanager.get(player[p]))
+            self.sprites.insert(p, self.context.resource_manager.get(player[p]))
 
         for p in xrange(0, len(player)):
-            self.sprites_hit.insert(p, self.context.resourcemanager.get(''.join([player[p], '_hit'])))
+            self.sprites_hit.insert(p, self.context.resource_manager.get(''.join([player[p], '_hit'])))
 
         for p in xrange(0, len(player)):
-            self.sprites_inmortal.insert(p, self.context.resourcemanager.get(''.join([player[p], '_inmortal'])))
+            self.sprites_inmortal.insert(p, self.context.resource_manager.get(''.join([player[p], '_inmortal'])))
 
         for l in xrange(0, len(laser)):
-            self.laser_spr.insert(l, self.context.resourcemanager.get(laser[l]))
+            self.laser_spr.insert(l, self.context.resource_manager.get(laser[l]))
 
         for r in xrange(0, 4):
-            self.recovery_spr.insert(r, self.context.resourcemanager.get('playerrecovery' + str(r)))
+            self.recovery_spr.insert(r, self.context.resource_manager.get('playerrecovery' + str(r)))
 
         for r in xrange(0, 5):
-            self.teleport_spr.insert(r, self.context.resourcemanager.get('playerteleport' + str(r)))
+            self.teleport_spr.insert(r, self.context.resource_manager.get('playerteleport' + str(r)))
 
         self.context.laser_spr = self.laser_spr
 

@@ -6,58 +6,61 @@ import scene
 class LogoScene(scene.Scene):
     LOGO_DELAY = 1500
 
-    def __init__(self, context, name='logo', scene_speed=30):
+    def __init__(self, context, name='logo', scene_speed=25):
         super(LogoScene, self).__init__(context, name, scene_speed)
-        self.sound_player = context.sound_player
-        self.logo = context.resourcemanager.get('logo')
-        self.logo_sound = self.sound_player.load_sample(['logo_sound'])
-        self.dither = []
-        dither_images = [
-            'dither0', 'dither1', 'dither2',
-            'dither3', 'dither4', 'dither5']
+        self._sound_player = context.sound_player
+        self._logo = context.resource_manager.get('logo')
+        self._logo_sound = self._sound_player.load_sample(['logo_sound'])
+        self._dither_sprites = [context.resource_manager.get('dither' + str(index)) for index in
+                                xrange(0, 6)]
+        self._dithering_frame = None
+        self._fading = 0
+        self._playing = False
 
-        for d in xrange(0, len(dither_images)):
-            self.dither.insert(d, context.resourcemanager.get(dither_images[d]))
+    '''
+    Public methods
+    '''
 
     def on_start(self):
-        self.dither_anim = len(self.dither)
-        self.fading = 0
-        self.playing = False
+        self._dithering_frame = len(self._dither_sprites)
+        self._fading = 0
+        self._playing = False
 
     def on_quit(self):
         pass
 
     def run(self):
 
-        if not self.playing:
-            self.playing = True
-            self.sound_player.play_sample('logo_sound')
+        if not self._playing:
+            self._playing = True
+            self._sound_player.play_sample('logo_sound')
 
-        if self.dither_anim > -1 and self.fading == 0:
-            self.dither_anim -= 1
+        if self._dithering_frame > -1 and self._fading == 0:
+            self._dithering_frame -= 1
 
-        if self.dither_anim == -1 and self.fading == 0:
-            self.dither_anim = 0
-            self.fading = 1
+        if self._dithering_frame == -1 and self._fading == 0:
+            self._dithering_frame = 0
+            self._fading = 1
             pygame.time.delay(LogoScene.LOGO_DELAY)
 
-        if self.dither_anim < len(self.dither) and self.fading == 1:
-            self.dither_anim += 1
+        if self._dithering_frame < len(self._dither_sprites) and self._fading == 1:
+            self._dithering_frame += 1
 
         # Exit condition
-        if self.dither_anim == len(self.dither) and self.fading == 1:
-            self.scenemanager.set('intro')
+        if self._dithering_frame == len(self._dither_sprites) and self._fading == 1:
+            self._scene_manager.set('intro')
 
-    def render(self, scr):
+    def render(self, screen):
 
-        if self.dither_anim < len(self.dither):
-            scr.virt.blit(self.logo,
-                          (128 - (self.logo.get_width() / 2),
-                           96 - (self.logo.get_height() / 2)))
+        if self._dithering_frame < len(self._dither_sprites):
+            # TODO Take to reuse as a centered drawing function
+            screen.virt.blit(self._logo,
+                             (128 - (self._logo.get_width() / 2),
+                              96 - (self._logo.get_height() / 2)))
 
         for a in xrange(0, 192, 8):
             for i in xrange(0, 256, 8):
-                if self.dither_anim < len(self.dither):
-                    scr.virt.blit(self.dither[self.dither_anim], (i, a))
+                if self._dithering_frame < len(self._dither_sprites):
+                    screen.virt.blit(self._dither_sprites[self._dithering_frame], (i, a))
                 else:
-                    scr.virt.fill((0, 0, 0, 0))
+                    screen.virt.fill((0, 0, 0, 0))

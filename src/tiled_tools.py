@@ -340,6 +340,26 @@ class TiledLevel(object):
 
         return items
 
+    @staticmethod
+    def _parse_info_areas(special):
+        rails = []
+
+        for s in special:
+            rail = None
+            direction = None
+
+            for a in special[s]:
+                if a == 'rails':
+                    rail = special[s].get(a)
+
+                if a == 'direction':
+                    direction = special[s].get(a)
+
+                if rail is not None and direction is not None:
+                    rails.append(''.join([s, ' ', direction]))
+
+        return rails
+
     def __load_tileset_info(self):
         tilesets = []
 
@@ -530,6 +550,7 @@ class TiledLevel(object):
         self.items = self.__parse_items_info(special)
         self.nothrust = self.__parse_nothrust_info(special)
         self.rails = self.__parse_rails_info(special)
+        self.info_areas = self._parse_info_areas(special)
 
         after = pygame.time.get_ticks()
         print('\tLEVEL: Special info loaded in %d milliseconds.' % (after - before))

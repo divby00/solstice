@@ -1,12 +1,12 @@
 import io
 import pygame
 import xml.etree.cElementTree as ElementTree
-from gettext import gettext as _
 import zipfile
+from gettext import gettext as _
 
+import animation
 import bitmap_font
 import tiled_tools
-import animation
 
 
 class ResourceNotFoundError(Exception):
@@ -18,181 +18,184 @@ class ResourceNotFoundError(Exception):
 
 
 class ResourceManager(object):
-    def __init__(self, context, zipfilename, xmlfilename='resources.xml'):
-        file_path = ''.join([context.cfg.data_path, zipfilename])
-        self.zf = zipfile.ZipFile(file_path)
-        self.anim_loader = animation.AnimationLoader(self.zf)
-        xml = self.zf.read(xmlfilename)
-        root = ElementTree.fromstring(xml)
+    def __init__(self, context, zip_file_name, xml_file_name='resources.xml'):
+        self._context = context
+        self._zip_file = self._zip_file_open(zip_file_name)
+        self._animation_loader = animation.AnimationLoader(self._zip_file)
+        xml_root = self._read_resources_file(xml_file_name)
+        self._images_cache = {}
+        self._images = {}
+        self._songs = {}
+        self._samples = {}
+        self._fonts = {}
+        self._levels = {}
+        self._animations = {}
+        self._resources = xml_root.findall('resource')
+        self._total_resources = len(xml_root.findall('resource'))
+        self._actual_resource = 0
 
-        self.images_buffer = {}
-        self.images = {}
-        self.songs = {}
-        self.samples = {}
-        self.fonts = {}
-        self.levels = {}
-        self.animations = {}
-        self.resources = root.findall('resource')
-        self.total_resources = len(root.findall('resource'))
-        self.actual_resource = 0
-
-        for resource in root.findall('resource'):
-            before = pygame.time.get_ticks()
+        for resource in xml_root.findall('resource'):
             if resource.get('type') == 'gfx':
-                self.__load_gfx(resource)
-                self.actual_resource += 1
+                self._gfx_load(resource)
+                self._actual_resource += 1
             elif resource.get('type') == 'music':
-                if context.cfg.music:
-                    self.__load_song(resource)
-                    self.actual_resource += 1
+                if context.config.music:
+                    self._load_song(resource)
+                    self._actual_resource += 1
             elif resource.get('type') == 'sample':
-                if context.cfg.sound:
-                    self.__load_sample(resource)
-                    self.actual_resource += 1
+                if context.config.sound:
+                    self._load_sample(resource)
+                    self._actual_resource += 1
             elif resource.get('type') == 'font':
-                self.__load_font(resource)
-                self.actual_resource += 1
+                self._load_font(resource)
+                self._actual_resource += 1
             elif resource.get('type') == 'level':
-                self.__load_level(resource)
-                self.actual_resource += 1
+                self._load_level(resource)
+                self._actual_resource += 1
             elif resource.get('type') == 'animation':
-                self.__load_animation(resource)
-                self.actual_resource += 1
-            after = pygame.time.get_ticks()
-            print('Resource %s loaded in %d milliseconds.' % (resource.get('name'), (after - before)))
-            self.__update_load_screen(context.scr)
+                self._load_animation(resource)
+                self._actual_resource += 1
+            self._update_load_screen(self._context.screen)
 
-        self.__update_load_screen(context.scr)
-        pygame.time.delay(200)
+    '''
+    Private methods
+    '''
 
-    def __update_load_screen(self, scr):
-        scr.virt.fill((0, 0, 0, 0))
+    def _zip_file_open(self, zip_file_name):
+        file_path = ''.join([self._context.config.data_path, zip_file_name])
+        return zipfile.ZipFile(file_path)
 
-        if scr.icon:
-            scr.virt.blit(scr.icon, (128 - 16, 55))
+    def _read_resources_file(self, xml_file_name):
+        xml = self._zip_file.read(xml_file_name)
+        return ElementTree.fromstring(xml)
 
-        bar_size = (self.actual_resource * 53) / self.total_resources
-        pygame.draw.rect(scr.virt, (255, 255, 255), (102, 94, bar_size, 1), 1)
-        pygame.draw.rect(scr.virt, (255, 255, 85), (102, 95, bar_size, 1), 1)
-        pygame.draw.rect(scr.virt, (85, 255, 85), (102, 96, bar_size, 1), 1)
-        pygame.draw.rect(scr.virt, (0, 170, 0), (102, 97, bar_size, 1), 1)
-        pygame.transform.scale(scr.virt,
-                               scr.scaling_resolution,
-                               scr.scaled_virt)
-        scr.display.blit(scr.scaled_virt, (scr.final_offset))
+    def _update_load_screen(self, screen):
+        screen.virt.fill((0, 0, 0, 0))
+        if screen.icon:
+            screen.virt.blit(screen.icon, (128 - 16, 55))
+
+        bar_size = (self._actual_resource * 53) / self._total_resources
+        pygame.draw.rect(screen.virt, (255, 255, 255), (102, 94, bar_size, 1), 1)
+        pygame.draw.rect(screen.virt, (255, 255, 85), (102, 95, bar_size, 1), 1)
+        pygame.draw.rect(screen.virt, (85, 255, 85), (102, 96, bar_size, 1), 1)
+        pygame.draw.rect(screen.virt, (0, 170, 0), (102, 97, bar_size, 1), 1)
+        pygame.transform.scale(screen.virt,
+                               screen.scaling_resolution,
+                               screen.scaled_virt)
+        screen.display.blit(screen.scaled_virt, screen.final_offset)
         pygame.display.update()
 
-    def __load_gfx(self, resource):
-        src, name = self.__get_common_info(resource)
+    def _gfx_load(self, resource):
+        src, name = ResourceManager.get_resource_common_info(resource)
         width = int(resource.get('width'))
         height = int(resource.get('height'))
         x = int(resource.get('x'))
         y = int(resource.get('y'))
+        size = (width, height)
+        position = (x, y)
 
-        # Load optimization
+        # Loading cache
         # Check if the image has been saved previously.
-        if src in self.images_buffer:
-            temp = self.images_buffer[src]
-            srfc = pygame.Surface((width, height))
-            srfc = srfc.convert_alpha()
-            srfc.fill((0, 0, 0, 0))
-            srfc.blit(temp, (0, 0), (x, y, x + width, y + height))
-            self.images[name] = srfc
+        if src in self._images_cache:
+            temporary_surface = self._images_cache[src]
+            self._surface_blit(name, size, position, temporary_surface)
         else:
-            img_data = self.zf.read(src)
+            img_data = self._zip_file.read(src)
             byte_data = io.BytesIO(img_data)
-
             if byte_data is not None:
-                temp = pygame.image.load(byte_data)
-                srfc = pygame.Surface((width, height))
-                srfc = srfc.convert_alpha()
-                srfc.fill((0, 0, 0, 0))
-                srfc.blit(temp, (0, 0), (x, y, x + width, y + height))
-                self.images[name] = srfc
-                self.images_buffer[src] = temp
+                temporary_surface = pygame.image.load(byte_data)
+                self._surface_blit(name, size, position, temporary_surface)
+                self._images_cache[src] = temporary_surface
 
-    def __load_song(self, resource):
-        src, name = self.__get_common_info(resource)
-        song_data = self.zf.read(src)
+    def _surface_blit(self, name, size, position, temporary_surface):
+        surface = pygame.Surface(size)
+        surface = surface.convert_alpha()
+        surface.fill((0, 0, 0, 0))
+        surface.blit(temporary_surface,
+                     (0, 0),
+                     (position[0], position[1], position[0] + size[0], position[1] + size[1]))
+        self._images[name] = surface
+
+    def _load_song(self, resource):
+        src, name = ResourceManager.get_resource_common_info(resource)
+        song_data = self._zip_file.read(src)
         song = io.BytesIO(song_data)
-
         if song is not None:
-            self.songs[name] = song
+            self._songs[name] = song
 
-    def __load_sample(self, resource):
-        src, name = self.__get_common_info(resource)
-        sample_data = self.zf.read(src)
+    def _load_sample(self, resource):
+        src, name = ResourceManager.get_resource_common_info(resource)
+        sample_data = self._zip_file.read(src)
         sample = io.BytesIO(sample_data)
-
         if sample is not None:
-            self.samples[name] = pygame.mixer.Sound(sample)
+            self._samples[name] = pygame.mixer.Sound(sample)
 
-    def __load_font(self, resource):
-        src, name = self.__get_common_info(resource)
+    def _load_font(self, resource):
+        src, name = ResourceManager.get_resource_common_info(resource)
         rows = int(resource.get('rows'))
         columns = int(resource.get('columns'))
-        fnt_data = self.zf.read(src)
+        fnt_data = self._zip_file.read(src)
         byte_data = io.BytesIO(fnt_data)
-
         if byte_data is not None:
             surface = pygame.image.load(byte_data)
             font = bitmap_font.BitmapFont(surface, rows, columns)
-
             if font is not None:
-                self.fonts[name] = font
+                self._fonts[name] = font
 
-    def __load_level(self, resource):
-        src, name = self.__get_common_info(resource)
-        before = pygame.time.get_ticks()
-        lvl_data = self.zf.read(src)
-        after = pygame.time.get_ticks()
-        print('\tLEVEL: File read in %d milliseconds.' % (after - before))
-
+    def _load_level(self, resource):
+        src, name = ResourceManager.get_resource_common_info(resource)
+        lvl_data = self._zip_file.read(src)
         if lvl_data is not None:
-            level = tiled_tools.TiledLevel(self.zf, lvl_data)
-
+            level = tiled_tools.TiledLevel(self._zip_file, lvl_data)
             if level is not None:
-                self.levels[name] = level
+                self._levels[name] = level
 
-    def __load_animation(self, resource):
-        src, name = self.__get_common_info(resource)
-        anim_data = self.zf.read(src)
+    def _load_animation(self, resource):
+        src, name = ResourceManager.get_resource_common_info(resource)
+        animation_data = self._zip_file.read(src)
+        if animation_data is not None:
+            self._animations[name] = self._animation_loader.read(animation_data, name)
 
-        if anim_data is not None:
-            self.animations[name] = self.anim_loader.read(anim_data, name)
+    '''
+    Public methods
+    '''
 
     @staticmethod
-    def __get_common_info(resource):
+    def get_resource_common_info(resource):
         src = resource.get('src')
         name = resource.get('name')
         return src, name
 
     def exists(self, res_name):
-        if res_name in self.images or \
-                        res_name in self.songs or \
-                        res_name in self.fonts or \
-                        res_name in self.samples or \
-                        res_name in self.levels:
+        if res_name in self._images \
+                or res_name in self._songs \
+                or res_name in self._fonts \
+                or res_name in self._samples \
+                or res_name in self._levels:
             return True
         else:
             return False
 
-    def get(self, res_name):
+    def get(self, resource_name):
         try:
-            if res_name in self.images:
-                return self.images[res_name]
-            elif res_name in self.songs:
-                return self.songs[res_name]
-            elif res_name in self.fonts:
-                return self.fonts[res_name]
-            elif res_name in self.samples:
-                return self.samples[res_name]
-            elif res_name in self.levels:
-                return self.levels[res_name]
-            elif res_name in self.animations:
-                return self.animations[res_name]
+            if resource_name in self._images:
+                return self._images[resource_name]
+            elif resource_name in self._songs:
+                return self._songs[resource_name]
+            elif resource_name in self._fonts:
+                return self._fonts[resource_name]
+            elif resource_name in self._samples:
+                return self._samples[resource_name]
+            elif resource_name in self._levels:
+                return self._levels[resource_name]
+            elif resource_name in self._animations:
+                return self._animations[resource_name]
             else:
-                message = _('Resource %s not found.' % res_name)
+                message = _('Resource %s not found.' % resource_name)
                 raise ResourceNotFoundError(message)
         except ResourceNotFoundError as e:
             print(e.value)
+
+    @property
+    def animations(self):
+        return self._animations

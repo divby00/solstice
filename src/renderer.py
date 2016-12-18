@@ -3,45 +3,84 @@ import pygame
 
 class Pattern(object):
     def __init__(self, x, y, animation_name):
-        self.x = x
-        self.y = y
-        self.animation_name = animation_name
+        self._x = x
+        self._y = y
+        self._animation_name = animation_name
+
+    '''
+    Public methods
+    '''
+
+    @property
+    def animation_name(self):
+        return self._animation_name
+
+    @animation_name.setter
+    def animation_name(self, value):
+        self._animation_name = value
+
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y
 
 
 class Renderer(object):
     def __init__(self, context):
-        self.font_white = context.font_white
-        self.screen = context.screen
-        self.level = context.current_level
-        self.player = context.player
-        self.enemies = context.enemies
-        self.items = context.items
-        self.animations = context.animations
-        self.particlesmanager = context.particlesmanager
-        self.player = context.player
-        self.board = context.board
-        self.speed = 4, 4
-        self.start_point = self.__get_start_point()
-        self.source, self.fore_source = self.__init_source_image()
-        self.backpatterns = []
-        self.forepatterns = []
-        self.__init_patterns()
-        self.tmp = pygame.Surface((self.source.get_width(), self.source.get_height())).convert()
-        self.tmp.fill((0, 0, 0, 0))
+        self._font_white = context.font_white
+        self._screen = context.screen
+        self._level = context.current_level
+        self._player = context.player
+        self._enemies = context.enemies
+        self._items = context.items
+        self._animations = context.animations
+        self._particles_manager = context.particles_manager
+        self._player = context.player
+        self._board = context.board
+        self._speed = 4, 4
+        self._start_point = self._get_start_point()
+        self._source, self._fore_source = self._init_source_image()
+        self._backpatterns = []
+        self._forepatterns = []
+        self._init_patterns()
+        self._tmp_surface = pygame.Surface((self._source.get_width(), self._source.get_height()))\
+            .convert()
+        self._tmp_surface.fill((0, 0, 0, 0))
 
-    def __get_start_point(self):
-        return ((self.level.start_point[0]) + 256 + 8) - 128, ((self.level.start_point[1]) + 144 + 8) - 72
+    '''
+    Private methods
+    '''
 
-    def __init_source_image(self):
-        wall_tiles_overflow = []
+    def _init_patterns(self):
+        animations = self._level.animated_tiles
+        for animation in animations:
+            data = animation.split(' ')
+            zindex = data[0]
+            animation_x = data[1]
+            animation_y = data[2]
+            animation_name = animations.get(animation)
+            pattern = Pattern(int(animation_x) + 256, int(animation_y) + 144, animation_name)
+            if zindex == '0':
+                self._backpatterns.append(pattern)
+            else:
+                self._forepatterns.append(pattern)
+
+    def _get_start_point(self):
+        return ((self._level.start_point[0]) + 256 + 8) - 128, \
+               ((self._level.start_point[1]) + 144 + 8) - 72
+
+    def _init_source_image(self):
         back_tiles_overflow = []
         fore_tiles_overflow = []
-        level_size = self.level.map.width_pixels, self.level.map.height_pixels
+        level_size = self._level.map.width_pixels, self._level.map.height_pixels
         back = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert()
         back.fill((0, 0, 0))
         fore = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert_alpha()
         fore.fill((0, 0, 0, 0))
-        back_img = self.level.back
+        back_img = self._level.back
         walls = pygame.Surface(level_size).convert_alpha()
         walls.fill((0, 0, 0, 0))
 
@@ -51,14 +90,14 @@ class Renderer(object):
                 back.blit(back_img, (i, a))
 
         # Draw the background in the buffer
-        for l in self.level.layers:
-            if l.name == 'background':
+        for layer in self._level.layers:
+            if layer.name == 'background':
                 posx = posy = 0
                 for a in xrange(0, level_size[1] / 8):
                     for i in xrange(0, level_size[0] / 8):
-                        gid = l.get_gid(i, a)
-                        if gid > 0 and gid < len(self.level.tiles):
-                            walls.blit(self.level.tiles[gid - 1].srfc, (posx, posy))
+                        gid = layer.get_gid(i, a)
+                        if gid > 0 and gid < len(self._level.tiles):
+                            walls.blit(self._level.tiles[gid - 1].srfc, (posx, posy))
                         else:
                             if gid > 0:
                                 back_tiles_overflow.append(gid)
@@ -67,14 +106,14 @@ class Renderer(object):
                     posy += 8
 
         # Draw the walls in the buffer
-        for l in self.level.layers:
-            if l.name == 'walls':
+        for layer in self._level.layers:
+            if layer.name == 'walls':
                 posx = posy = 0
                 for a in xrange(0, level_size[1] / 8):
                     for i in xrange(0, level_size[0] / 8):
-                        gid = l.get_gid(i, a)
-                        if gid > 0 and gid < len(self.level.tiles):
-                            walls.blit(self.level.tiles[gid - 1].srfc, (posx, posy))
+                        gid = layer.get_gid(i, a)
+                        if gid > 0 and gid < len(self._level.tiles):
+                            walls.blit(self._level.tiles[gid - 1].srfc, (posx, posy))
                         else:
                             if gid > 0:
                                 fore_tiles_overflow.append(gid)
@@ -100,14 +139,14 @@ class Renderer(object):
         # End debugging walls
 
         # Draw the foreground static images in the fore buffer
-        for l in self.level.layers:
-            if l.name == 'foreground':
+        for layer in self._level.layers:
+            if layer.name == 'foreground':
                 posx = posy = 0
                 for a in xrange(0, level_size[1] / 8):
                     for i in xrange(0, level_size[0] / 8):
-                        gid = l.get_gid(i, a)
-                        if gid > 0 and gid < len(self.level.tiles):
-                            fore.blit(self.level.tiles[gid - 1].srfc, (posx, posy))
+                        gid = layer.get_gid(i, a)
+                        if gid > 0 and gid < len(self._level.tiles):
+                            fore.blit(self._level.tiles[gid - 1].srfc, (posx, posy))
                         else:
                             if gid > 0:
                                 fore_tiles_overflow.append(gid)
@@ -120,46 +159,33 @@ class Renderer(object):
         back.blit(walls, (x, y))
         '''
         # Debugging purposes
-        print(set(wall_tiles_overflow))
         print(set(back_tiles_overflow))
         print(set(fore_tiles_overflow))
         '''
         return back, fore
 
-    def __init_patterns(self):
-
-        animations = self.level.animated_tiles
-
-        for a in animations:
-            data = a.split(' ')
-            zindex = data[0]
-            animx = data[1]
-            animy = data[2]
-            animname = animations.get(a)
-
-            if zindex == '0':
-                self.backpatterns.append(Pattern(int(animx) + 256, int(animy) + 144, animname))
-            else:
-                self.forepatterns.append(Pattern(int(animx) + 256, int(animy) + 144, animname))
+    '''
+    Public methods
+    '''
 
     def change_animation(self, position, new_anim):
-        for b in self.backpatterns:
-            if b.x == position[0] and b.y == position[1]:
+        for backpattern in self._backpatterns:
+            if backpattern.x == position[0] and backpattern.y == position[1]:
                 if new_anim is None:
-                    self.backpatterns.remove(b)
+                    self._backpatterns.remove(backpattern)
                 else:
-                    b.animation_name = new_anim
+                    backpattern.animation_name = new_anim
 
-        for b in self.forepatterns:
-            if b.x == position[0] and b.y == position[1]:
+        for backpattern in self._forepatterns:
+            if backpattern.x == position[0] and backpattern.y == position[1]:
                 if new_anim is None:
-                    self.forepatterns.remove(b)
+                    self._forepatterns.remove(backpattern)
                 else:
-                    b.animation_name = new_anim
+                    backpattern.animation_name = new_anim
 
     def run(self):
-        for b in self.backpatterns:
-            anim = self.animations.get(b.animation_name)
+        for pattern in self._backpatterns:
+            anim = self._animations.get(pattern.animation_name)
 
             if anim.counter < anim.frames[anim.active_frame].duration:
                 anim.counter += 1
@@ -171,8 +197,8 @@ class Renderer(object):
                 else:
                     anim.active_frame = 0
 
-        for b in self.forepatterns:
-            anim = self.animations.get(b.animation_name)
+        for pattern in self._forepatterns:
+            anim = self._animations.get(pattern.animation_name)
 
             if anim.counter < anim.frames[anim.active_frame].duration:
                 anim.counter += 1
@@ -186,44 +212,43 @@ class Renderer(object):
 
     def render(self):
         # Source rendering
-        self.tmp.blit(self.source,
-                      (self.player.x - 128, self.player.y - 72),
-                      (self.player.x - 128, self.player.y - 72, 256, 144))
+        self._tmp_surface.blit(self._source,
+                               (self._player.x - 128, self._player.y - 72),
+                               (self._player.x - 128, self._player.y - 72, 256, 144))
 
         # Backpattern rendering
-        for b in self.backpatterns:
-            anim = self.animations.get(b.animation_name)
-            img = anim.images.get(str(anim.frames[anim.active_frame].id))
-            self.tmp.blit(img,
-                          (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
+        for pattern in self._backpatterns:
+            animation = self._animations.get(pattern.animation_name)
+            img = animation.images.get(str(animation.frames[animation.active_frame].id))
+            self._tmp_surface.blit(img, (pattern.x + animation.frames[animation.active_frame].offset_x, pattern.y + animation.frames[animation.active_frame].offset_y))
 
         # Player rendering
-        self.player.render(self.tmp)
+        self._player.render(self._tmp_surface)
 
         # Enemies rendering
-        for enemy in self.enemies:
-            enemy.render(self.tmp)
+        for enemy in self._enemies:
+            enemy.render(self._tmp_surface)
 
         # Particles rendering
-        self.particlesmanager.render(self.tmp)
+        self._particles_manager.render(self._tmp_surface)
 
         # Foreground Source rendering
-        self.tmp.blit(self.fore_source,
-                      (self.player.x - 128, self.player.y - 72),
-                      (self.player.x - 384, self.player.y - 216, 256, 144))
+        self._tmp_surface.blit(self._fore_source,
+                               (self._player.x - 128, self._player.y - 72),
+                               (self._player.x - 384, self._player.y - 216, 256, 144))
 
         # Forepattern rendering
-        for b in self.forepatterns:
-            anim = self.animations.get(b.animation_name)
-            img = anim.images.get(str(anim.frames[anim.active_frame].id))
-            self.tmp.blit(img,
-                          (b.x + anim.frames[anim.active_frame].offsetx, b.y + anim.frames[anim.active_frame].offsety))
+        for pattern in self._forepatterns:
+            animation = self._animations.get(pattern.animation_name)
+            img = animation.images.get(str(animation.frames[animation.active_frame].id))
+            self._tmp_surface.blit(img,
+                                   (pattern.x + animation.frames[animation.active_frame].offset_x, pattern.y + animation.frames[animation.active_frame].offset_y))
 
         # Viewport rendering
-        self.screen.virt.blit(self.tmp, (0, 0), (self.player.x - 128, self.player.y - 72, 256, 144))
+        self._screen.virt.blit(self._tmp_surface, (0, 0), (self._player.x - 128, self._player.y - 72, 256, 144))
 
         # Board rendering
-        self.board.render(self.screen.virt)
+        self._board.render(self._screen.virt)
 
         # Debug information
         '''
@@ -231,3 +256,7 @@ class Renderer(object):
         text = self.font_white.get(('x:' + str(self.player.x - 264) + ' y:' + str(self.player.y - 152)), 100)
         self.screen.virt.blit(text, (5, 5))
         '''
+
+    @property
+    def speed(self):
+        return self._speed

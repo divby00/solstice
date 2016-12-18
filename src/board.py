@@ -4,8 +4,8 @@ import pygame
 class Board(object):
     def __init__(self, context, player):
         self.player = player
-        self.board = context.resourcemanager.get('board')
-        self.board_font = context.resourcemanager.get('font_board')
+        self.board = context.resource_manager.get('board')
+        self.board_font = context.resource_manager.get('font_board')
         self.bluebar = []
         self.greenbar = []
         self.redbar = []
@@ -73,15 +73,15 @@ class Board(object):
         ]
 
         for i in xrange(0, 3):
-            self.bluebar.insert(i, context.resourcemanager.get('bluebar' + str(i)))
-            self.greenbar.insert(i, context.resourcemanager.get('greenbar' + str(i)))
-            self.redbar.insert(i, context.resourcemanager.get('redbar' + str(i)))
+            self.bluebar.insert(i, context.resource_manager.get('bluebar' + str(i)))
+            self.greenbar.insert(i, context.resource_manager.get('greenbar' + str(i)))
+            self.redbar.insert(i, context.resource_manager.get('redbar' + str(i)))
 
         for i in xrange(0, 9):
-            self.dronelife.insert(i, context.resourcemanager.get('playerhit' + str(i)))
+            self.dronelife.insert(i, context.resource_manager.get('playerhit' + str(i)))
 
         for i in xrange(0, 6):
-            self.red_dither.insert(i, context.resourcemanager.get('red_dither' + str(i)))
+            self.red_dither.insert(i, context.resource_manager.get('red_dither' + str(i)))
 
     def render(self, screen):
         # Render red border if player gets hit
@@ -150,7 +150,7 @@ class Board(object):
             self.board.blit(selected_bar[1], (138 + i, 25))
         self.board.blit(selected_bar[2], (138 + bullets, 25))
 
-        # Render time bar TODO
+        # TODO Render time bar
 
         # Render selected item
         if self.player.selected_item is not None:

@@ -1,6 +1,6 @@
-from gettext import gettext as _
-import os
 import ConfigParser
+import os
+from gettext import gettext as _
 
 
 class ConfigurationError(Exception):
@@ -31,7 +31,7 @@ class Configuration(object):
     OPT_KEY_ACTION_2 = 'key action 2'
     OPT_KEY_START = 'key start'
 
-    ''' Default values '''
+    # Default values
     DATA_PATH = './'
     LOCALE_PATH = 'locale'
     SECTION = ['Paths', 'Graphics', 'Sound', 'Control']
@@ -52,153 +52,171 @@ class Configuration(object):
     KEY_START = 13
 
     def __init__(self):
-        self.parser = ConfigParser.ConfigParser()
+        self._parser = ConfigParser.ConfigParser()
+        self._full_screen = Configuration.FULLSCREEN
+        self._sound = Configuration.SOUND
+        self._music = Configuration.MUSIC
+        self._sound_vol = Configuration.SOUND_VOLUME
+        self._music_vol = Configuration.MUSIC_VOLUME
+        self._control_type = Configuration.CONTROL_TYPE
+        self._key_up = Configuration.KEY_UP
+        self._key_down = Configuration.KEY_DOWN
+        self._key_left = Configuration.KEY_LEFT
+        self._key_right = Configuration.KEY_RIGHT
+        self._key_act1 = Configuration.KEY_ACTION_1
+        self._key_act2 = Configuration.KEY_ACTION_2
+        self._key_start = Configuration.KEY_START
 
         try:
-            parsed_file = self.parser.read([Configuration.CFGFILE_NAME])
+            parsed_file = self._parser.read([Configuration.CFGFILE_NAME])
 
             if len(parsed_file) > 0:
-                self.data_path = self.parser.get(
-                    Configuration.SECTION[0], Configuration.OPT_DATA_PATH)
-                self.__check_correct_values(
-                    Configuration.OPT_DATA_PATH, self.data_path)
-                self.locale_path = self.parser.get(
-                    Configuration.SECTION[0], Configuration.OPT_LOCALE_PATH)
-                w = self.parser.getint(Configuration.SECTION[1],
-                                       Configuration.OPT_SCREEN_WIDTH)
-                self.__check_correct_values(Configuration.OPT_SCREEN_WIDTH, w)
-                h = self.parser.getint(Configuration.SECTION[1],
-                                       Configuration.OPT_SCREEN_HEIGHT)
-                self.__check_correct_values(Configuration.OPT_SCREEN_HEIGHT, h)
-                self.fullscreen = self.parser.getboolean(
-                    Configuration.SECTION[1], Configuration.OPT_FULLSCREEN)
-                self.sound = self.parser.getboolean(
-                    Configuration.SECTION[2], Configuration.OPT_SOUND)
-                self.music = self.parser.getboolean(
-                    Configuration.SECTION[2], Configuration.OPT_MUSIC)
-                self.sound_vol = self.parser.getint(
-                    Configuration.SECTION[2], Configuration.OPT_SOUND_VOL)
-                self.__check_correct_values(
-                    Configuration.OPT_SOUND_VOL, self.sound_vol)
-                self.music_vol = self.parser.getint(
-                    Configuration.SECTION[2], Configuration.OPT_MUSIC_VOL)
-                self.__check_correct_values(
-                    Configuration.OPT_MUSIC_VOL, self.music_vol)
-                self.screen_size = (w, h)
-                self.control_type = self.parser.get(
-                    Configuration.SECTION[3], Configuration.OPT_CONTROL_TYPE)
-                self.__check_correct_values(
-                    Configuration.OPT_CONTROL_TYPE, self.control_type)
-                self.key_up = self.parser.getint(
-                    Configuration.SECTION[3], Configuration.OPT_KEY_UP)
-                self.key_down = self.parser.getint(
-                    Configuration.SECTION[3], Configuration.OPT_KEY_DOWN)
-                self.key_left = self.parser.getint(
-                    Configuration.SECTION[3], Configuration.OPT_KEY_LEFT)
-                self.key_right = self.parser.getint(
-                    Configuration.SECTION[3], Configuration.OPT_KEY_RIGHT)
-                self.key_act1 = self.parser.getint(
-                    Configuration.SECTION[3], Configuration.OPT_KEY_ACTION_1)
-                self.key_act2 = self.parser.getint(
-                    Configuration.SECTION[3], Configuration.OPT_KEY_ACTION_2)
-                self.key_start = self.parser.getint(
-                    Configuration.SECTION[3], Configuration.OPT_KEY_START)
+                self._data_path = self._parser.get(Configuration.SECTION[0],
+                                                   Configuration.OPT_DATA_PATH)
+                self._check_correct_values(Configuration.OPT_DATA_PATH, self.data_path)
+                self._locale_path = self._parser.get(Configuration.SECTION[0],
+                                                     Configuration.OPT_LOCALE_PATH)
+                w = self._parser.getint(Configuration.SECTION[1], Configuration.OPT_SCREEN_WIDTH)
+                self._check_correct_values(Configuration.OPT_SCREEN_WIDTH, w)
+                h = self._parser.getint(Configuration.SECTION[1], Configuration.OPT_SCREEN_HEIGHT)
+                self._check_correct_values(Configuration.OPT_SCREEN_HEIGHT, h)
+                self._full_screen = self._parser.getboolean(Configuration.SECTION[1],
+                                                            Configuration.OPT_FULLSCREEN)
+                self._sound = self._parser.getboolean(Configuration.SECTION[2],
+                                                      Configuration.OPT_SOUND)
+                self._music = self._parser.getboolean(Configuration.SECTION[2],
+                                                      Configuration.OPT_MUSIC)
+                self._sound_vol = self._parser.getint(Configuration.SECTION[2],
+                                                      Configuration.OPT_SOUND_VOL)
+                self._check_correct_values(Configuration.OPT_SOUND_VOL, self._sound_vol)
+                self._music_vol = self._parser.getint(Configuration.SECTION[2],
+                                                      Configuration.OPT_MUSIC_VOL)
+                self._check_correct_values(Configuration.OPT_MUSIC_VOL, self._music_vol)
+                self._screen_size = (w, h)
+                self._control_type = self._parser.get(Configuration.SECTION[3],
+                                                      Configuration.OPT_CONTROL_TYPE)
+                self._check_correct_values(Configuration.OPT_CONTROL_TYPE, self._control_type)
+                self._key_up = self._parser.getint(Configuration.SECTION[3],
+                                                   Configuration.OPT_KEY_UP)
+                self._key_down = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_KEY_DOWN)
+                self._key_left = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_KEY_LEFT)
+                self._key_right = self._parser.getint(Configuration.SECTION[3],
+                                                      Configuration.OPT_KEY_RIGHT)
+                self._key_act1 = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_KEY_ACTION_1)
+                self._key_act2 = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_KEY_ACTION_2)
+                self._key_start = self._parser.getint(Configuration.SECTION[3],
+                                                      Configuration.OPT_KEY_START)
             else:
-                self.__set_default_values()
-
+                self._default_values_set()
         except ConfigurationError as e:
             print(e.value)
-            self.__set_default_values()
-        except:
-            self.__set_default_values()
+            self._default_values_set()
+        except Exception:
+            self._default_values_set()
 
-    def __set_default_values(self):
+    '''
+    Private methods
+    '''
+
+    def _default_values_set(self):
         for section in Configuration.SECTION:
-            if not self.parser.has_section(section):
-                self.parser.add_section(section)
+            if not self._parser.has_section(section):
+                self._parser.add_section(section)
 
-        ''' Paths '''
-        self.parser.set(Configuration.SECTION[0],
-                        Configuration.OPT_DATA_PATH,
-                        Configuration.DATA_PATH)
-        self.parser.set(Configuration.SECTION[0],
-                        Configuration.OPT_LOCALE_PATH,
-                        Configuration.LOCALE_PATH)
-        ''' Graphics'''
-        self.parser.set(Configuration.SECTION[1],
-                        Configuration.OPT_SCREEN_WIDTH,
-                        Configuration.SCREEN_SIZE[0])
-        self.parser.set(Configuration.SECTION[1],
-                        Configuration.OPT_SCREEN_HEIGHT,
-                        Configuration.SCREEN_SIZE[1])
-        self.parser.set(Configuration.SECTION[1],
-                        Configuration.OPT_FULLSCREEN,
-                        Configuration.FULLSCREEN)
-        ''' Sound '''
-        self.parser.set(Configuration.SECTION[2],
-                        Configuration.OPT_SOUND,
-                        Configuration.SOUND)
-        self.parser.set(Configuration.SECTION[2],
-                        Configuration.OPT_MUSIC,
-                        Configuration.MUSIC)
-        self.parser.set(Configuration.SECTION[2],
-                        Configuration.OPT_SOUND_VOL,
-                        Configuration.SOUND_VOLUME)
-        self.parser.set(Configuration.SECTION[2],
-                        Configuration.OPT_MUSIC_VOL,
-                        Configuration.MUSIC_VOLUME)
-        ''' Control '''
-        self.parser.set(Configuration.SECTION[3],
-                        Configuration.OPT_CONTROL_TYPE,
-                        Configuration.CONTROL_TYPE),
-        self.parser.set(Configuration.SECTION[3],
-                        Configuration.OPT_KEY_UP,
-                        Configuration.KEY_UP),
-        self.parser.set(Configuration.SECTION[3],
-                        Configuration.OPT_KEY_DOWN,
-                        Configuration.KEY_DOWN),
-        self.parser.set(Configuration.SECTION[3],
-                        Configuration.OPT_KEY_LEFT,
-                        Configuration.KEY_LEFT),
-        self.parser.set(Configuration.SECTION[3],
-                        Configuration.OPT_KEY_RIGHT,
-                        Configuration.KEY_RIGHT),
-        self.parser.set(Configuration.SECTION[3],
-                        Configuration.OPT_KEY_ACTION_1,
-                        Configuration.KEY_ACTION_1),
-        self.parser.set(Configuration.SECTION[3],
-                        Configuration.OPT_KEY_ACTION_2,
-                        Configuration.KEY_ACTION_2)
-        self.parser.set(Configuration.SECTION[3],
-                        Configuration.OPT_KEY_START,
-                        Configuration.KEY_START)
+        self._paths_section_set()
+        self._graphics_section_set()
+        self._sound_section_set()
+        self._control_section_set()
         self.save()
-        self.data_path = Configuration.DATA_PATH
-        self.locale_path = Configuration.LOCALE_PATH
-        self.screen_size = (Configuration.SCREEN_SIZE[0],
-                            Configuration.SCREEN_SIZE[1])
-        self.fullscreen = Configuration.FULLSCREEN
-        self.sound = Configuration.SOUND
-        self.music = Configuration.MUSIC
-        self.sound_vol = Configuration.SOUND_VOLUME
-        self.music_vol = Configuration.MUSIC_VOLUME
-        self.control_type = Configuration.CONTROL_TYPE
-        self.key_up = Configuration.KEY_UP
-        self.key_down = Configuration.KEY_DOWN
-        self.key_left = Configuration.KEY_LEFT
-        self.key_right = Configuration.KEY_RIGHT
-        self.key_act1 = Configuration.KEY_ACTION_1
-        self.key_act2 = Configuration.KEY_ACTION_2
-        self.key_start = Configuration.KEY_START
+        self._data_path = Configuration.DATA_PATH
+        self._locale_path = Configuration.LOCALE_PATH
+        self._screen_size = (Configuration.SCREEN_SIZE[0],
+                             Configuration.SCREEN_SIZE[1])
+        self._full_screen = Configuration.FULLSCREEN
+        self._sound = Configuration.SOUND
+        self._music = Configuration.MUSIC
+        self._sound_vol = Configuration.SOUND_VOLUME
+        self._music_vol = Configuration.MUSIC_VOLUME
+        self._control_type = Configuration.CONTROL_TYPE
+        self._key_up = Configuration.KEY_UP
+        self._key_down = Configuration.KEY_DOWN
+        self._key_left = Configuration.KEY_LEFT
+        self._key_right = Configuration.KEY_RIGHT
+        self._key_act1 = Configuration.KEY_ACTION_1
+        self._key_act2 = Configuration.KEY_ACTION_2
+        self._key_start = Configuration.KEY_START
+
+    def _paths_section_set(self):
+        self._parser.set(Configuration.SECTION[0],
+                         Configuration.OPT_DATA_PATH,
+                         Configuration.DATA_PATH)
+        self._parser.set(Configuration.SECTION[0],
+                         Configuration.OPT_LOCALE_PATH,
+                         Configuration.LOCALE_PATH)
+
+    def _graphics_section_set(self):
+        self._parser.set(Configuration.SECTION[1],
+                         Configuration.OPT_SCREEN_WIDTH,
+                         Configuration.SCREEN_SIZE[0])
+        self._parser.set(Configuration.SECTION[1],
+                         Configuration.OPT_SCREEN_HEIGHT,
+                         Configuration.SCREEN_SIZE[1])
+        self._parser.set(Configuration.SECTION[1],
+                         Configuration.OPT_FULLSCREEN,
+                         Configuration.FULLSCREEN)
+
+    def _sound_section_set(self):
+        self._parser.set(Configuration.SECTION[2],
+                         Configuration.OPT_SOUND,
+                         Configuration.SOUND)
+        self._parser.set(Configuration.SECTION[2],
+                         Configuration.OPT_MUSIC,
+                         Configuration.MUSIC)
+        self._parser.set(Configuration.SECTION[2],
+                         Configuration.OPT_SOUND_VOL,
+                         Configuration.SOUND_VOLUME)
+        self._parser.set(Configuration.SECTION[2],
+                         Configuration.OPT_MUSIC_VOL,
+                         Configuration.MUSIC_VOLUME)
+
+    def _control_section_set(self):
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_CONTROL_TYPE,
+                         Configuration.CONTROL_TYPE),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_KEY_UP,
+                         Configuration.KEY_UP),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_KEY_DOWN,
+                         Configuration.KEY_DOWN),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_KEY_LEFT,
+                         Configuration.KEY_LEFT),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_KEY_RIGHT,
+                         Configuration.KEY_RIGHT),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_KEY_ACTION_1,
+                         Configuration.KEY_ACTION_1),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_KEY_ACTION_2,
+                         Configuration.KEY_ACTION_2)
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_KEY_START,
+                         Configuration.KEY_START)
 
     @staticmethod
-    def __check_correct_values(option, read_value):
+    def _check_correct_values(option, read_value):
 
         if option == Configuration.OPT_DATA_PATH:
             file_path = ''.join([read_value, 'data.zip'])
             if not os.path.isfile(file_path):
                 raise ConfigurationError(
-                    _('Unable to find the data file in the directory specified in the configuration file.'))
+                    _('Unable to find the data file in the directory pointed at config. file.'))
         elif option == Configuration.OPT_SOUND_VOL:
             if read_value not in list(xrange(Configuration.SOUND_VOLUME + 1)):
                 raise ConfigurationError(_('Sound volume must be between 0 (min) and 5 (max).'))
@@ -210,11 +228,87 @@ class Configuration(object):
                 raise ConfigurationError(_('Control must be keyboard, joystick or autodetect.'))
         elif option == Configuration.OPT_SCREEN_WIDTH:
             if read_value < 1:
-                raise ConfigurationError(_('Screen width must be between 1 and 1440.'))
+                raise ConfigurationError(_('Screen width must be greater than 1.'))
         elif option == Configuration.OPT_SCREEN_HEIGHT:
             if read_value < 1:
-                raise ConfigurationError(_('Screen height must be between 1 and 900.'))
+                raise ConfigurationError(_('Screen height must be greater than 1.'))
+
+    '''
+    Public methods
+    '''
 
     def save(self):
         with open(Configuration.CFGFILE_NAME, 'wb') as config_file:
-            self.parser.write(config_file)
+            self._parser.write(config_file)
+
+    @property
+    def data_path(self):
+        return self._data_path
+
+    @property
+    def locale_path(self):
+        return self._locale_path
+
+    @property
+    def music(self):
+        return self._music
+
+    @music.setter
+    def music(self, value):
+        self._music = value
+
+    @property
+    def sound(self):
+        return self._sound
+
+    @sound.setter
+    def sound(self, value):
+        self._sound = value
+
+    @property
+    def screen_size(self):
+        return self._screen_size
+
+    @property
+    def control_type(self):
+        return self._control_type
+
+    @property
+    def key_up(self):
+        return self._key_up
+
+    @property
+    def key_down(self):
+        return self._key_down
+
+    @property
+    def key_left(self):
+        return self._key_left
+
+    @property
+    def key_right(self):
+        return self._key_right
+
+    @property
+    def key_act1(self):
+        return self._key_act1
+
+    @property
+    def key_act2(self):
+        return self._key_act2
+
+    @property
+    def key_start(self):
+        return self._key_start
+
+    @property
+    def parser(self):
+        return self._parser
+
+    @property
+    def full_screen(self):
+        return self._full_screen
+
+    @full_screen.setter
+    def full_screen(self, value):
+        self._full_screen = value

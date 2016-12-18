@@ -1,19 +1,32 @@
-from gettext import gettext as _
 import pygame
+from gettext import gettext as _
 
 
 class ControlAction(object):
     def __init__(self, name, mapping):
-        self.name = name
-        self.mapping = mapping
+        self._name = name
+        self._mapping = mapping
+
+    '''
+    Public methods
+    '''
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def mapping(self):
+        return self._mapping
 
 
 class ControlInput(object):
     def __init__(self, actions):
-        self.__register_actions(actions)
+        self._actions = actions
 
-    def __register_actions(self, actions):
-        self.actions = actions
+    '''
+    Public methods
+    '''
 
     def update(self):
         raise NotImplementedError('Not yet implemented')
@@ -25,20 +38,23 @@ class ControlInput(object):
 class KeyboardInput(ControlInput):
     def __init__(self, actions):
         super(KeyboardInput, self).__init__(actions)
-        self.actions = actions
-        self.keys = None
+        self._keys = None
+
+    '''
+    Public methods
+    '''
 
     def update(self):
-        self.keys = pygame.key.get_pressed()
+        self._keys = pygame.key.get_pressed()
 
     def on(self, action_name, keyboard_event=None):
-        for a in self.actions:
-            if a.name == action_name:
+        for action in self._actions:
+            if action.name == action_name:
                 if keyboard_event:
-                    if keyboard_event.key == a.mapping:
+                    if keyboard_event.key == action.mapping:
                         return True
                 else:
-                    if self.keys[a.mapping]:
+                    if self._keys[action.mapping]:
                         return True
         return False
 
@@ -46,9 +62,12 @@ class KeyboardInput(ControlInput):
 class JoystickInput(ControlInput):
     def __init__(self, actions, joystick):
         super(JoystickInput, self).__init__(actions)
-        self.actions = actions
-        self.joystick = joystick
-        self.joystick.init()
+        self._joystick = joystick
+        self._joystick.init()
+
+    '''
+    Public methods
+    '''
 
     def update(self):
         pass
@@ -75,31 +94,33 @@ class Control(object):
     START = 'start'
 
     def __init__(self, context):
-        self.cfg = context.cfg
+        pygame.key.set_repeat()
+        self._config = context.config
         self._keyboard_event = None
         self._event_driven = True
-        pygame.key.set_repeat()
-        '''
-        joysticks = [pygame.joystick.Joystick(j) for j in range(pygame.joystick.get_count())]
-        '''
         joysticks = []
-        self.devices = self.__register_devices(joysticks)
+        self._devices = self._register_devices(joysticks)
 
-    def __register_devices(self, joysticks):
+    '''
+    Private methods
+    '''
+
+    def _register_devices(self, joysticks):
+        # TODO: Add joystick support
         devices = []
         actions = []
 
-        if self.cfg.control_type in ['autodetect', 'keyboard']:
-            actions.append(ControlAction(Control.UP, self.cfg.key_up))
-            actions.append(ControlAction(Control.DOWN, self.cfg.key_down))
-            actions.append(ControlAction(Control.LEFT, self.cfg.key_left))
-            actions.append(ControlAction(Control.RIGHT, self.cfg.key_right))
-            actions.append(ControlAction(Control.ACTION1, self.cfg.key_act1))
-            actions.append(ControlAction(Control.ACTION2, self.cfg.key_act2))
-            actions.append(ControlAction(Control.START, self.cfg.key_start))
+        if self._config.control_type in ['autodetect', 'keyboard']:
+            actions.append(ControlAction(Control.UP, self._config.key_up))
+            actions.append(ControlAction(Control.DOWN, self._config.key_down))
+            actions.append(ControlAction(Control.LEFT, self._config.key_left))
+            actions.append(ControlAction(Control.RIGHT, self._config.key_right))
+            actions.append(ControlAction(Control.ACTION1, self._config.key_act1))
+            actions.append(ControlAction(Control.ACTION2, self._config.key_act2))
+            actions.append(ControlAction(Control.START, self._config.key_start))
             devices.append(KeyboardInput(actions))
 
-        if self.cfg.control_type in ['autodetect', 'joystick']:
+        if self._config.control_type in ['autodetect', 'joystick']:
             for j in joysticks:
                 devices.append(JoystickInput(actions, j))
 
@@ -107,6 +128,25 @@ class Control(object):
             raise UndefinedDeviceError(_('Unable to set a control device.'))
 
         return devices
+
+    '''
+    Public methods
+    '''
+
+    def on(self, action_name):
+        if self._event_driven:
+            if self._keyboard_event:
+                for device in self._devices:
+                    if device.on(action_name, self._keyboard_event):
+                        return True
+        else:
+            pygame.event.pump()
+            for device in self._devices:
+                device.update()
+                if device.on(action_name):
+                    return True
+
+        return False
 
     @property
     def keyboard_event(self):
@@ -123,19 +163,3 @@ class Control(object):
     @event_driven.setter
     def event_driven(self, value):
         self._event_driven = value
-
-    def on(self, action_name):
-        if self.event_driven:
-            if self.keyboard_event:
-                for d in self.devices:
-                    if d.on(action_name, self.keyboard_event):
-                        return True
-        else:
-            pygame.event.pump()
-
-            for d in self.devices:
-                d.update()
-
-                if d.on(action_name):
-                    return True
-        return False

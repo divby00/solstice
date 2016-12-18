@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 from __future__ import division
+
 import gettext
-from gettext import gettext as _
 import os
 import platform
 import sys
+from gettext import gettext as _
+
 '''
 Everything works correctly with pygame_sdl2 except sound
 import pygame_sdl2
@@ -18,58 +20,98 @@ import scene_manager
 import logo_scene
 import intro_scene
 import game_scene
-import game_over_scene
-import elevator_scene
 import screen
 import sound_player
 
 
 class Solstice(object):
     def __init__(self):
-        self.__platform_specific_inits()
-        self.cfg = config.Configuration()
-        gettext.bindtextdomain('solstice', self.cfg.locale_path)
-        gettext.textdomain('solstice')
-
-        '''
-        if self.cfg.sound or self.cfg.music:
-            pygame.mixer.pre_init(22050, -16, 2, 1024)
-        '''
-
-        pygame.init()
-        if self.cfg.sound or self.cfg.music:
-            pygame.mixer.pre_init(22050, -16, 2, 4096)
-        self.scr = screen.Screen(self.cfg, _('Solstice'))
-        self.control = control.Control(self)
-        self.resourcemanager = resource_manager.ResourceManager(self,
-                                                                'data.zip')
-        self.sound_player = sound_player.SoundPlayer(self)
-        self.scenes = {
+        self._platform_specific_init()
+        self._config = config.Configuration()
+        self._translations_init()
+        self._pygame_init()
+        self._screen = screen.Screen(self._config, _('Solstice'))
+        self._control = control.Control(self)
+        # TODO: Change data file name (don't use .zip extension)
+        self._resource_manager = resource_manager.ResourceManager(self, 'data.zip')
+        self._sound_player = sound_player.SoundPlayer(self)
+        self._scenes = {
             'logo': logo_scene.LogoScene(self),
             'intro': intro_scene.IntroScene(self),
-            'game': game_scene.GameScene(self),
-            'gameover': game_over_scene.GameOverScene(self),
-            'elevator': elevator_scene.ElevatorScene(self)
+            'game': game_scene.GameScene(self)
         }
+        '''
+            'intro': intro_scene.IntroScene(self),
+            'game': game_scene.GameScene(self),
+            'game_over': game_over_scene.GameOverScene(self),
+            'elevator': elevator_scene.ElevatorScene(self)
+        '''
+        # The first parameter in this function call is the game 'context'
+        self._scene_manager = scene_manager.SceneManager(self, 'logo')
 
-        self.scenemanager = scene_manager.SceneManager(self, 'logo')
-        self.scenemanager.run()
+    '''
+    Private methods
+    '''
 
-    def exit(self, exit_code):
-        self.cfg.save()
-        pygame.quit()
-        sys.exit(exit_code)
+    def _translations_init(self):
+        gettext.bindtextdomain('solstice', self._config.locale_path)
+        gettext.textdomain('solstice')
+
+    def _sound_preinit(self):
+        if self._config.sound or self._config.music:
+            pygame.mixer.pre_init(22050, -16, 2, 1024)
+
+    def _pygame_init(self):
+        self._sound_preinit()
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
+        pygame.init()
 
     @staticmethod
-    def __platform_specific_inits():
+    def _platform_specific_init():
         if platform.system() == 'Windows':
             os.environ['SDL_AUDIODRIVER'] = 'dsound'
 
-        os.environ['SDL_VIDEO_CENTERED'] = '1'
+    '''
+    Public methods
+    '''
+
+    def run(self):
+        self._scene_manager.run()
+
+    def exit(self, exit_code):
+        self._config.save()
+        pygame.quit()
+        sys.exit(exit_code)
+
+    @property
+    def config(self):
+        return self._config
+
+    @property
+    def screen(self):
+        return self._screen
+
+    @property
+    def resource_manager(self):
+        return self._resource_manager
+
+    @property
+    def control(self):
+        return self._control
+
+    @property
+    def sound_player(self):
+        return self._sound_player
+
+    @property
+    def scenes(self):
+        return self._scenes
 
 
+# Entry point
 def main():
     solstice = Solstice()
+    solstice.run()
     solstice.exit(0)
 
 

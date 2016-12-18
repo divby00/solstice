@@ -34,6 +34,10 @@ class ElevatorUiManager(object):
         self._max_tabindex = len(self._buttons) - 1
         self._set_focus()
 
+    '''
+    Private methods
+    '''
+
     def _init_info(self):
         level_info = [
             {
@@ -66,7 +70,8 @@ class ElevatorUiManager(object):
             (111, 27), (111, 41), (111, 52), (111, 67),
             (111, 77), (111, 87), (111, 105), (111, 115),
         ]
-        return [ElevatorFloor(self._resource_manager, i, floor_positions[i - 1]) for i in xrange(1, 9)]
+        return [ElevatorFloor(self._resource_manager, i, floor_positions[i - 1]) for i in
+                xrange(1, 9)]
 
     def _init_buttons(self):
         button_positions = [
@@ -85,7 +90,8 @@ class ElevatorUiManager(object):
         for index, val in enumerate(button_labels):
             disabled_spr = self._resource_manager.get('disabled_btn' + val)
             pressed_spr = self._resource_manager.get('pressed_btn' + val)
-            buttons.append(ElevatorButton(index, (pressed_spr, disabled_spr),
+            buttons.append(ElevatorButton(index,
+                                          (pressed_spr, disabled_spr),
                                           button_positions[index], button_sizes[index]))
 
         for index, btn in enumerate(buttons):
@@ -94,7 +100,8 @@ class ElevatorUiManager(object):
         return buttons
 
     def _render_info(self, scr):
-        txt = self._txt_access_allowed if not self._buttons[self._tabindex].disabled else self._txt_access_denied
+        txt = self._txt_access_allowed if not self._buttons[
+            self._tabindex].disabled else self._txt_access_denied
         scr.virt.blit(txt, (148, 24))
 
     def _render_buttons(self, scr):
@@ -128,6 +135,10 @@ class ElevatorUiManager(object):
         for btn in self._buttons:
             btn.focus = False
         self._buttons[self._tabindex].focus = True
+
+    '''
+    Public methods
+    '''
 
     def render(self, scr):
         self._render_panel(scr)
@@ -175,6 +186,10 @@ class ElevatorPanel(object):
         self._sprite = resource_manager.get('elev_panel')
         self._position = position
 
+    '''
+    Public methods
+    '''
+
     @property
     def sprite(self):
         return self._sprite
@@ -193,6 +208,10 @@ class ElevatorPlayerMark(object):
         self._sprites = [resource_manager.get('mark' + str(index)) for index in xrange(0, 5)]
         self._position = positions[player_floor]
         self._frame = 0
+
+    '''
+    Public methods
+    '''
 
     @property
     def position(self):
@@ -215,6 +234,10 @@ class ElevatorFloor(object):
         self._blocked_sprite = resource_manager.get('blocked_lvl0' + str(floor))
         self._floor = floor
         self._position = position
+
+    '''
+    Public methods
+    '''
 
     @property
     def sprite(self):
@@ -245,6 +268,10 @@ class ElevatorButton(object):
             'pressed': sprites[0],
             'disabled': sprites[1]
         }
+
+    '''
+    Public methods
+    '''
 
     @property
     def disabled(self):
@@ -298,12 +325,6 @@ class DummyPlayer(object):
 
 
 class ElevatorScene(scene.Scene):
-    @staticmethod
-    def open_floor(card_id):
-        for key in floors.iterkeys():
-            if key == card_id:
-                floors[key] = True
-
     def __init__(self, context, name='elevator', scene_speed=25):
         super(ElevatorScene, self).__init__(context, name, scene_speed)
         self._context = context
@@ -312,6 +333,16 @@ class ElevatorScene(scene.Scene):
         self._board = None
         self._player_floor = 0
         self._txt_select_floor = self.font_white.get('Elevator - select floor', 240)
+
+    '''
+    Public methods
+    '''
+
+    @staticmethod
+    def open_floor(card_id):
+        for key in floors.iterkeys():
+            if key == card_id:
+                floors[key] = True
 
     def dummy_scene_data(self):
         self.scene_data = DummyPlayer()
