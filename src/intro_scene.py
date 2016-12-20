@@ -180,11 +180,39 @@ class IntroScene(scene.Scene):
             (self._menu_image.get_width(), self._menu_image.get_height())).convert()
         self.get_menu()
         self._particles_manager = particles_manager.ParticlesManager()
-        smoke = particles.SmokeParticles(context, 'smoke')
+        smoke = particles.SmokeParticles(context.resource_manager, 'smoke')
         self._particles_manager.register_particles(smoke)
         self._background_x_position = 0
         self._title_frame = 0
         self._title_fade = -1
+
+    def _run_control_start(self):
+        self._title_frame = 12
+        self._background_x_position = 196
+
+        if not self._menu_group.visible:
+            self._credits._credits_frame = 0
+            self._credits.text_y = screen.Screen.WINDOW_SIZE[1]
+            self._credits.actual_text = 0
+            self._menu_group.visible = True
+
+    def _run_background_animation(self):
+        # 196 is the sun position in the menu background image
+        if self._background_x_position < 196:
+            self._background_x_position += 2
+        else:
+            self._title_frame += 2
+            if self._title_frame >= 12:
+                self._title_frame = 12
+
+                if self._title_fade == -1:
+                    self._title_fade = 0
+
+            if self._title_frame == 12 and self._title_fade > -1:
+                self._title_fade += 1
+
+                if self._title_fade >= 4:
+                    self._title_fade = 4
 
     '''
     Public methods
@@ -207,14 +235,7 @@ class IntroScene(scene.Scene):
         self._control.keyboard_event = self._keyboard_event
 
         if self._control.on(control.Control.START):
-            self._title_frame = 12
-            self._background_x_position = 196
-
-            if not self._menu_group.visible:
-                self._credits._credits_frame = 0
-                self._credits.text_y = screen.Screen.WINDOW_SIZE[1]
-                self._credits.actual_text = 0
-                self._menu_group.visible = True
+            self._run_control_start()
 
         self._stars.run()
 
@@ -222,23 +243,7 @@ class IntroScene(scene.Scene):
             self._credits.run()
 
         self._particles_manager.run()
-
-        # 196 is the sun position in the menu background image
-        if self._background_x_position < 196:
-            self._background_x_position += 2
-        else:
-            self._title_frame += 2
-            if self._title_frame >= 12:
-                self._title_frame = 12
-
-                if self._title_fade == -1:
-                    self._title_fade = 0
-
-            if self._title_frame == 12 and self._title_fade > -1:
-                self._title_fade += 1
-
-                if self._title_fade >= 4:
-                    self._title_fade = 4
+        self._run_background_animation()
 
     def render(self, display):
         self._background.blit(self._menu_image, (0, 0))
@@ -253,30 +258,28 @@ class IntroScene(scene.Scene):
                                           self._title_frame)).convert_alpha()
             tmp_surface.fill((0, 0, 0, 0))
             pygame.transform.scale(self._title_sprites[0],
-                                   (self._title_sprites[0].get_width(),
-                                    self._title_frame),
+                                   (self._title_sprites[0].get_width(), self._title_frame),
                                    tmp_surface)
             self._background.blit(tmp_surface,
                                   (325 - tmp_surface.get_width() / 2,
                                    22 - tmp_surface.get_height() / 2))
 
         if self._title_frame == 12:
-            self._background.blit(
-                self._title_sprites[self._title_fade],
-                (325 - self._title_sprites[self._title_fade].get_width() / 2,
-                 22 - self._title_sprites[self._title_fade].get_height() / 2))
+            self._background.blit(self._title_sprites[self._title_fade],
+                                  (325 - self._title_sprites[self._title_fade].get_width() / 2,
+                                   22 - self._title_sprites[self._title_fade].get_height() / 2))
 
         if self._menu_group.visible:
             self._menu_group.render(self._background, (325, 70))
             self._credits.render(self._background)
 
-        display.virt.blit(self._background, (0, 0), (self._background_x_position, 0,
-                                                     display.WINDOW_SIZE[0],
-                                                     display.WINDOW_SIZE[1]))
+        display.virt.blit(self._background, (0, 0),
+                          (self._background_x_position, 0, display.WINDOW_SIZE[0],
+                           display.WINDOW_SIZE[1]))
+
         if self._background_x_position < 98:
             display.virt.blit(self._intro_text[0], (128 - self._intro_text[0].get_width() / 2, 68))
         elif self._background_x_position in list(xrange(98, 196)):
             display.virt.blit(self._intro_text[1], (128 - self._intro_text[1].get_width() / 2, 68))
-
         if not self._menu_group.visible:
             display.virt.blit(self._skip_text, (128 - self._skip_text.get_width() / 2, 176))

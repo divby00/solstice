@@ -224,7 +224,7 @@ class Player(actor.Actor):
             self.continuos_hit += 1
             self.life -= 1
 
-            if self.life <= 0 and self.dying == False:
+            if self.life <= 0 and not self.dying:
                 self.dying = True
                 player_exp_particles = self.particlesmanager.get('exp')
                 player_exp_particles.generate((self.x - 8, self.x + 8, self.y - 8, self.y + 8))

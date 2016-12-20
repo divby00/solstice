@@ -46,7 +46,7 @@ class Renderer(object):
         self._backpatterns = []
         self._forepatterns = []
         self._init_patterns()
-        self._tmp_surface = pygame.Surface((self._source.get_width(), self._source.get_height()))\
+        self._tmp_surface = pygame.Surface((self._source.get_width(), self._source.get_height())) \
             .convert()
         self._tmp_surface.fill((0, 0, 0, 0))
 
@@ -73,142 +73,106 @@ class Renderer(object):
                ((self._level.start_point[1]) + 144 + 8) - 72
 
     def _init_source_image(self):
-        back_tiles_overflow = []
-        fore_tiles_overflow = []
         level_size = self._level.map.width_pixels, self._level.map.height_pixels
-        back = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert()
-        back.fill((0, 0, 0))
-        fore = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert_alpha()
-        fore.fill((0, 0, 0, 0))
-        back_img = self._level.back
-        walls = pygame.Surface(level_size).convert_alpha()
-        walls.fill((0, 0, 0, 0))
+        back_dst_surface = pygame.Surface((level_size[0] + 512, level_size[1] + 288)).convert()
+        back_dst_surface.fill((0, 0, 0))
+        fore_dst_surface = pygame.Surface(
+            (level_size[0] + 512, level_size[1] + 288)).convert_alpha()
+        fore_dst_surface.fill((0, 0, 0, 0))
+        walls_dst_surface = pygame.Surface(level_size).convert_alpha()
+        walls_dst_surface.fill((0, 0, 0, 0))
 
-        # Draw the back image in the buffer
-        for a in xrange(0, back.get_height(), back_img.get_height()):
-            for i in xrange(0, back.get_width(), back_img.get_width()):
-                back.blit(back_img, (i, a))
+        # Draw images in the buffer
+        self._draw_back_image(back_dst_surface)
+        self._draw_background_image(walls_dst_surface, level_size)
+        self._draw_walls_image(walls_dst_surface, level_size)
+        self._draw_foreground_image(fore_dst_surface, level_size)
 
-        # Draw the background in the buffer
+        x = (back_dst_surface.get_width() / 2) - (walls_dst_surface.get_width() / 2)
+        y = (back_dst_surface.get_height() / 2) - (walls_dst_surface.get_height() / 2)
+        back_dst_surface.blit(walls_dst_surface, (x, y))
+        return back_dst_surface, fore_dst_surface
+
+    def _draw_back_image(self, back_dst_surface):
+        for a in xrange(0, back_dst_surface.get_height(), self._level.back.get_height()):
+            for i in xrange(0, back_dst_surface.get_width(), self._level.back.get_width()):
+                back_dst_surface.blit(self._level.back, (i, a))
+
+    def _draw_background_image(self, walls_dst_surface, level_size):
         for layer in self._level.layers:
             if layer.name == 'background':
                 posx = posy = 0
                 for a in xrange(0, level_size[1] / 8):
                     for i in xrange(0, level_size[0] / 8):
                         gid = layer.get_gid(i, a)
-                        if gid > 0 and gid < len(self._level.tiles):
-                            walls.blit(self._level.tiles[gid - 1].srfc, (posx, posy))
-                        else:
-                            if gid > 0:
-                                back_tiles_overflow.append(gid)
+                        if 0 < gid < len(self._level.tiles):
+                            walls_dst_surface.blit(self._level.tiles[gid - 1].srfc, (posx, posy))
                         posx += 8
                     posx = 0
                     posy += 8
 
-        # Draw the walls in the buffer
+    def _draw_walls_image(self, walls_dst_surface, level_size):
         for layer in self._level.layers:
             if layer.name == 'walls':
                 posx = posy = 0
                 for a in xrange(0, level_size[1] / 8):
                     for i in xrange(0, level_size[0] / 8):
                         gid = layer.get_gid(i, a)
-                        if gid > 0 and gid < len(self._level.tiles):
-                            walls.blit(self._level.tiles[gid - 1].srfc, (posx, posy))
-                        else:
-                            if gid > 0:
-                                fore_tiles_overflow.append(gid)
+                        if 0 < gid < len(self._level.tiles):
+                            walls_dst_surface.blit(self._level.tiles[gid - 1].srfc, (posx, posy))
                         posx += 8
                     posx = 0
                     posy += 8
 
-        # Draws hard zones.
-        # TODO Remove this. Only for debugging purpose!!
-        '''
-        for l in self.level.layers:
-            if l.name == 'hard':
-                posx = posy = 0
-                for a in xrange(0, level_size[1] / 8):
-                    for i in xrange(0, level_size[0] / 8):
-                        gid = l.get_gid(i, a)
-                        if gid in self.level.hard_tiles:
-                            walls.blit(self.level.tiles[518].srfc, (posx, posy))
-                        posx += 8
-                    posx = 0
-                    posy += 8
-        '''
-        # End debugging walls
-
-        # Draw the foreground static images in the fore buffer
+    def _draw_foreground_image(self, fore_dst_surface, level_size):
         for layer in self._level.layers:
             if layer.name == 'foreground':
                 posx = posy = 0
                 for a in xrange(0, level_size[1] / 8):
                     for i in xrange(0, level_size[0] / 8):
                         gid = layer.get_gid(i, a)
-                        if gid > 0 and gid < len(self._level.tiles):
-                            fore.blit(self._level.tiles[gid - 1].srfc, (posx, posy))
-                        else:
-                            if gid > 0:
-                                fore_tiles_overflow.append(gid)
+                        if 0 < gid < len(self._level.tiles):
+                            fore_dst_surface.blit(self._level.tiles[gid - 1].srfc, (posx, posy))
                         posx += 8
                     posx = 0
                     posy += 8
 
-        x = (back.get_width() / 2) - (walls.get_width() / 2)
-        y = (back.get_height() / 2) - (walls.get_height() / 2)
-        back.blit(walls, (x, y))
-        '''
-        # Debugging purposes
-        print(set(back_tiles_overflow))
-        print(set(fore_tiles_overflow))
-        '''
-        return back, fore
+    def _run_animation(self, patterns):
+        for pattern in patterns:
+            animation = self._animations.get(pattern.animation_name)
+
+            if animation.counter < animation.frames[animation.active_frame].duration:
+                animation.counter += 1
+            else:
+                animation.counter = 0
+
+                if animation.active_frame < len(animation.frames) - 1:
+                    animation.active_frame += 1
+                else:
+                    animation.active_frame = 0
 
     '''
     Public methods
     '''
 
-    def change_animation(self, position, new_anim):
-        for backpattern in self._backpatterns:
-            if backpattern.x == position[0] and backpattern.y == position[1]:
-                if new_anim is None:
-                    self._backpatterns.remove(backpattern)
-                else:
-                    backpattern.animation_name = new_anim
-
-        for backpattern in self._forepatterns:
-            if backpattern.x == position[0] and backpattern.y == position[1]:
-                if new_anim is None:
-                    self._forepatterns.remove(backpattern)
-                else:
-                    backpattern.animation_name = new_anim
-
-    def run(self):
+    def change_animation(self, position, new_animation):
         for pattern in self._backpatterns:
-            anim = self._animations.get(pattern.animation_name)
-
-            if anim.counter < anim.frames[anim.active_frame].duration:
-                anim.counter += 1
-            else:
-                anim.counter = 0
-
-                if anim.active_frame < len(anim.frames) - 1:
-                    anim.active_frame += 1
+            if pattern.x == position[0] and pattern.y == position[1]:
+                if new_animation is None:
+                    self._backpatterns.remove(pattern)
                 else:
-                    anim.active_frame = 0
+                    pattern.animation_name = new_animation
 
         for pattern in self._forepatterns:
-            anim = self._animations.get(pattern.animation_name)
-
-            if anim.counter < anim.frames[anim.active_frame].duration:
-                anim.counter += 1
-            else:
-                anim.counter = 0
-
-                if anim.active_frame < len(anim.frames) - 1:
-                    anim.active_frame += 1
+            if pattern.x == position[0] and pattern.y == position[1]:
+                if new_animation is None:
+                    self._forepatterns.remove(pattern)
                 else:
-                    anim.active_frame = 0
+                    pattern.animation_name = new_animation
+
+    def run(self):
+        self._run_animation(self._backpatterns)
+        self._run_animation(self._forepatterns)
 
     def render(self):
         # Source rendering
@@ -220,7 +184,9 @@ class Renderer(object):
         for pattern in self._backpatterns:
             animation = self._animations.get(pattern.animation_name)
             img = animation.images.get(str(animation.frames[animation.active_frame].id))
-            self._tmp_surface.blit(img, (pattern.x + animation.frames[animation.active_frame].offset_x, pattern.y + animation.frames[animation.active_frame].offset_y))
+            self._tmp_surface.blit(img, (
+                pattern.x + animation.frames[animation.active_frame].offset_x,
+                pattern.y + animation.frames[animation.active_frame].offset_y))
 
         # Player rendering
         self._player.render(self._tmp_surface)
@@ -242,20 +208,15 @@ class Renderer(object):
             animation = self._animations.get(pattern.animation_name)
             img = animation.images.get(str(animation.frames[animation.active_frame].id))
             self._tmp_surface.blit(img,
-                                   (pattern.x + animation.frames[animation.active_frame].offset_x, pattern.y + animation.frames[animation.active_frame].offset_y))
+                                   (pattern.x + animation.frames[animation.active_frame].offset_x,
+                                    pattern.y + animation.frames[animation.active_frame].offset_y))
 
         # Viewport rendering
-        self._screen.virt.blit(self._tmp_surface, (0, 0), (self._player.x - 128, self._player.y - 72, 256, 144))
+        self._screen.virt.blit(self._tmp_surface, (0, 0),
+                               (self._player.x - 128, self._player.y - 72, 256, 144))
 
         # Board rendering
         self._board.render(self._screen.virt)
-
-        # Debug information
-        '''
-        pygame.draw.rect(self.screen.virt, (30, 30, 30), (0, 0, 100, 20), 0)
-        text = self.font_white.get(('x:' + str(self.player.x - 264) + ' y:' + str(self.player.y - 152)), 100)
-        self.screen.virt.blit(text, (5, 5))
-        '''
 
     @property
     def speed(self):

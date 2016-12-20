@@ -41,7 +41,7 @@ class BitmapFont(object):
             if phrase_len + word_len < max_width:
                 output_text += character + ' '
             else:
-                texts.insert(actual_text, text.strip())
+                texts.insert(actual_text, output_text.strip())
                 actual_text += 1
                 output_text = character + ' '
 

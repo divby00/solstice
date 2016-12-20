@@ -37,11 +37,10 @@ class Particle(object):
 
 
 class Particles(object):
-    def __init__(self, context, name):
+    def __init__(self, resource_manager, name):
         self._name = name
         self._sprites = []
         self._particle_list = []
-        resource_manager = context.resource_manager
         particle_id = 0
         while True:
             if resource_manager.exists(''.join([name, str(particle_id)])):
@@ -68,8 +67,8 @@ class Particles(object):
 
 
 class EnemyExplosionParticles(Particles):
-    def __init__(self, context, name):
-        super(EnemyExplosionParticles, self).__init__(context, name)
+    def __init__(self, resource_manager, name):
+        super(EnemyExplosionParticles, self).__init__(resource_manager, name)
 
     '''
     Public methods
@@ -96,8 +95,8 @@ class EnemyExplosionParticles(Particles):
 
 
 class ExplosionParticles(Particles):
-    def __init__(self, context, name):
-        super(ExplosionParticles, self).__init__(context, name)
+    def __init__(self, resource_manager, name):
+        super(ExplosionParticles, self).__init__(resource_manager, name)
 
     '''
     Public methods
@@ -124,8 +123,8 @@ class ExplosionParticles(Particles):
 
 
 class PlayerCrapParticles(Particles):
-    def __init__(self, context, name):
-        super(PlayerCrapParticles, self).__init__(context, name)
+    def __init__(self, resource_manager, name):
+        super(PlayerCrapParticles, self).__init__(resource_manager, name)
 
     '''
     Public methods
@@ -153,8 +152,8 @@ class PlayerCrapParticles(Particles):
 
 
 class RespawnParticles(Particles):
-    def __init__(self, context, name):
-        super(RespawnParticles, self).__init__(context, name)
+    def __init__(self, resource_manager, name):
+        super(RespawnParticles, self).__init__(resource_manager, name)
 
     '''
     Public methods
@@ -195,8 +194,8 @@ class RespawnParticles(Particles):
 
 
 class PlayerSmokeParticles(Particles):
-    def __init__(self, context, name):
-        super(PlayerSmokeParticles, self).__init__(context, name)
+    def __init__(self, resource_manager, name):
+        super(PlayerSmokeParticles, self).__init__(resource_manager, name)
 
     '''
     Public methods
@@ -224,8 +223,8 @@ class PlayerSmokeParticles(Particles):
 
 
 class SmokeParticles(Particles):
-    def __init__(self, context, name):
-        super(SmokeParticles, self).__init__(context, name)
+    def __init__(self, resource_manager, name):
+        super(SmokeParticles, self).__init__(resource_manager, name)
         for x in xrange(0, 200):
             particle = Particle(random.randint(377, 410), random.randint(110, 122),
                                 random.randint(0, 2))
@@ -257,8 +256,8 @@ class SmokeParticles(Particles):
 
 
 class BeamParticles(Particles):
-    def __init__(self, context, name):
-        super(BeamParticles, self).__init__(context, name)
+    def __init__(self, resource_manager, name):
+        super(BeamParticles, self).__init__(resource_manager, name)
 
     def generate(self, position):
         for x in xrange(0, 20):
@@ -281,8 +280,8 @@ class BeamParticles(Particles):
 
 
 class EnemyBeamParticles(Particles):
-    def __init__(self, context, name):
-        super(EnemyBeamParticles, self).__init__(context, name)
+    def __init__(self, resource_manager, name):
+        super(EnemyBeamParticles, self).__init__(resource_manager, name)
 
     def generate(self, position):
         for x in xrange(0, 10):
