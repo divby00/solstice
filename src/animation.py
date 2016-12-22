@@ -119,8 +119,7 @@ class AnimationLoader(object):
                                 surface.fill((0, 0, 0, 0))
                                 surface.blit(img, (0, 0),
                                              (image_x, image_y, image_x + image_w,
-                                              image_y + image_h),
-                                             0)
+                                              image_y + image_h), 0)
                                 self._image_buffer.update({image_name: img})
                                 animation.images.update({str(image_id): surface})
                     else:

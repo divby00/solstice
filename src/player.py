@@ -545,9 +545,17 @@ class Player(object):
     def x(self):
         return self._x
 
+    @x.setter
+    def x(self, value):
+        self._x = value
+
     @property
     def y(self):
         return self._y
+
+    @y.setter
+    def y(self, value):
+        self._y = value
 
     @property
     def continuos_hit(self):
@@ -593,6 +601,10 @@ class Player(object):
     def dying(self):
         return self._dying
 
+    @dying.setter
+    def dying(self, value):
+        self._dying = value
+
     @property
     def inmortal(self):
         return self._inmortal
@@ -620,3 +632,83 @@ class Player(object):
     @teleport_destiny.setter
     def teleport_destiny(self, value):
         self._teleport_destiny = value
+
+    @property
+    def get_item_counter(self):
+        return self._get_item_counter
+
+    @get_item_counter.setter
+    def get_item_counter(self, value):
+        self._get_item_counter = value
+
+    @property
+    def get_item_available(self):
+        return self._get_item_available
+
+    @get_item_available.setter
+    def get_item_available(self, value):
+        self._get_item_available = value
+
+    @property
+    def recovery_mode(self):
+        return self._recovery_mode
+
+    @recovery_mode.setter
+    def recovery_mode(self, value):
+        self._recovery_mode = value
+
+    @property
+    def recovery_counter(self):
+        return self._recovery_counter
+
+    @recovery_counter.setter
+    def recovery_counter(self, value):
+        self._recovery_counter = value
+
+    @property
+    def direction(self):
+        return self._direction
+
+    @direction.setter
+    def direction(self, value):
+        self._direction = value
+
+    @property
+    def flying(self):
+        return self._flying
+
+    @flying.setter
+    def flying(self, value):
+        self._flying = value
+
+    @property
+    def teleporting(self):
+        return self._teleporting
+
+    @teleporting.setter
+    def teleporting(self, value):
+        self._teleporting = value
+
+    @property
+    def shoot_avail(self):
+        return self._shoot_avail
+
+    @shoot_avail.setter
+    def shoot_avail(self, value):
+        self._shoot_avail = value
+
+    @property
+    def firing(self):
+        return self._firing
+
+    @firing.setter
+    def firing(self, value):
+        self._firing = value
+
+    @property
+    def using_item(self):
+        return self._using_item
+
+    @using_item.setter
+    def using_item(self, value):
+        self._using_item = value

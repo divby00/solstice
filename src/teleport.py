@@ -10,22 +10,16 @@ class Teleport(object):
 
 
 class TeleportBuilder(object):
+
     @staticmethod
     def build(teleports):
         results = []
-
         for t in teleports:
             teleport_elements = t.split(' ')
-            id = int(teleport_elements[0])
+            teleport_id = int(teleport_elements[0])
             x = int(teleport_elements[1])
             y = int(teleport_elements[2])
             w = int(teleport_elements[3])
             h = int(teleport_elements[4])
-
-            teleport = None
-            position = (x, y)
-            size = (w, h)
-            teleport = Teleport(id, (x, y), (w, h))
-            results.append(teleport)
-
+            results.append(Teleport(teleport_id, (x, y), (w, h)))
         return results

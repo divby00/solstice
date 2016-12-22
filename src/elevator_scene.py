@@ -90,8 +90,7 @@ class ElevatorUiManager(object):
         for index, val in enumerate(button_labels):
             disabled_spr = self._resource_manager.get('disabled_btn' + val)
             pressed_spr = self._resource_manager.get('pressed_btn' + val)
-            buttons.append(ElevatorButton(index,
-                                          (pressed_spr, disabled_spr),
+            buttons.append(ElevatorButton(index, (pressed_spr, disabled_spr),
                                           button_positions[index], button_sizes[index]))
 
         for index, btn in enumerate(buttons):
@@ -328,7 +327,6 @@ class ElevatorScene(scene.Scene):
     def __init__(self, context, name='elevator', scene_speed=25):
         super(ElevatorScene, self).__init__(context, name, scene_speed)
         self._context = context
-        self._screen = context.scr
         self._ui_manager = None
         self._board = None
         self._player_floor = 0
@@ -353,12 +351,13 @@ class ElevatorScene(scene.Scene):
         # Scene data contains the player info, it's needed to properly render the board
         self.scene_data.continuos_hit = 0
         self._player_floor = self.scene_data.floor
-        if self.scene_data and self.scene_data.selected_item and 'card' in self.scene_data.selected_item.name:
+        if self.scene_data and self.scene_data.selected_item \
+                and 'card' in self.scene_data.selected_item.name:
             ElevatorScene.open_floor(self.scene_data.selected_item.card_id)
             self.scene_data.selected_item = None
-        self._ui_manager = ElevatorUiManager(self._context, self._player_floor, self.sound_player)
+        self._ui_manager = ElevatorUiManager(self._context, self._player_floor, self._sound_player)
         self._board = board.Board(self._context, self.scene_data)
-        self.control.event_driven = True
+        self._control.event_driven = True
 
     def on_quit(self):
         pass
@@ -371,8 +370,8 @@ class ElevatorScene(scene.Scene):
         self._board.render(self._screen.virt)
 
     def run(self):
-        self.control.event_driven = True
-        self.control.keyboard_event = self.keyboard_event
+        self._control.event_driven = True
+        self._control.keyboard_event = self.keyboard_event
 
         # Fill player energy, laser & thrust
         if self.scene_data.life < 100:
@@ -381,4 +380,4 @@ class ElevatorScene(scene.Scene):
             self.scene_data.thrust += 1
         if self.scene_data.bullets < 106:
             self.scene_data.bullets += 1
-        self._ui_manager.run(self.control)
+        self._ui_manager.run(self._control)

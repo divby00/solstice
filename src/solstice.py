@@ -18,6 +18,7 @@ import control
 import resource_manager
 import scene_manager
 import logo_scene
+import elevator_scene
 import intro_scene
 import game_scene
 import screen
@@ -26,7 +27,7 @@ import sound_player
 
 class Solstice(object):
     def __init__(self):
-        self._platform_specific_init()
+        Solstice._platform_specific_init()
         self._config = config.Configuration()
         self._translations_init()
         self._pygame_init()
@@ -38,13 +39,11 @@ class Solstice(object):
         self._scenes = {
             'logo': logo_scene.LogoScene(self),
             'intro': intro_scene.IntroScene(self),
-            'game': game_scene.GameScene(self)
+            'game': game_scene.GameScene(self),
+            'elevator': elevator_scene.ElevatorScene(self)
         }
         '''
-            'intro': intro_scene.IntroScene(self),
-            'game': game_scene.GameScene(self),
             'game_over': game_over_scene.GameOverScene(self),
-            'elevator': elevator_scene.ElevatorScene(self)
         '''
         # The first parameter in this function call is the game 'context'
         self._scene_manager = scene_manager.SceneManager(self, 'logo')

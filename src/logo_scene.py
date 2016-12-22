@@ -11,8 +11,8 @@ class LogoScene(scene.Scene):
         self._sound_player = context.sound_player
         self._logo = context.resource_manager.get('logo')
         self._logo_sound = self._sound_player.load_sample(['logo_sound'])
-        self._dither_sprites = [context.resource_manager.get('dither' + str(index)) for index in
-                                xrange(0, 6)]
+        self._dither_sprites = [context.resource_manager.get('dither' + str(index))
+                                for index in xrange(0, 6)]
         self._dithering_frame = None
         self._fading = 0
         self._playing = False
@@ -54,9 +54,8 @@ class LogoScene(scene.Scene):
 
         if self._dithering_frame < len(self._dither_sprites):
             # TODO Take to reuse as a centered drawing function
-            screen.virt.blit(self._logo,
-                             (128 - (self._logo.get_width() / 2),
-                              96 - (self._logo.get_height() / 2)))
+            screen.virt.blit(self._logo, (128 - (self._logo.get_width() / 2),
+                                          96 - (self._logo.get_height() / 2)))
 
         for a in xrange(0, 192, 8):
             for i in xrange(0, 256, 8):
