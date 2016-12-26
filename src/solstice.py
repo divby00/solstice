@@ -106,6 +106,10 @@ class Solstice(object):
     def scenes(self):
         return self._scenes
 
+    @property
+    def scene_manager(self):
+        return self._scene_manager
+
 
 # Entry point
 def main():

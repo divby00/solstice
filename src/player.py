@@ -712,3 +712,19 @@ class Player(object):
     @using_item.setter
     def using_item(self, value):
         self._using_item = value
+
+    @property
+    def continuos_hit(self):
+        return self._continuos_hit
+
+    @continuos_hit.setter
+    def continuos_hit(self, value):
+        self._continuos_hit = value
+
+    @property
+    def floor(self):
+        return self._floor
+
+    @floor.setter
+    def floor(self, value):
+        self._floor = value

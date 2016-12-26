@@ -1,11 +1,38 @@
 class Container(object):
 
     def __init__(self, x, y, w, h):
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-        self.secured = False
+        self._x = x
+        self._y = y
+        self._w = w
+        self._h = h
+        self._secured = False
+
+    '''
+    Public methods
+    '''
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y
+
+    @property
+    def w(self):
+        return self._w
+
+    @property
+    def h(self):
+        return self._h
+
+    @property
+    def secured(self):
+        return self._secured
+
+    @secured.setter
+    def secured(self, value):
+        self._secured = value
 
 
 class ContainerBuilder(object):

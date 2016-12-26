@@ -14,8 +14,8 @@ floors = {
 
 class ElevatorUiManager(object):
     def __init__(self, context, player_floor, sound_player):
-        self._resource_manager = context.resourcemanager
-        self._scene_manager = context.scenemanager
+        self._resource_manager = context.resource_manager
+        self._scene_manager = context.scene_manager
         self._blue_font = self._resource_manager.get('font_blue')
         self._red_font = self._resource_manager.get('font_red')
         self._small_blue_font = self._resource_manager.get('font_small_blue')
@@ -70,8 +70,8 @@ class ElevatorUiManager(object):
             (111, 27), (111, 41), (111, 52), (111, 67),
             (111, 77), (111, 87), (111, 105), (111, 115),
         ]
-        return [ElevatorFloor(self._resource_manager, i, floor_positions[i - 1]) for i in
-                xrange(1, 9)]
+        return [ElevatorFloor(self._resource_manager, i, floor_positions[i - 1])
+                for i in xrange(1, 9)]
 
     def _init_buttons(self):
         button_positions = [
@@ -362,12 +362,11 @@ class ElevatorScene(scene.Scene):
     def on_quit(self):
         pass
 
-    def render(self, scr):
-        scr.virt.fill((47, 72, 78))
-        # scr.virt.fill((0, 0, 0))
-        scr.virt.blit(self._txt_select_floor, (36, 4))
-        self._ui_manager.render(scr)
-        self._board.render(self._screen.virt)
+    def render(self, screen):
+        screen.virt.fill((47, 72, 78))
+        screen.virt.blit(self._txt_select_floor, (36, 4))
+        self._ui_manager.render(screen)
+        self._board.render(screen.virt)
 
     def run(self):
         self._control.event_driven = True
