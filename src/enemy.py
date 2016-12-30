@@ -8,17 +8,17 @@ class Enemy(object):
     VERTICAL = 1
     DIAGONAL = 2
 
-    def __init__(self, type, position, game_context):
+    def __init__(self, enemy_type, position, game_context):
         self._game_context = game_context
         self._level = game_context.current_level
         self._sound_player = game_context.sound_player
         self._x = position[0]
         self._y = position[1]
-        self._type = type
+        self._enemy_type = enemy_type
         self._shock_counter = 0
         self._active = False
-        self._animation = EnemyAnimations.animations[self._type]
-        self._animation_respawn = EnemyAnimations.animations[self._type + '_init']
+        self._animation = EnemyAnimations.animations[self._enemy_type]
+        self._animation_respawn = EnemyAnimations.animations[self._enemy_type + '_init']
         self._size = self._animation.images[str(0)].get_size()
         self._init_enemy()
 
@@ -35,7 +35,7 @@ class Enemy(object):
             return 0
 
     def __str__(self):
-        return ''.join([str(self._type), ';', str(self._x), ';', str(self._y)])
+        return ''.join([str(self._enemy_type), ';', str(self._x), ';', str(self._y)])
 
     def _init_enemy(self):
         self._animation.active_frame = 0
@@ -51,13 +51,13 @@ class Enemy(object):
         self._adjust_energy()
 
     def _adjust_energy(self):
-        if self._type == 'jellyfish00':
+        if self._enemy_type == 'jellyfish00':
             self.energy = 2
-        elif self._type == 'devil00':
+        elif self._enemy_type == 'devil00':
             self.energy = 2
-        elif self._type == 'jellyfish01':
+        elif self._enemy_type == 'jellyfish01':
             self.energy = 3
-        elif self._type == 'devil01':
+        elif self._enemy_type == 'devil01':
             self.energy = 1
 
     def _get_collision_list(self, facing):
@@ -598,7 +598,7 @@ class EnemyUtils(object):
     @staticmethod
     def get_nearby_enemies(enemies, position):
         result = []
-        x = position[0] - 264
+        # x = position[0] - 264
         y = position[1] - 152
 
         for enemy in enemies:

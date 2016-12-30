@@ -203,17 +203,15 @@ class GameScene(scene.Scene):
             self._level = self._resource_manager.get('level0' + str(self._scene_data + 1))
         self._current_level = self._level
         self._exit_point = self._level.exit_point[0] + 256, self._level.exit_point[1] + 144, \
-            self._level.exit_point[2], self._level.exit_point[3]
+                           self._level.exit_point[2], self._level.exit_point[3]
         self._enemies_renderer = enemy.EnemyAnimations.init(self)
         self._magnetic_fields = magnetic.MagneticBuilder.build(self._current_level.magnetic_fields)
         self._nothrust = nothrust.NoThrustBuilder.build(self._current_level.nothrust)
         self._rails = rails.RailsBuilder.build(self._current_level.rails)
         self._container = container.ContainerBuilder.build(self._current_level.container_info)
         self._teleports = teleport.TeleportBuilder.build(self._current_level.teleports)
-        self._locks = lock.LockBuilder.build(self, self._resource_manager,
-                                             self._current_level.locks)
-        self._beam_barriers = lock.BeamBarriersBuilder.build(self, self._resource_manager,
-                                                             self._current_level.beam_barriers)
+        self._locks = lock.LockBuilder.build(self, self._current_level.locks)
+        self._beam_barriers = lock.BeamBarriersBuilder.build(self._current_level.beam_barriers)
         self._items = item.ItemBuilder.build(self, self._resource_manager,
                                              self._current_level.items)
         self._enemies = enemy.EnemyBuilder.build(self)

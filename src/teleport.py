@@ -2,20 +2,47 @@ class Teleport(object):
     INACTIVE = 0
     ACTIVE = 1
 
-    def __init__(self, id, position, size):
-        self.id = id
-        self.x, self.y = position[0] + 256, position[1] + 144
-        self.w, self.h = size
-        self.status = Teleport.INACTIVE
+    def __init__(self, teleport_id, position, size):
+        self._teleport_id = teleport_id
+        self._x, self._y = position[0] + 256, position[1] + 144
+        self._w, self._h = size
+        self._status = Teleport.INACTIVE
+
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y
+
+    @property
+    def w(self):
+        return self._w
+
+    @property
+    def h(self):
+        return self._h
+
+    @property
+    def teleport_id(self):
+        return self._teleport_id
+
+    @property
+    def status(self):
+        return self._status
+
+    @status.setter
+    def status(self, value):
+        self._status = value
 
 
 class TeleportBuilder(object):
-
     @staticmethod
     def build(teleports):
         results = []
-        for t in teleports:
-            teleport_elements = t.split(' ')
+        for telport in teleports:
+            teleport_elements = telport.split(' ')
             teleport_id = int(teleport_elements[0])
             x = int(teleport_elements[1])
             y = int(teleport_elements[2])

@@ -1,7 +1,7 @@
-from gettext import gettext as _
 import io
 import pygame
 import xml.etree.cElementTree as ElementTree
+from gettext import gettext as _
 
 
 class TiledLoaderError(Exception):
@@ -175,7 +175,7 @@ class TiledLevel(object):
                     objx = o.get('x')
                     objy = o.get('y')
                     animation_name = ''
-                    animation_zindex = ''
+                    anim_zindex = ''
 
                     for prop in o.findall('properties'):
                         for p in prop.findall('property'):
@@ -186,11 +186,11 @@ class TiledLevel(object):
                                 animation_name = pvalue
 
                             if pname == TiledLevel.ZINDEX:
-                                animation_zindex = pvalue
+                                anim_zindex = pvalue
 
-                            if animation_name is not '' and animation_zindex is not '':
+                            if animation_name is not '' and anim_zindex is not '':
                                 animated_tiles.update(
-                                    {''.join([animation_zindex, ' ', objx, ' ', objy]): animation_name})
+                                    {''.join([anim_zindex, ' ', objx, ' ', objy]): animation_name})
 
         if not found:
             raise TiledLoaderError(_('Unable to find animations layer in level data.'))
@@ -268,8 +268,6 @@ class TiledLevel(object):
         teleports = []
 
         for s in special:
-            teleport_id = None
-
             for a in special[s]:
                 if a == 'teleport':
                     teleport_id = special[s].get(a)
@@ -435,7 +433,6 @@ class TiledLevel(object):
 
     def __load_layers_info(self):
         layers = []
-        layerwidth = layerheight = layername = gid = None
 
         for layer in self.root.findall(TiledLevel.LAYER):
             layerwidth = int(layer.get(TiledLevel.WIDTH))
@@ -462,7 +459,6 @@ class TiledLevel(object):
         for obj in self.root.findall('objectgroup'):
 
             if obj.get(TiledLevel.NAME) == TiledLevel.SPECIAL:
-                found = True
 
                 for o in obj.findall('object'):
                     objx = o.get('x')
@@ -471,7 +467,6 @@ class TiledLevel(object):
                     for prop in o.findall('properties'):
                         for p in prop.findall('property'):
                             pname = p.get(TiledLevel.NAME)
-                            pvalue = p.get(TiledLevel.VALUE)
 
                             if pname == TiledLevel.START_POINT:
                                 start_point = int(objx), int(objy)
@@ -486,7 +481,6 @@ class TiledLevel(object):
         for obj in self.root.findall('objectgroup'):
 
             if obj.get(TiledLevel.NAME) == TiledLevel.SPECIAL:
-                found = True
 
                 for o in obj.findall('object'):
                     objx = o.get('x')
@@ -497,7 +491,6 @@ class TiledLevel(object):
                     for prop in o.findall('properties'):
                         for p in prop.findall('property'):
                             pname = p.get(TiledLevel.NAME)
-                            pvalue = p.get(TiledLevel.VALUE)
 
                             if pname == TiledLevel.EXIT_POINT:
                                 exit_point = int(objx), int(objy), int(objw), int(objh)

@@ -1,5 +1,4 @@
 class Container(object):
-
     def __init__(self, x, y, w, h):
         self._x = x
         self._y = y
@@ -10,6 +9,7 @@ class Container(object):
     '''
     Public methods
     '''
+
     @property
     def x(self):
         return self._x
@@ -36,7 +36,6 @@ class Container(object):
 
 
 class ContainerBuilder(object):
-
     @staticmethod
     def build(container_info):
         info = container_info.split(' ')

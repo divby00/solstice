@@ -166,10 +166,10 @@ class Player(object):
             self._teleport_source.status = teleport.Teleport.INACTIVE
             self._x = self._teleport_destiny.x + 8
             self._y = self._teleport_destiny.y + 8
-            teleport_id = self._teleport_destiny.id
+            teleport_id = self._teleport_destiny.teleport_id
 
             for destiny in self._teleports:
-                if teleport_id == destiny.id \
+                if teleport_id == destiny.teleport_id \
                         and destiny.x + 8 != self._x or destiny.y + 8 != self._y:
                     self._teleport_destiny = destiny
 
@@ -467,9 +467,11 @@ class Player(object):
             enemy_result, 'enemy', damaged_enemy)
 
     def check_in_active_teleport(self):
-        for t in self._teleports:
-            if t.status != teleport.Teleport.INACTIVE \
-                    and self._x + 8 >= t.x and self._x - 8 <= t.x + t.w + 8 and self._y - 8 == t.y:
+        for telport in self._teleports:
+            if telport.status != teleport.Teleport.INACTIVE \
+                    and self._x + 8 >= telport.x \
+                    and self._x - 8 <= telport.x + telport.w + 8 \
+                    and self._y - 8 == telport.y:
                 return True
         return False
 
