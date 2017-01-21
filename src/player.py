@@ -1,5 +1,6 @@
 import enemy
 import teleport
+import info_area
 
 
 class Laser(object):
@@ -86,6 +87,7 @@ class Player(object):
         self._sprites_inmortal = []
         self._laser_spr = []
         self._magnetic_fields = None
+        self._info_areas = None
         self._nothrust = None
         self._rails = None
         self._container = None
@@ -104,6 +106,7 @@ class Player(object):
         self._respawn = False
         self._respawn_frame = 0
         self._inmortal = False
+        self._active_info_area = None
         self._inmortal_frame = 0
         self._lasers = []
         self._init_sprites()
@@ -146,6 +149,15 @@ class Player(object):
 
             if not self.check_bottom_collision(self._current_level) and not inside_magnetic_field:
                 self._y += 4
+
+    def _run_status_info_area(self):
+        for info in self._info_areas:
+            if self._x + 8 >= info.position[0] and self._x - 8 <= info.position[0] + info.size[0] \
+                    and self._y + 8 >= info.position[1] \
+                    and self._y - 8 <= info.position[1] + info.size[1]:
+                if self._active_info_area is None:
+                    self._active_info_area = info_area.ActiveInfoArea(info.info_area_type,
+                                                                      self._resource_manager)
 
     def _run_status_recovering(self):
         self._recovery_animation += 1
@@ -300,6 +312,8 @@ class Player(object):
 
     def on_start(self, game_context):
         self._magnetic_fields = game_context.magnetic_fields
+        self._info_areas = game_context.info_areas
+        self._active_info_area = None
         self._nothrust = game_context.nothrust
         self._rails = game_context.rails
         self._container = game_context.container
@@ -363,6 +377,7 @@ class Player(object):
 
         self._run_status_respawn()
         self._run_status_inmortal()
+        self._run_status_info_area()
 
     def render(self, screen):
         if not self._dying:
@@ -730,3 +745,11 @@ class Player(object):
     @floor.setter
     def floor(self, value):
         self._floor = value
+
+    @property
+    def active_info_area(self):
+        return self._active_info_area
+
+    @active_info_area.setter
+    def active_info_area(self, value):
+        self._active_info_area = value

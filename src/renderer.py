@@ -218,6 +218,11 @@ class Renderer(object):
         # Board rendering
         self._board.render(self._screen.virt)
 
+        # Debug information
+        pygame.draw.rect(self._screen.virt, (30, 30, 30), (0, 0, 100, 20), 0)
+        text = self._font_white.get(('x:' + str(self._player.x - 264) + ' y:' + str(self._player.y - 152)), 100)
+        self._screen.virt.blit(text, (5, 5))
+
     @property
     def speed(self):
         return self._speed

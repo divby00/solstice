@@ -214,6 +214,10 @@ class Board(object):
             item = self._player.selected_item
             self._board.blit(item.sprite, (12, 16))
 
+    def _render_info_area(self):
+        if self._player.active_info_area:
+            self._player.active_info_area.render(self._board)
+
     '''
     Public methods
     '''
@@ -227,4 +231,5 @@ class Board(object):
         self._render_bullets()
         # TODO Render time bar
         self._render_selected_item()
+        self._render_info_area()
         screen.blit(self._board, (0, 144))

@@ -2,6 +2,7 @@ import board
 import container
 import control
 import enemy
+import info_area
 import item
 import lock
 import magnetic
@@ -33,6 +34,7 @@ class GameScene(scene.Scene):
         self._renderer_object = None
         self._enemies_renderer = None
         self._exit_point = None
+        self._info_areas = None
         self._on_elevator = False
         self._particles_manager = GameScene._init_particles(context.resource_manager)
         context.particles_manager = self._particles_manager
@@ -75,6 +77,10 @@ class GameScene(scene.Scene):
                and self._player.x - 8 <= self._exit_point[0] + self._exit_point[2] \
                and self._player.y - 8 <= self._exit_point[1] + self._exit_point[3] \
                and self._player.y + 8 >= self._exit_point[1]
+
+    def _run_info_areas(self):
+        if self._player.active_info_area:
+            self._player.active_info_area.run()
 
     def _run_rails(self):
         rail_direction = self._player.check_in_rails()
@@ -205,6 +211,7 @@ class GameScene(scene.Scene):
         self._exit_point = self._level.exit_point[0] + 256, self._level.exit_point[1] + 144, \
                            self._level.exit_point[2], self._level.exit_point[3]
         self._enemies_renderer = enemy.EnemyAnimations.init(self)
+        self._info_areas = info_area.InfoAreaBuilder.build(self._current_level.info_areas)
         self._magnetic_fields = magnetic.MagneticBuilder.build(self._current_level.magnetic_fields)
         self._nothrust = nothrust.NoThrustBuilder.build(self._current_level.nothrust)
         self._rails = rails.RailsBuilder.build(self._current_level.rails)
@@ -268,6 +275,7 @@ class GameScene(scene.Scene):
             self._player.run()
             for the_enemy in self._enemies:
                 the_enemy.run()
+            self._run_info_areas()
             self._particles_manager.run()
             self._renderer_object.run()
 
@@ -315,6 +323,10 @@ class GameScene(scene.Scene):
     @property
     def magnetic_fields(self):
         return self._magnetic_fields
+
+    @property
+    def info_areas(self):
+        return self._info_areas
 
     @property
     def nothrust(self):
