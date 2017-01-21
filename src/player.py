@@ -1,6 +1,6 @@
 import enemy
-import teleport
 import info_area
+import teleport
 
 
 class Laser(object):
@@ -158,6 +158,7 @@ class Player(object):
                 if self._active_info_area is None:
                     self._active_info_area = info_area.ActiveInfoArea(info.info_area_type,
                                                                       self._resource_manager)
+                    self._sound_player.play_sample('ding')
 
     def _run_status_recovering(self):
         self._recovery_animation += 1

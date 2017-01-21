@@ -1,15 +1,22 @@
+import pygame
+
+
 class ActiveInfoArea(object):
     def __init__(self, info_area_type, resource_manager):
-        self._frame = 0
+        self._frame = -1
         self._active = True
         self._text = ActiveInfoArea._get_text_from_type(info_area_type)
-        self._text_sprite = resource_manager.get('font_board').get(self._text)
+        font_white = resource_manager.get('font_white')
+        self._text_size = len(self._text) * font_white.glyph_width
+        self._text_x = 256
+        self._text_sprite = resource_manager.get('font_white').get(self._text, self._text_size)
         self._title_sprites = [resource_manager.get('info_area_title' + str(index))
-                               for index in xrange(0, 8)]
+                               for index in xrange(0, 9)]
 
     @staticmethod
     def _get_text_from_type(info_area_type):
-        texts = dict(drill_wall='You can open this block with a drill')
+        texts = dict(drill_wall='You can open this block with a drill  ',
+                     teleporter='Get a teleporter pass to use this teleporter  ')
         return texts[info_area_type]
 
     '''
@@ -17,16 +24,22 @@ class ActiveInfoArea(object):
     '''
 
     def run(self):
-        if self._active:
-            if self._frame < 7:
-                self._frame += 1
-            else:
-                self._active = False
-                self._frame = 0
+        self._frame += 1
+        if self._frame >= 8:
+            self._text_x -= 2
+        return self._active
 
     def render(self, board):
         if self._active:
-            board.blit(self._title_sprites[self._frame], (0, 0))
+            pygame.draw.rect(board, (0, 0, 0), (0, 0, 256, 8), 0)
+            if self._frame < 7:
+                board.blit(self._title_sprites[self._frame], (0, 0))
+            else:
+                if self._text_x > self._text_size * -1:
+                    board.blit(self._text_sprite, (self._text_x, 1))
+                else:
+                    board.blit(self._title_sprites[8], (0, 0))
+                    self._active = False
 
 
 class InfoArea(object):

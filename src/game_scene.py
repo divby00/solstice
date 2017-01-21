@@ -45,7 +45,7 @@ class GameScene(scene.Scene):
         self._sound_player = context.sound_player
         self._sound_player.load_sample([
             'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song',
-            'enemy_hit_sam', 'player_hit_sam', 'teleport', 'secured'
+            'enemy_hit_sam', 'player_hit_sam', 'teleport', 'secured', 'ding'
         ])
         self.get_menu()
 
@@ -80,7 +80,9 @@ class GameScene(scene.Scene):
 
     def _run_info_areas(self):
         if self._player.active_info_area:
-            self._player.active_info_area.run()
+            running = self._player.active_info_area.run()
+            if not running:
+                self._player.active_info_area = None
 
     def _run_rails(self):
         rail_direction = self._player.check_in_rails()
