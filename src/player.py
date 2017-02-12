@@ -1,6 +1,7 @@
 import enemy
 import info_area
 import teleport
+import powerups
 
 
 class Laser(object):
@@ -95,6 +96,7 @@ class Player(object):
         self._sound_player = context.sound_player
         self._resource_manager = context.resource_manager
         self._particles_manager = context.particles_manager
+        self._game_context = game_context
         self._floor = game_context.scene_data if game_context.scene_data else 0
         self._teleports = None
         self._teleport_destiny = None
@@ -261,6 +263,8 @@ class Player(object):
                         if damaged_enemy.energy <= 0:
                             enemy_death_particles = self._particles_manager.get('enemy_death')
                             enemy_death_particles.generate(particle_coordinates)
+                            powerups.PowerupBuilder.build((damaged_enemy.x, damaged_enemy.y),
+                                                          self._game_context)
                         else:
                             damaged_enemy.shock_counter = 14
 
@@ -285,6 +289,8 @@ class Player(object):
                         if damaged_enemy.energy <= 0:
                             enemy_death_particles = self._particles_manager.get('enemy_death')
                             enemy_death_particles.generate(particle_coordinates)
+                            powerups.PowerupBuilder.build((damaged_enemy.x, damaged_enemy.y),
+                                                          self._game_context)
                         else:
                             damaged_enemy.shock_counter = 14
 

@@ -10,6 +10,7 @@ import nothrust
 import particles
 import particles_manager
 import player
+import powerups
 import rails
 import renderer
 import scene
@@ -36,6 +37,7 @@ class GameScene(scene.Scene):
         self._exit_point = None
         self._info_areas = None
         self._on_elevator = False
+        self._powerups = None
         self._particles_manager = GameScene._init_particles(context.resource_manager)
         context.particles_manager = self._particles_manager
         self._player = player.Player(context, self)
@@ -77,6 +79,9 @@ class GameScene(scene.Scene):
                and self._player.x - 8 <= self._exit_point[0] + self._exit_point[2] \
                and self._player.y - 8 <= self._exit_point[1] + self._exit_point[3] \
                and self._player.y + 8 >= self._exit_point[1]
+
+    def _run_powerups(self):
+        self._powerups.run()
 
     def _run_info_areas(self):
         if self._player.active_info_area:
@@ -224,6 +229,7 @@ class GameScene(scene.Scene):
         self._items = item.ItemBuilder.build(self, self._resource_manager,
                                              self._current_level.items)
         self._enemies = enemy.EnemyBuilder.build(self)
+        self._powerups = powerups.Powerups()
         self._player.on_start(self)
         self._renderer_object = renderer.Renderer(self)
         self._sound_player.play_sample('level01_song')
@@ -277,6 +283,7 @@ class GameScene(scene.Scene):
             self._player.run()
             for the_enemy in self._enemies:
                 the_enemy.run()
+            self._run_powerups()
             self._run_info_areas()
             self._particles_manager.run()
             self._renderer_object.run()
@@ -357,3 +364,7 @@ class GameScene(scene.Scene):
     @property
     def board(self):
         return self._board
+
+    @property
+    def powerups(self):
+        return self._powerups

@@ -35,6 +35,7 @@ class Renderer(object):
         self._level = context.current_level
         self._player = context.player
         self._enemies = context.enemies
+        self._powerups = context.powerups
         self._items = context.items
         self._animations = context.animations
         self._particles_manager = context.particles_manager
@@ -195,6 +196,9 @@ class Renderer(object):
         for enemy in self._enemies:
             enemy.render(self._tmp_surface)
 
+        # Powerup rendering
+        self._powerups.render(self._tmp_surface)
+
         # Particles rendering
         self._particles_manager.render(self._tmp_surface)
 
@@ -219,9 +223,11 @@ class Renderer(object):
         self._board.render(self._screen.virt)
 
         # Debug information
+        '''
         pygame.draw.rect(self._screen.virt, (30, 30, 30), (0, 0, 100, 20), 0)
         text = self._font_white.get(('x:' + str(self._player.x - 264) + ' y:' + str(self._player.y - 152)), 100)
         self._screen.virt.blit(text, (5, 5))
+        '''
 
     @property
     def speed(self):
