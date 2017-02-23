@@ -67,36 +67,39 @@ class Powerup(object):
         return [self._game_context.resource_manager.get(''.join(['powerup_transition_0', str(x)]))
                 for x in range(0, 4)]
 
+    def _run_animation_logic(self):
+        if 0 <= self._frame < 3:
+            self._status = Powerup.APPEARING
+        elif 3 <= self._frame < 43:
+            self._status = Powerup.ON_SCENE
+            self._x += circular_motion_lookup_table[self._anim_frame][0]
+            self._y += circular_motion_lookup_table[self._anim_frame][1]
+            self._anim_frame += 1
+            self._spr_frame += 1
+            if self._spr_frame >= 4:
+                self._spr_frame = 0
+            if self._anim_frame >= 16:
+                self._anim_frame = 0
+        elif self._frame == 43:
+            self._status = Powerup.DISAPPEARING
+            self._anim_frame = 3
+        elif 43 < self._frame < 47:
+            self._anim_frame -= 1
+        else:
+            self._active = False
+
+        self._frame += 1
+
+    def _run_apply_powerup(self, player):
+        if player.x - 256 + 8 >= self._x and player.x - 256 - 8 <= self._x + 10 \
+                and player.y - 144 + 8 >= self._y and player.y - 144 - 8 <= self._y + 10:
+            self.apply(player)
+            self._active = False
+
     def run(self, player):
         if self._active:
-            # Animation logic
-            if 0 <= self._frame < 3:
-                self._status = Powerup.APPEARING
-            elif 3 <= self._frame < 43:
-                self._status = Powerup.ON_SCENE
-                self._x += circular_motion_lookup_table[self._anim_frame][0]
-                self._y += circular_motion_lookup_table[self._anim_frame][1]
-                self._anim_frame += 1
-                self._spr_frame += 1
-                if self._spr_frame >= 4:
-                    self._spr_frame = 0
-                if self._anim_frame >= 16:
-                    self._anim_frame = 0
-            elif self._frame == 43:
-                self._status = Powerup.DISAPPEARING
-                self._anim_frame = 3
-            elif 43 < self._frame < 47:
-                self._anim_frame -= 1
-            else:
-                self._active = False
-
-            self._frame += 1
-
-            # Apply powerup effect on player
-            if player.x - 256 + 8 >= self._x and player.x - 256 - 8 <= self._x + 10 \
-                    and player.y - 144 + 8 >= self._y and player.y - 144 - 8 <= self._y + 10:
-                self.apply(player)
-                self._active = False
+            self._run_animation_logic()
+            self._run_apply_powerup(player)
 
         return self._active
 
