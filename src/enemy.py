@@ -51,9 +51,7 @@ class Enemy(object):
         self._adjust_energy()
 
     def _adjust_energy(self):
-        if self._enemy_type == 'jellyfish00':
-            self.energy = 2
-        elif self._enemy_type == 'devil00':
+        if self._enemy_type == 'jellyfish00' or self._enemy_type == 'devil00':
             self.energy = 2
         elif self._enemy_type == 'jellyfish01':
             self.energy = 3

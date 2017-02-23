@@ -47,7 +47,7 @@ class GameScene(scene.Scene):
         self._sound_player = context.sound_player
         self._sound_player.load_sample([
             'laser', 'accept', 'cancel', 'bulletsup', 'thrustup', 'exp', 'level01_song',
-            'enemy_hit_sam', 'player_hit_sam', 'teleport', 'secured', 'ding'
+            'enemy_hit_sam', 'player_hit_sam', 'teleport', 'secured', 'ding', 'powerup'
         ])
         self.get_menu()
 
@@ -229,7 +229,7 @@ class GameScene(scene.Scene):
         self._items = item.ItemBuilder.build(self, self._resource_manager,
                                              self._current_level.items)
         self._enemies = enemy.EnemyBuilder.build(self)
-        self._powerups = powerups.Powerups()
+        self._powerups = powerups.Powerups(self._player)
         self._player.on_start(self)
         self._renderer_object = renderer.Renderer(self)
         self._sound_player.play_sample('level01_song')
