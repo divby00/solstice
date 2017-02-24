@@ -15,8 +15,8 @@ class ActiveInfoArea(object):
 
     @staticmethod
     def _get_text_from_type(info_area_type):
-        texts = dict(drill_wall='You can open this block with a drill  ',
-                     teleporter='Get a teleporter pass to use this teleporter  ')
+        texts = dict(drill_wall='Use a drill to open the crate  ',
+                     teleporter='Use a pass to use the teleporter  ')
         return texts[info_area_type]
 
     '''
