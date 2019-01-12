@@ -1,1 +1,1 @@
-python src/solstice.py
+python solstice/solstice.py
