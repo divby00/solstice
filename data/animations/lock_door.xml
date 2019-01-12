@@ -1,0 +1,13 @@
+<xml>
+    <animation>
+        <images>
+            <image src='gfx/locks.png' id='0' x='16' y='32' width='16' height='32'/>
+            <image src='gfx/locks.png' id='1' x='32' y='32' width='16' height='32'/>
+        </images>
+        <frames>
+            <frame id='0' offsetx='0' offsety='0' duration='25'/>
+            <frame id='1' offsetx='0' offsety='0' duration='1'/>
+        </frames>
+    </animation>
+</xml>
+

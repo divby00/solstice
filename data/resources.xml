@@ -1,0 +1,346 @@
+<root>
+    <resource type='gfx' name='logo' src='gfx/logo.png' x='0' y='0' width='212' height='28'/>
+    <resource type='gfx' name='dither0' src='gfx/dither.png' x='0' y='0' width='8' height='8'/>
+    <resource type='gfx' name='dither1' src='gfx/dither.png' x='8' y='0' width='8' height='8'/>
+    <resource type='gfx' name='dither2' src='gfx/dither.png' x='16' y='0' width='8' height='8'/>
+    <resource type='gfx' name='dither3' src='gfx/dither.png' x='24' y='0' width='8' height='8'/>
+    <resource type='gfx' name='dither4' src='gfx/dither.png' x='32' y='0' width='8' height='8'/>
+    <resource type='gfx' name='dither5' src='gfx/dither.png' x='40' y='0' width='8' height='8'/>
+    <resource type='gfx' name='red_dither0' src='gfx/dither.png' x='0' y='8' width='8' height='8'/>
+    <resource type='gfx' name='red_dither1' src='gfx/dither.png' x='8' y='8' width='8' height='8'/>
+    <resource type='gfx' name='red_dither2' src='gfx/dither.png' x='16' y='8' width='8' height='8'/>
+    <resource type='gfx' name='red_dither3' src='gfx/dither.png' x='24' y='8' width='8' height='8'/>
+    <resource type='gfx' name='red_dither4' src='gfx/dither.png' x='32' y='8' width='8' height='8'/>
+    <resource type='gfx' name='red_dither5' src='gfx/dither.png' x='40' y='8' width='8' height='8'/>
+    <resource type='gfx' name='circle_transition0' src='gfx/dither.png' x='64' y='0' width='8' height='8'/>
+    <resource type='gfx' name='circle_transition1' src='gfx/dither.png' x='72' y='0' width='8' height='8'/>
+    <resource type='gfx' name='circle_transition2' src='gfx/dither.png' x='80' y='0' width='8' height='8'/>
+    <resource type='gfx' name='circle_transition3' src='gfx/dither.png' x='88' y='0' width='8' height='8'/>
+    <resource type='gfx' name='circle_transition4' src='gfx/dither.png' x='96' y='0' width='8' height='8'/>
+    <resource type='gfx' name='circle_transition5' src='gfx/dither.png' x='104' y='0' width='8' height='8'/>
+    <resource type='gfx' name='circle_transition6' src='gfx/dither.png' x='112' y='0' width='8' height='8'/>
+    <resource type='gfx' name='transition0' src='gfx/dither.png' x='0' y='16' width='16' height='16'/>
+    <resource type='gfx' name='transition1' src='gfx/dither.png' x='16' y='16' width='16' height='16'/>
+    <resource type='gfx' name='transition2' src='gfx/dither.png' x='32' y='16' width='16' height='16'/>
+    <resource type='gfx' name='transition3' src='gfx/dither.png' x='48' y='16' width='16' height='16'/>
+    <resource type='gfx' name='transition4' src='gfx/dither.png' x='64' y='16' width='16' height='16'/>
+    <resource type='gfx' name='transition5' src='gfx/dither.png' x='80' y='16' width='16' height='16'/>
+    <resource type='gfx' name='transition6' src='gfx/dither.png' x='96' y='16' width='16' height='16'/>
+    <resource type='gfx' name='transition7' src='gfx/dither.png' x='112' y='16' width='16' height='16'/>
+    <resource type='gfx' name='transition8' src='gfx/dither.png' x='128' y='16' width='16' height='16'/>
+    <resource type='gfx' name='menu' src='gfx/menu.png' x='0' y='0' width='505' height='225'/>
+    <resource type='gfx' name='planet' src='gfx/planet.png' x='0' y='0' width='93' height='63'/>
+    <resource type='gfx' name='title0' src='gfx/planet.png' x='93' y='0' width='50' height='12'/>
+    <resource type='gfx' name='title1' src='gfx/planet.png' x='93' y='12' width='50' height='12'/>
+    <resource type='gfx' name='title2' src='gfx/planet.png' x='93' y='24' width='50' height='12'/>
+    <resource type='gfx' name='title3' src='gfx/planet.png' x='93' y='36' width='50' height='12'/>
+    <resource type='gfx' name='title4' src='gfx/planet.png' x='93' y='48' width='50' height='12'/>
+    <resource type='gfx' name='sun' src='gfx/planet.png' x='143' y='0' width='29' height='26'/>
+    <resource type='gfx' name='plant' src='gfx/planet.png' x='143' y='30' width='41' height='33'/>
+    <resource type='gfx' name='star0' src='gfx/stars.png' x='0' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star1' src='gfx/stars.png' x='8' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star2' src='gfx/stars.png' x='16' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star3' src='gfx/stars.png' x='24' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star4' src='gfx/stars.png' x='32' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star5' src='gfx/stars.png' x='40' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star6' src='gfx/stars.png' x='48' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star7' src='gfx/stars.png' x='56' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star8' src='gfx/stars.png' x='64' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star9' src='gfx/stars.png' x='72' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star10' src='gfx/stars.png' x='80' y='0' width='8' height='8'/>
+    <resource type='gfx' name='star11' src='gfx/stars.png' x='88' y='0' width='8' height='8'/>
+    <resource type='gfx' name='panel0' src='gfx/panel.png' x='0' y='0' width='8' height='8'/>
+    <resource type='gfx' name='panel1' src='gfx/panel.png' x='8' y='0' width='8' height='8'/>
+    <resource type='gfx' name='panel2' src='gfx/panel.png' x='16' y='0' width='8' height='8'/>
+    <resource type='gfx' name='panel3' src='gfx/panel.png' x='0' y='8' width='8' height='8'/>
+    <resource type='gfx' name='panel4' src='gfx/panel.png' x='8' y='8' width='8' height='8'/>
+    <resource type='gfx' name='panel5' src='gfx/panel.png' x='16' y='8' width='8' height='8'/>
+    <resource type='gfx' name='panel6' src='gfx/panel.png' x='0' y='16' width='8' height='8'/>
+    <resource type='gfx' name='panel7' src='gfx/panel.png' x='8' y='16' width='8' height='8'/>
+    <resource type='gfx' name='panel8' src='gfx/panel.png' x='16' y='16' width='8' height='8'/>
+    <resource type='gfx' name='cursor' src='gfx/panel.png' x='24' y='0' width='8' height='8'/>
+    <resource type='gfx' name='font_dither' src='gfx/panel.png' x='32' y='0' width='8' height='32'/>
+    <resource type='gfx' name='board' src='gfx/board.png' x='0' y='0' width='256' height='48'/>
+    <resource type='gfx' name='player0' src='gfx/player.png' x='0' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player1' src='gfx/player.png' x='16' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player2' src='gfx/player.png' x='32' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player3' src='gfx/player.png' x='48' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player4' src='gfx/player.png' x='64' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player5' src='gfx/player.png' x='80' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player6' src='gfx/player.png' x='96' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player7' src='gfx/player.png' x='112' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player8' src='gfx/player.png' x='128' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player9' src='gfx/player.png' x='144' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player10' src='gfx/player.png' x='160' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player11' src='gfx/player.png' x='192' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player12' src='gfx/player.png' x='208' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player13' src='gfx/player.png' x='224' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player14' src='gfx/player.png' x='240' y='0' width='16' height='16'/>
+    <resource type='gfx' name='player0_hit' src='gfx/player.png' x='0' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player1_hit' src='gfx/player.png' x='16' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player2_hit' src='gfx/player.png' x='32' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player3_hit' src='gfx/player.png' x='48' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player4_hit' src='gfx/player.png' x='64' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player5_hit' src='gfx/player.png' x='80' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player6_hit' src='gfx/player.png' x='96' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player7_hit' src='gfx/player.png' x='112' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player8_hit' src='gfx/player.png' x='128' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player9_hit' src='gfx/player.png' x='144' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player10_hit' src='gfx/player.png' x='160' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player11_hit' src='gfx/player.png' x='192' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player12_hit' src='gfx/player.png' x='208' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player13_hit' src='gfx/player.png' x='224' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player14_hit' src='gfx/player.png' x='240' y='96' width='16' height='16'/>
+    <resource type='gfx' name='player0_inmortal' src='gfx/player.png' x='0' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player1_inmortal' src='gfx/player.png' x='16' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player2_inmortal' src='gfx/player.png' x='32' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player3_inmortal' src='gfx/player.png' x='48' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player4_inmortal' src='gfx/player.png' x='64' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player5_inmortal' src='gfx/player.png' x='80' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player6_inmortal' src='gfx/player.png' x='96' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player7_inmortal' src='gfx/player.png' x='112' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player8_inmortal' src='gfx/player.png' x='128' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player9_inmortal' src='gfx/player.png' x='144' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player10_inmortal' src='gfx/player.png' x='160' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player11_inmortal' src='gfx/player.png' x='192' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player12_inmortal' src='gfx/player.png' x='208' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player13_inmortal' src='gfx/player.png' x='224' y='112' width='16' height='16'/>
+    <resource type='gfx' name='player14_inmortal' src='gfx/player.png' x='240' y='112' width='16' height='16'/>
+    <resource type='gfx' name='playerhit0' src='gfx/player.png' x='0' y='0' width='16' height='16'/>
+    <resource type='gfx' name='playerhit1' src='gfx/player.png' x='80' y='16' width='16' height='16'/>
+    <resource type='gfx' name='playerhit2' src='gfx/player.png' x='96' y='16' width='16' height='16'/>
+    <resource type='gfx' name='playerhit3' src='gfx/player.png' x='112' y='16' width='16' height='16'/>
+    <resource type='gfx' name='playerhit4' src='gfx/player.png' x='128' y='16' width='16' height='16'/>
+    <resource type='gfx' name='playerhit5' src='gfx/player.png' x='144' y='16' width='16' height='16'/>
+    <resource type='gfx' name='playerhit6' src='gfx/player.png' x='160' y='16' width='16' height='16'/>
+    <resource type='gfx' name='playerhit7' src='gfx/player.png' x='176' y='16' width='16' height='16'/>
+    <resource type='gfx' name='playerhit8' src='gfx/player.png' x='192' y='16' width='16' height='16'/>
+    <resource type='gfx' name='playerteleport0' src='gfx/player.png' x='0' y='80' width='16' height='16'/>
+    <resource type='gfx' name='playerteleport1' src='gfx/player.png' x='16' y='80' width='16' height='16'/>
+    <resource type='gfx' name='playerteleport2' src='gfx/player.png' x='32' y='80' width='16' height='16'/>
+    <resource type='gfx' name='playerteleport3' src='gfx/player.png' x='48' y='80' width='16' height='16'/>
+    <resource type='gfx' name='playerteleport4' src='gfx/player.png' x='64' y='80' width='16' height='16'/>
+    <resource type='gfx' name='playerrecovery0' src='gfx/player.png' x='0' y='32' width='48' height='48'/>
+    <resource type='gfx' name='playerrecovery1' src='gfx/player.png' x='48' y='32' width='48' height='48'/>
+    <resource type='gfx' name='playerrecovery2' src='gfx/player.png' x='96' y='32' width='48' height='48'/>
+    <resource type='gfx' name='playerrecovery3' src='gfx/player.png' x='144' y='32' width='48' height='48'/>
+    <resource type='gfx' name='shoot0' src='gfx/player.png' x='0' y='16' width='8' height='16'/>
+    <resource type='gfx' name='shoot1' src='gfx/player.png' x='8' y='16' width='8' height='16'/>
+    <resource type='gfx' name='shoot2' src='gfx/player.png' x='16' y='16' width='8' height='16'/>
+    <resource type='gfx' name='shoot3' src='gfx/player.png' x='24' y='16' width='4' height='16'/>
+    <resource type='gfx' name='shoot4' src='gfx/player.png' x='32' y='16' width='4' height='16'/>
+    <resource type='gfx' name='shoot5' src='gfx/player.png' x='40' y='16' width='4' height='16'/>
+    <resource type='gfx' name='shoot6' src='gfx/player.png' x='48' y='16' width='8' height='16'/>
+    <resource type='gfx' name='shoot7' src='gfx/player.png' x='56' y='16' width='8' height='16'/>
+    <resource type='gfx' name='shoot8' src='gfx/player.png' x='64' y='16' width='8' height='16'/>
+    <resource type='gfx' name='smoke0' src='gfx/particles.png' x='0' y='0' width='8' height='8'/>
+    <resource type='gfx' name='smoke1' src='gfx/particles.png' x='8' y='0' width='8' height='8'/>
+    <resource type='gfx' name='smoke2' src='gfx/particles.png' x='16' y='0' width='8' height='8'/>
+    <resource type='gfx' name='smoke3' src='gfx/particles.png' x='24' y='0' width='8' height='8'/>
+    <resource type='gfx' name='smoke4' src='gfx/particles.png' x='32' y='0' width='8' height='8'/>
+    <resource type='gfx' name='smoke5' src='gfx/particles.png' x='40' y='0' width='8' height='8'/>
+    <resource type='gfx' name='smoke6' src='gfx/particles.png' x='48' y='0' width='8' height='8'/>
+    <resource type='gfx' name='smoke7' src='gfx/particles.png' x='56' y='0' width='8' height='8'/>
+    <resource type='gfx' name='hit0' src='gfx/particles.png' x='0' y='8' width='8' height='8'/>
+    <resource type='gfx' name='hit1' src='gfx/particles.png' x='8' y='8' width='8' height='8'/>
+    <resource type='gfx' name='hit2' src='gfx/particles.png' x='16' y='8' width='8' height='8'/>
+    <resource type='gfx' name='enemy_hit0' src='gfx/particles.png' x='24' y='8' width='8' height='8'/>
+    <resource type='gfx' name='enemy_hit1' src='gfx/particles.png' x='32' y='8' width='8' height='8'/>
+    <resource type='gfx' name='enemy_hit2' src='gfx/particles.png' x='40' y='8' width='8' height='8'/>
+    <resource type='gfx' name='exp0' src='gfx/particles.png' x='0' y='16' width='32' height='32'/>
+    <resource type='gfx' name='exp1' src='gfx/particles.png' x='32' y='16' width='32' height='32'/>
+    <resource type='gfx' name='exp2' src='gfx/particles.png' x='64' y='16' width='32' height='32'/>
+    <resource type='gfx' name='exp3' src='gfx/particles.png' x='96' y='16' width='32' height='32'/>
+    <resource type='gfx' name='exp4' src='gfx/particles.png' x='128' y='16' width='32' height='32'/>
+    <resource type='gfx' name='exp5' src='gfx/particles.png' x='160' y='16' width='32' height='32'/>
+    <resource type='gfx' name='enemy_death0' src='gfx/particles.png' x='64' y='0' width='16' height='16'/>
+    <resource type='gfx' name='enemy_death1' src='gfx/particles.png' x='80' y='0' width='16' height='16'/>
+    <resource type='gfx' name='enemy_death2' src='gfx/particles.png' x='96' y='0' width='16' height='16'/>
+    <resource type='gfx' name='enemy_death3' src='gfx/particles.png' x='112' y='0' width='16' height='16'/>
+    <resource type='gfx' name='enemy_death4' src='gfx/particles.png' x='128' y='0' width='16' height='16'/>
+    <resource type='gfx' name='enemy_death5' src='gfx/particles.png' x='144' y='0' width='16' height='16'/>
+    <resource type='gfx' name='bluebar0' src='gfx/board.png' x='136' y='17' width='2' height='6'/>
+    <resource type='gfx' name='bluebar1' src='gfx/board.png' x='138' y='17' width='1' height='6'/>
+    <resource type='gfx' name='bluebar2' src='gfx/board.png' x='139' y='17' width='2' height='6'/>
+    <resource type='gfx' name='greenbar0' src='gfx/board.png' x='136' y='25' width='2' height='6'/>
+    <resource type='gfx' name='greenbar1' src='gfx/board.png' x='138' y='25' width='1' height='6'/>
+    <resource type='gfx' name='greenbar2' src='gfx/board.png' x='139' y='25' width='2' height='6'/>
+    <resource type='gfx' name='redbar0' src='gfx/board.png' x='136' y='33' width='2' height='6'/>
+    <resource type='gfx' name='redbar1' src='gfx/board.png' x='138' y='33' width='1' height='6'/>
+    <resource type='gfx' name='redbar2' src='gfx/board.png' x='139' y='33' width='2' height='6'/>
+    <resource type='gfx' name='item_tnt' src='gfx/inventory.png' x='0' y='0' width='16' height='16'/>
+    <resource type='gfx' name='item_key' src='gfx/inventory.png' x='0' y='16' width='16' height='16'/>
+    <resource type='gfx' name='item_drill' src='gfx/inventory.png' x='0' y='32' width='16' height='16'/>
+    <resource type='gfx' name='item_waste' src='gfx/inventory.png' x='0' y='48' width='16' height='16'/>
+    <resource type='gfx' name='item_barrel' src='gfx/inventory.png' x='0' y='64' width='16' height='16'/>
+    <resource type='gfx' name='item_battery' src='gfx/inventory.png' x='0' y='80' width='16' height='16'/>
+    <resource type='gfx' name='item_teleport_pass' src='gfx/inventory.png' x='0' y='96' width='16' height='16'/>
+    <resource type='gfx' name='item_bomb' src='gfx/inventory.png' x='0' y='112' width='16' height='16'/>
+    <resource type='gfx' name='item_detonator' src='gfx/inventory.png' x='0' y='144' width='16' height='16'/>
+    <resource type='gfx' name='item_fuse' src='gfx/inventory.png' x='0' y='160' width='16' height='16'/>
+    <resource type='gfx' name='item_card01' src='gfx/inventory.png' x='0' y='176' width='16' height='16'/>
+    <resource type='gfx' name='item_card02' src='gfx/inventory.png' x='0' y='192' width='16' height='16'/>
+    <resource type='gfx' name='item_card03' src='gfx/inventory.png' x='0' y='208' width='16' height='16'/>
+    <resource type='gfx' name='item_card04' src='gfx/inventory.png' x='0' y='224' width='16' height='16'/>
+    <resource type='gfx' name='item_card05' src='gfx/inventory.png' x='0' y='240' width='16' height='16'/>
+    <resource type='gfx' name='item_card06' src='gfx/inventory.png' x='0' y='256' width='16' height='16'/>
+    <resource type='gfx' name='item_card07' src='gfx/inventory.png' x='0' y='272' width='16' height='16'/>
+    <resource type='gfx' name='item_card08' src='gfx/inventory.png' x='0' y='288' width='16' height='16'/>
+    <resource type='gfx' name='respawn_part0' src='gfx/particles.png' x='178' y='0' width='4' height='4'/>
+    <resource type='gfx' name='respawn_part1' src='gfx/particles.png' x='176' y='5' width='4' height='3'/>
+    <resource type='gfx' name='respawn_part2' src='gfx/particles.png' x='181' y='5' width='3' height='3'/>
+    <resource type='gfx' name='respawn_part3' src='gfx/particles.png' x='186' y='0' width='4' height='4'/>
+    <resource type='gfx' name='respawn_part4' src='gfx/particles.png' x='184' y='5' width='4' height='3'/>
+    <resource type='gfx' name='respawn_part5' src='gfx/particles.png' x='189' y='5' width='3' height='3'/>
+    <resource type='gfx' name='crap0' src='gfx/particles.png' x='161' y='0' width='3' height='3'/>
+    <resource type='gfx' name='crap1' src='gfx/particles.png' x='165' y='0' width='3' height='3'/>
+    <resource type='gfx' name='crap2' src='gfx/particles.png' x='161' y='4' width='3' height='3'/>
+    <resource type='gfx' name='crap3' src='gfx/particles.png' x='165' y='4' width='3' height='3'/>
+    <resource type='gfx' name='thrust0' src='gfx/particles.png' x='169' y='0' width='3' height='3'/>
+    <resource type='gfx' name='thrust1' src='gfx/particles.png' x='173' y='0' width='3' height='3'/>
+    <resource type='gfx' name='thrust2' src='gfx/particles.png' x='169' y='4' width='3' height='3'/>
+    <resource type='gfx' name='thrust3' src='gfx/particles.png' x='173' y='4' width='3' height='3'/>
+    <resource type='gfx' name='disabled_btn01' src='gfx/elevator.png' x='0' y='0' width='16' height='16'/>
+    <resource type='gfx' name='disabled_btn02' src='gfx/elevator.png' x='16' y='0' width='16' height='16'/>
+    <resource type='gfx' name='disabled_btn03' src='gfx/elevator.png' x='32' y='0' width='16' height='16'/>
+    <resource type='gfx' name='disabled_btn04' src='gfx/elevator.png' x='48' y='0' width='16' height='16'/>
+    <resource type='gfx' name='disabled_btn05' src='gfx/elevator.png' x='64' y='0' width='16' height='16'/>
+    <resource type='gfx' name='disabled_btn06' src='gfx/elevator.png' x='80' y='0' width='16' height='16'/>
+    <resource type='gfx' name='disabled_btn07' src='gfx/elevator.png' x='96' y='0' width='16' height='16'/>
+    <resource type='gfx' name='disabled_btn08' src='gfx/elevator.png' x='112' y='0' width='16' height='16'/>
+    <resource type='gfx' name='pressed_btn01' src='gfx/elevator.png' x='0' y='16' width='16' height='16'/>
+    <resource type='gfx' name='pressed_btn02' src='gfx/elevator.png' x='16' y='16' width='16' height='16'/>
+    <resource type='gfx' name='pressed_btn03' src='gfx/elevator.png' x='32' y='16' width='16' height='16'/>
+    <resource type='gfx' name='pressed_btn04' src='gfx/elevator.png' x='48' y='16' width='16' height='16'/>
+    <resource type='gfx' name='pressed_btn05' src='gfx/elevator.png' x='64' y='16' width='16' height='16'/>
+    <resource type='gfx' name='pressed_btn06' src='gfx/elevator.png' x='80' y='16' width='16' height='16'/>
+    <resource type='gfx' name='pressed_btn07' src='gfx/elevator.png' x='96' y='16' width='16' height='16'/>
+    <resource type='gfx' name='pressed_btn08' src='gfx/elevator.png' x='112' y='16' width='16' height='16'/>
+    <resource type='gfx' name='elev_panel' src='gfx/elevator.png' x='0' y='32' width='224' height='120'/>
+    <resource type='gfx' name='selected_lvl01' src='gfx/elevator.png' x='224' y='0' width='24' height='14'/>
+    <resource type='gfx' name='selected_lvl02' src='gfx/elevator.png' x='224' y='14' width='24' height='12'/>
+    <resource type='gfx' name='selected_lvl03' src='gfx/elevator.png' x='224' y='26' width='24' height='14'/>
+    <resource type='gfx' name='selected_lvl04' src='gfx/elevator.png' x='224' y='40' width='24' height='10'/>
+    <resource type='gfx' name='selected_lvl05' src='gfx/elevator.png' x='224' y='50' width='24' height='10'/>
+    <resource type='gfx' name='selected_lvl06' src='gfx/elevator.png' x='224' y='60' width='24' height='18'/>
+    <resource type='gfx' name='selected_lvl07' src='gfx/elevator.png' x='224' y='78' width='24' height='10'/>
+    <resource type='gfx' name='selected_lvl08' src='gfx/elevator.png' x='224' y='88' width='24' height='10'/>
+    <resource type='gfx' name='blocked_lvl01' src='gfx/elevator.png' x='248' y='0' width='24' height='14'/>
+    <resource type='gfx' name='blocked_lvl02' src='gfx/elevator.png' x='248' y='14' width='24' height='12'/>
+    <resource type='gfx' name='blocked_lvl03' src='gfx/elevator.png' x='248' y='26' width='24' height='14'/>
+    <resource type='gfx' name='blocked_lvl04' src='gfx/elevator.png' x='248' y='40' width='24' height='10'/>
+    <resource type='gfx' name='blocked_lvl05' src='gfx/elevator.png' x='248' y='50' width='24' height='10'/>
+    <resource type='gfx' name='blocked_lvl06' src='gfx/elevator.png' x='248' y='60' width='24' height='18'/>
+    <resource type='gfx' name='blocked_lvl07' src='gfx/elevator.png' x='248' y='78' width='24' height='10'/>
+    <resource type='gfx' name='blocked_lvl08' src='gfx/elevator.png' x='248' y='88' width='24' height='10'/>
+    <resource type='gfx' name='mark0' src='gfx/elevator.png' x='128' y='0' width='8' height='8'/>
+    <resource type='gfx' name='mark1' src='gfx/elevator.png' x='136' y='0' width='8' height='8'/>
+    <resource type='gfx' name='mark2' src='gfx/elevator.png' x='144' y='0' width='8' height='8'/>
+    <resource type='gfx' name='mark3' src='gfx/elevator.png' x='152' y='0' width='8' height='8'/>
+    <resource type='gfx' name='mark4' src='gfx/elevator.png' x='160' y='0' width='8' height='8'/>
+    <resource type='gfx' name='info_area_title0' src='gfx/info_area.png' x='0' y='0' width='256' height='8'/>
+    <resource type='gfx' name='info_area_title1' src='gfx/info_area.png' x='0' y='8' width='256' height='8'/>
+    <resource type='gfx' name='info_area_title2' src='gfx/info_area.png' x='0' y='16' width='256' height='8'/>
+    <resource type='gfx' name='info_area_title3' src='gfx/info_area.png' x='0' y='24' width='256' height='8'/>
+    <resource type='gfx' name='info_area_title4' src='gfx/info_area.png' x='0' y='32' width='256' height='8'/>
+    <resource type='gfx' name='info_area_title5' src='gfx/info_area.png' x='0' y='40' width='256' height='8'/>
+    <resource type='gfx' name='info_area_title6' src='gfx/info_area.png' x='0' y='48' width='256' height='8'/>
+    <resource type='gfx' name='info_area_title7' src='gfx/info_area.png' x='0' y='56' width='256' height='8'/>
+    <resource type='gfx' name='info_area_title8' src='gfx/info_area.png' x='0' y='64' width='256' height='8'/>
+    <resource type='gfx' name='powerup_life_00' src='gfx/powerups.png' x='0' y='0' width='10' height='10'/>
+    <resource type='gfx' name='powerup_life_01' src='gfx/powerups.png' x='10' y='0' width='10' height='10'/>
+    <resource type='gfx' name='powerup_life_02' src='gfx/powerups.png' x='20' y='0' width='10' height='10'/>
+    <resource type='gfx' name='powerup_life_03' src='gfx/powerups.png' x='30' y='0' width='10' height='10'/>
+    <resource type='gfx' name='powerup_beam_00' src='gfx/powerups.png' x='0' y='10' width='10' height='10'/>
+    <resource type='gfx' name='powerup_beam_01' src='gfx/powerups.png' x='10' y='10' width='10' height='10'/>
+    <resource type='gfx' name='powerup_beam_02' src='gfx/powerups.png' x='20' y='10' width='10' height='10'/>
+    <resource type='gfx' name='powerup_beam_03' src='gfx/powerups.png' x='30' y='10' width='10' height='10'/>
+    <resource type='gfx' name='powerup_thrust_00' src='gfx/powerups.png' x='0' y='20' width='10' height='10'/>
+    <resource type='gfx' name='powerup_thrust_01' src='gfx/powerups.png' x='10' y='20' width='10' height='10'/>
+    <resource type='gfx' name='powerup_thrust_02' src='gfx/powerups.png' x='20' y='20' width='10' height='10'/>
+    <resource type='gfx' name='powerup_thrust_03' src='gfx/powerups.png' x='30' y='20' width='10' height='10'/>
+    <resource type='gfx' name='powerup_transition_00' src='gfx/powerups.png' x='70' y='0' width='10' height='10'/>
+    <resource type='gfx' name='powerup_transition_01' src='gfx/powerups.png' x='60' y='0' width='10' height='10'/>
+    <resource type='gfx' name='powerup_transition_02' src='gfx/powerups.png' x='50' y='0' width='10' height='10'/>
+    <resource type='gfx' name='powerup_transition_03' src='gfx/powerups.png' x='40' y='0' width='10' height='10'/>
+    <resource type='sample' name='thrustup' src='samples/thrustup.ogg'/>
+    <resource type='sample' name='bulletsup' src='samples/bulletsup.ogg'/>
+    <resource type='sample' name='pickup' src='samples/pickup.ogg'/>
+    <resource type='sample' name='laser' src='samples/laser.ogg'/>
+    <resource type='sample' name='blip' src='samples/blip.ogg'/>
+    <resource type='sample' name='cancel' src='samples/cancel.ogg'/>
+    <resource type='sample' name='accept' src='samples/accept.ogg'/>
+    <resource type='sample' name='logo_sound' src='samples/logo.ogg'/>
+    <resource type='sample' name='exp' src='samples/exp.ogg'/>
+    <resource type='sample' name='secured' src='samples/secured.ogg'/>
+    <resource type='sample' name='teleport' src='samples/teleport.ogg'/>
+    <resource type='sample' name='enemy_hit_sam' src='samples/enemy_hit.ogg'/>
+    <resource type='sample' name='player_hit_sam' src='samples/player_hit.ogg'/>
+    <resource type='sample' name='ding' src='samples/ding.ogg'/>
+    <resource type='sample' name='powerup' src='samples/powerup.ogg'/>
+    <resource type='sample' name='level01_song' src='music/level01_song.ogg'/>
+    <resource type='music' name='ingame_song' src='music/ingame.xm'/>
+    <resource type='music' name='menu_song' src='music/menu.xm'/>
+    <resource type='font' name='font_white' src='fonts/font_white.png' rows='4' columns='32'/>
+    <resource type='font' name='font_blue' src='fonts/font_blue.png' rows='4' columns='32'/>
+    <resource type='font' name='font_yellow' src='fonts/font_yellow.png' rows='4' columns='32'/>
+    <resource type='font' name='font_board' src='fonts/font_board.png' rows='4' columns='32'/>
+    <resource type='font' name='font_red' src='fonts/font_red.png' rows='4' columns='32'/>
+    <resource type='font' name='font_board' src='fonts/font_board.png' rows='4' columns='32'/>
+    <resource type='font' name='font_small_blue' src='fonts/small_blue.png' rows='4' columns='32'/>
+    <resource type='font' name='font_small_red' src='fonts/small_red.png' rows='4' columns='32'/>
+    <resource type='level' name='level01' src='levels/level01.tmx'/>
+    <resource type='level' name='level02' src='levels/level02.tmx'/>
+    <resource type='level' name='level03' src='levels/level03.tmx'/>
+    <resource type='level' name='level04' src='levels/level04.tmx'/>
+    <resource type='level' name='level05' src='levels/level05.tmx'/>
+    <resource type='level' name='level06' src='levels/level06.tmx'/>
+    <resource type='animation' name='jellyfish00_init' src='animations/enemy000_init.xml'/>
+    <resource type='animation' name='jellyfish00' src='animations/enemy000.xml'/>
+    <resource type='animation' name='jellyfish01_init' src='animations/enemy001_init.xml'/>
+    <resource type='animation' name='jellyfish01' src='animations/enemy001.xml'/>
+    <resource type='animation' name='devil00_init' src='animations/enemy002_init.xml'/>
+    <resource type='animation' name='devil00' src='animations/enemy002.xml'/>
+    <resource type='animation' name='devil01_init' src='animations/enemy003_init.xml'/>
+    <resource type='animation' name='devil01' src='animations/enemy003.xml'/>
+    <resource type='animation' name='object000' src='animations/object000.xml'/>
+    <resource type='animation' name='object001' src='animations/object001.xml'/>
+    <resource type='animation' name='object002' src='animations/object002.xml'/>
+    <resource type='animation' name='object003' src='animations/object003.xml'/>
+    <resource type='animation' name='object004' src='animations/object004.xml'/>
+    <resource type='animation' name='object005' src='animations/object005.xml'/>
+    <resource type='animation' name='object006' src='animations/object006.xml'/>
+    <resource type='animation' name='object007' src='animations/object007.xml'/>
+    <resource type='animation' name='object008' src='animations/object008.xml'/>
+    <resource type='animation' name='object009' src='animations/object009.xml'/>
+    <resource type='animation' name='object010' src='animations/object010.xml'/>
+    <resource type='animation' name='object011' src='animations/object011.xml'/>
+    <resource type='animation' name='object012' src='animations/object012.xml'/>
+    <resource type='animation' name='object013' src='animations/object013.xml'/>
+    <resource type='animation' name='object014' src='animations/object014.xml'/>
+    <resource type='animation' name='object015' src='animations/object015.xml'/>
+    <resource type='animation' name='object016' src='animations/object016.xml'/>
+    <resource type='animation' name='battery' src='animations/battery.xml'/>
+    <resource type='animation' name='barrel' src='animations/barrel.xml'/>
+    <resource type='animation' name='card01' src='animations/card01.xml'/>
+    <resource type='animation' name='card02' src='animations/card02.xml'/>
+    <resource type='animation' name='card03' src='animations/card03.xml'/>
+    <resource type='animation' name='card07' src='animations/card07.xml'/>
+    <resource type='animation' name='drill' src='animations/drill.xml'/>
+    <resource type='animation' name='waste' src='animations/waste.xml'/>
+    <resource type='animation' name='detonator' src='animations/detonator.xml'/>
+    <resource type='animation' name='fuse' src='animations/fuse.xml'/>
+    <resource type='animation' name='teleport_pass' src='animations/teleport_pass.xml'/>
+    <resource type='animation' name='bomb' src='animations/bomb.xml'/>
+    <resource type='animation' name='key' src='animations/key.xml'/>
+    <resource type='animation' name='lock_door' src='animations/lock_door.xml'/>
+    <resource type='animation' name='lock_dirt' src='animations/lock_dirt.xml'/>
+    <resource type='animation' name='lock_dirt_horizontal' src='animations/lock_dirt_horizontal.xml'/>
+    <resource type='animation' name='lock_block' src='animations/lock_block.xml'/>
+    <resource type='animation' name='tnt' src='animations/tnt.xml'/>
+    <resource type='animation' name='powerup_appears' src='animations/powerup_appears.xml'/>
+    <resource type='animation' name='powerup_disappears' src='animations/powerup_disappears.xml'/>
+    <resource type='animation' name='powerup_life' src='animations/powerup_life.xml'/>
+    <resource type='animation' name='powerup_beam' src='animations/powerup_beam.xml'/>
+    <resource type='animation' name='powerup_thrust' src='animations/powerup_thrust.xml'/>
+</root>

@@ -1,5 +1,8 @@
 *.pyc
 .*.swp
-data
-locale
+data.zip
 solstice.cfg
+locale
+venv
+build
+.idea

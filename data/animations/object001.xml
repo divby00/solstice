@@ -1,0 +1,12 @@
+<xml>
+    <animation>
+        <images>
+            <image src='gfx/object001.png' id='0' x='0'  y='0' width='32' height='32'/>
+            <image src='gfx/object001.png' id='1' x='32' y='0' width='32' height='32'/>
+        </images>
+        <frames>
+            <frame id='0' offsetx='0' offsety='0' duration='8'/>
+            <frame id='1' offsetx='0' offsety='0' duration='8'/>
+        </frames>
+    </animation>
+</xml>

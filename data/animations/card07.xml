@@ -1,0 +1,17 @@
+<xml>
+    <animation>
+        <images>
+            <image src='gfx/inventory.png' id='0' x='0' y='272' width='16' height='16'/>
+            <image src='gfx/inventory.png' id='1' x='16' y='272' width='16' height='16'/>
+            <image src='gfx/inventory.png' id='2' x='32' y='272' width='16' height='16'/>
+            <image src='gfx/inventory.png' id='3' x='48' y='272' width='16' height='16'/>
+        </images>
+        <frames>
+            <frame id='0' offsetx='0' offsety='0' duration='10'/>
+            <frame id='1' offsetx='0' offsety='0' duration='1'/>
+            <frame id='2' offsetx='0' offsety='0' duration='1'/>
+            <frame id='3' offsetx='0' offsety='0' duration='1'/>
+        </frames>
+    </animation>
+</xml>
+

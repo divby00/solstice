@@ -13,16 +13,16 @@ import pygame_sdl2
 pygame_sdl2.import_as_pygame()
 '''
 import pygame
-import config
-import control
-import resource_manager
-import scene_manager
-import logo_scene
-import elevator_scene
-import intro_scene
-import game_scene
-import screen
-import sound_player
+import config as config
+import control as control
+import resource_manager as resource_manager
+import scene_manager as scene_manager
+import logo_scene as logo_scene
+import elevator_scene as elevator_scene
+import intro_scene as intro_scene
+import game_scene as game_scene
+import screen as screen
+import sound_player as sound_player
 
 
 class Solstice(object):

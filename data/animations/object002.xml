@@ -1,0 +1,15 @@
+<xml>
+    <animation>
+        <images>
+            <image src='gfx/object002.png' id='0' x='0'  y='0' width='56' height='48'/>
+            <image src='gfx/object002.png' id='1' x='56' y='0' width='56' height='48'/>
+            <image src='gfx/object002.png' id='2' x='112' y='0' width='56' height='48'/>
+        </images>
+        <frames>
+            <frame id='0' offsetx='0' offsety='0' duration='2'/>
+            <frame id='1' offsetx='0' offsety='0' duration='2'/>
+            <frame id='2' offsetx='0' offsety='0' duration='2'/>
+            <frame id='1' offsetx='0' offsety='0' duration='2'/>
+        </frames>
+    </animation>
+</xml>

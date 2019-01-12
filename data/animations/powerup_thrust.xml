@@ -1,0 +1,16 @@
+<xml>
+    <animation>
+        <images>
+            <image src='gfx/powerups.png' id='0' x='0' y='10' width='10' height='10'/>
+            <image src='gfx/powerups.png' id='1' x='10' y='10' width='10' height='10'/>
+            <image src='gfx/powerups.png' id='2' x='20' y='10' width='10' height='10'/>
+        </images>
+        <frames>
+            <frame id='0' offsetx='0' offsety='0' duration='5'/>
+            <frame id='1' offsetx='0' offsety='0' duration='5'/>
+            <frame id='0' offsetx='0' offsety='0' duration='5'/>
+            <frame id='2' offsetx='0' offsety='0' duration='5'/>
+        </frames>
+    </animation>
+</xml>
+
