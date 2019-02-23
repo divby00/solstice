@@ -289,6 +289,7 @@
     <resource type='font' name='font_board' src='fonts/font_board.png' rows='4' columns='32'/>
     <resource type='font' name='font_small_blue' src='fonts/small_blue.png' rows='4' columns='32'/>
     <resource type='font' name='font_small_red' src='fonts/small_red.png' rows='4' columns='32'/>
+    <resource type='level' name='level00' src='levels/level00.tmx'/>
     <resource type='level' name='level01' src='levels/level01.tmx'/>
     <resource type='level' name='level02' src='levels/level02.tmx'/>
     <resource type='level' name='level03' src='levels/level03.tmx'/>
