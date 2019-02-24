@@ -226,12 +226,12 @@ class GameScene(scene.Scene):
         self._teleports = teleport.TeleportBuilder.build(self._current_level.teleports)
         self._locks = lock.LockBuilder.build(self, self._current_level.locks)
         self._beam_barriers = lock.BeamBarriersBuilder.build(self._current_level.beam_barriers)
-        self._items = item.ItemBuilder.build(self, self._resource_manager,
-                                             self._current_level.items)
         self._enemies = enemy.EnemyBuilder.build(self)
         self._powerups = powerups.Powerups(self._player)
         self._player.on_start(self)
         self._renderer_object = renderer.Renderer(self)
+        self._items = item.ItemBuilder.build(self, self._resource_manager,
+                                             self._current_level.items)
         self._sound_player.play_sample('level01_song')
         self._control.event_driven = False
 

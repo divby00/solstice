@@ -321,6 +321,7 @@
     <resource type='animation' name='object014' src='animations/object014.xml'/>
     <resource type='animation' name='object015' src='animations/object015.xml'/>
     <resource type='animation' name='object016' src='animations/object016.xml'/>
+    <resource type='animation' name='object017' src='animations/object017.xml'/>
     <resource type='animation' name='battery' src='animations/battery.xml'/>
     <resource type='animation' name='barrel' src='animations/barrel.xml'/>
     <resource type='animation' name='card01' src='animations/card01.xml'/>

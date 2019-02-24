@@ -262,9 +262,11 @@ class ItemTeleport(Item):
         y = self._player.y
 
         # Check if player is near a teleport machine, in that case prepare both teleport machines
+        # preventing to use a teleporter key with an already activated teleporter
         for telport in self._teleports:
             if x + 8 >= telport.x - 8 and x - 8 <= telport.x + telport.w + 16 \
-                    and y + 8 >= telport.y - 8 and y - 8 <= telport.y + telport.h + 8:
+                    and y + 8 >= telport.y - 8 and y - 8 <= telport.y + telport.h + 8 \
+                    and telport.status == teleport.Teleport.INACTIVE:
                 telport.status = teleport.Teleport.ACTIVE
 
                 for tel in self._teleports:
@@ -272,12 +274,24 @@ class ItemTeleport(Item):
                             and (tel.x != telport.x or tel.y != telport.y):
                         tel.status = teleport.Teleport.ACTIVE
                         self._player.teleport_destiny = tel
+                        self._change_teleporters_animation(telport, tel, 'object017')
                     if tel.teleport_id == telport.teleport_id \
                             and tel.x == telport.x and tel.y == telport.y:
                         tel.status = teleport.Teleport.ACTIVE
                         self._player.teleport_source = tel
+                        self._change_teleporters_animation(telport, tel, 'object017')
 
                 self._player.selected_item = None
+
+    def _change_teleporters_animation(self, source_teleporter, destiny_teleporter, animation_name):
+        '''
+        Teleporter coordinates need to be transformed to the animation coordinates, therefore the -16 and -24
+        sustraction. This method returns the coordinates for the paired teleports.
+        '''
+        self._game_context._renderer_object.change_animation(
+            (source_teleporter.x - 16, source_teleporter.y - 24), animation_name)
+        self._game_context._renderer_object.change_animation(
+            (destiny_teleporter.x - 16, destiny_teleporter.y - 24), animation_name)
 
 
 class ItemTnt(ItemUnlocker):

@@ -178,7 +178,6 @@ class Player(object):
         if self._teleport_animation >= 5:
             self._teleport_animation = -1
             self._teleporting = False
-            self._teleport_source.status = teleport.Teleport.INACTIVE
             self._x = self._teleport_destiny.x + 8
             self._y = self._teleport_destiny.y + 8
             teleport_id = self._teleport_destiny.teleport_id
@@ -494,6 +493,19 @@ class Player(object):
                     and self._x + 8 >= telport.x \
                     and self._x - 8 <= telport.x + telport.w + 8 \
                     and self._y - 8 == telport.y:
+
+                # Turn off the source teleporter and change its animation
+                telport.status = teleport.Teleport.INACTIVE
+                self._game_context._renderer_object.change_animation((telport.x - 16, telport.y - 24), 'object003')
+
+                # Sets the teleport source and destiny
+                self._teleport_source = telport
+
+                # Search the destiny teleporter
+                for t in self._teleports:
+                    if t.teleport_id == telport.teleport_id and t.x != telport.x and t.y != telport.y:
+                        self._teleport_destiny = t
+
                 return True
         return False
 

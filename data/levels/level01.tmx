@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="96" height="108" tilewidth="8" tileheight="8" nextobjectid="81">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="96" height="108" tilewidth="8" tileheight="8" nextobjectid="81">
  <properties>
   <property name="devil00_frequency" value="25"/>
   <property name="devil01_frequency" value="25"/>
@@ -7,10 +7,10 @@
   <property name="jellyfish01_frequency" value="25"/>
   <property name="max_enemies" value="80"/>
  </properties>
- <tileset firstgid="1" name="tileset" tilewidth="8" tileheight="8" tilecount="518">
+ <tileset firstgid="1" name="tileset" tilewidth="8" tileheight="8" tilecount="518" columns="37">
   <image source="tileset.png" width="296" height="112"/>
  </tileset>
- <tileset firstgid="519" name="hard" tilewidth="8" tileheight="8" tilecount="1">
+ <tileset firstgid="519" name="hard" tilewidth="8" tileheight="8" tilecount="1" columns="1">
   <image source="hard.png" width="8" height="8"/>
   <tile id="0">
    <properties>
@@ -18,46 +18,46 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="520" name="background" tilewidth="8" tileheight="8" tilecount="64">
+ <tileset firstgid="520" name="background" tilewidth="8" tileheight="8" tilecount="64" columns="16">
   <image source="backgrounds.png" width="128" height="32"/>
  </tileset>
- <tileset firstgid="584" name="inventory" tilewidth="8" tileheight="8" tilecount="304">
+ <tileset firstgid="584" name="inventory" tilewidth="8" tileheight="8" tilecount="304" columns="8">
   <image source="inventory.png" width="64" height="304"/>
  </tileset>
- <tileset firstgid="888" name="object000" tilewidth="8" tileheight="8" tilecount="96">
+ <tileset firstgid="888" name="object000" tilewidth="8" tileheight="8" tilecount="96" columns="16">
   <image source="object000.png" width="128" height="48"/>
  </tileset>
- <tileset firstgid="984" name="object001" tilewidth="8" tileheight="8" tilecount="32">
+ <tileset firstgid="984" name="object001" tilewidth="8" tileheight="8" tilecount="32" columns="8">
   <image source="object001.png" width="64" height="32"/>
  </tileset>
- <tileset firstgid="1016" name="object002" tilewidth="8" tileheight="8" tilecount="126">
+ <tileset firstgid="1016" name="object002" tilewidth="8" tileheight="8" tilecount="126" columns="21">
   <image source="object002.png" width="168" height="48"/>
  </tileset>
- <tileset firstgid="1142" name="object003" tilewidth="8" tileheight="8" tilecount="84">
+ <tileset firstgid="1142" name="object003" tilewidth="8" tileheight="8" tilecount="84" columns="12">
   <image source="object003.png" width="96" height="56"/>
  </tileset>
- <tileset firstgid="1226" name="object004" tilewidth="8" tileheight="8" tilecount="12">
+ <tileset firstgid="1226" name="object004" tilewidth="8" tileheight="8" tilecount="12" columns="3">
   <image source="object004.png" width="24" height="32"/>
  </tileset>
- <tileset firstgid="1238" name="object005" tilewidth="8" tileheight="8" tilecount="20">
+ <tileset firstgid="1238" name="object005" tilewidth="8" tileheight="8" tilecount="20" columns="5">
   <image source="object005.png" width="40" height="32"/>
  </tileset>
- <tileset firstgid="1258" name="object006" tilewidth="8" tileheight="8" tilecount="24">
+ <tileset firstgid="1258" name="object006" tilewidth="8" tileheight="8" tilecount="24" columns="6">
   <image source="object006.png" width="48" height="32"/>
  </tileset>
- <tileset firstgid="1282" name="object007" tilewidth="8" tileheight="8" tilecount="45">
+ <tileset firstgid="1282" name="object007" tilewidth="8" tileheight="8" tilecount="45" columns="5">
   <image source="object007.png" width="40" height="72"/>
  </tileset>
- <tileset firstgid="1327" name="object008" tilewidth="8" tileheight="8" tilecount="8">
+ <tileset firstgid="1327" name="object008" tilewidth="8" tileheight="8" tilecount="8" columns="4">
   <image source="object008.png" width="32" height="16"/>
  </tileset>
- <tileset firstgid="1335" name="object009" tilewidth="8" tileheight="8" tilecount="96">
+ <tileset firstgid="1335" name="object009" tilewidth="8" tileheight="8" tilecount="96" columns="12">
   <image source="object009.png" width="96" height="64"/>
  </tileset>
- <imagelayer name="back">
-  <image source="base.png"/>
+ <imagelayer name="back" visible="0" offsetx="8" offsety="8">
+  <image source="base.png" width="32" height="32"/>
  </imagelayer>
- <layer name="background" width="96" height="108">
+ <layer name="background" width="96" height="108" visible="0">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -47508,9 +47508,9 @@
    <tile gid="206"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="209"/>
    <tile gid="0"/>
-   <tile gid="211"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -56858,8 +56858,8 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="374"/>
-   <tile gid="375"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -72661,7 +72661,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <objectgroup name="special">
+ <objectgroup name="special" visible="0">
   <properties>
    <property name="animation" value="object008"/>
    <property name="zindex" value="1"/>

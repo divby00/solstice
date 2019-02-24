@@ -172,7 +172,8 @@ class TiledLevel(object):
             if obj.get(TiledLevel.NAME) == TiledLevel.SPECIAL:
                 found = True
 
-                for o in obj.findall('object'):
+                objects = obj.findall('object')
+                for o in objects:
                     objx = o.get('x')
                     objy = o.get('y')
                     animation_name = ''

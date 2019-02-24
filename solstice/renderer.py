@@ -64,7 +64,7 @@ class Renderer(object):
             animation_y = data[2]
             animation_name = animations.get(animation)
             pattern = Pattern(int(animation_x) + 256, int(animation_y) + 144, animation_name)
-            if zindex == '0':
+            if zindex == '0' and animation_name != 'object017':
                 self._backpatterns.append(pattern)
             else:
                 self._forepatterns.append(pattern)
