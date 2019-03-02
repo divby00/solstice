@@ -267,17 +267,20 @@ class ItemTeleport(Item):
             if x + 8 >= telport.x - 8 and x - 8 <= telport.x + telport.w + 16 \
                     and y + 8 >= telport.y - 8 and y - 8 <= telport.y + telport.h + 8:
                 telport.status = teleport.Teleport.ACTIVE
-                telport.charges = telport.charges + 1
 
                 for tel in self._teleports:
+
                     if tel.teleport_id == telport.teleport_id \
                             and (tel.x != telport.x or tel.y != telport.y):
                         tel.status = teleport.Teleport.ACTIVE
+                        tel.charges = tel.charges + 1
                         self._player.teleport_destiny = tel
                         self._change_teleporters_animation(telport, tel, 'object017')
+
                     if tel.teleport_id == telport.teleport_id \
                             and tel.x == telport.x and tel.y == telport.y:
                         tel.status = teleport.Teleport.ACTIVE
+                        tel.charges = tel.charges + 1
                         self._player.teleport_source = tel
                         self._change_teleporters_animation(telport, tel, 'object017')
 
