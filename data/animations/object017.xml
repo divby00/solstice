@@ -1,0 +1,10 @@
+<xml>
+    <animation>
+        <images>
+            <image src='gfx/object003.png' id='0' x='96' y='0' width='48' height='56'/>
+        </images>
+        <frames>
+            <frame id='0' offsetx='0' offsety='0' duration='8'/>
+        </frames>
+    </animation>
+</xml>
