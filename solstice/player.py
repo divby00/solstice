@@ -495,8 +495,11 @@ class Player(object):
                     and self._y - 8 == telport.y:
 
                 # Turn off the source teleporter and change its animation
-                telport.status = teleport.Teleport.INACTIVE
-                self._game_context._renderer_object.change_animation((telport.x - 16, telport.y - 24), 'object003')
+                telport.charges = telport.charges - 1
+
+                if telport.charges <= 0:
+                    telport.status = teleport.Teleport.INACTIVE
+                    self._game_context._renderer_object.change_animation((telport.x - 16, telport.y - 24), 'object003')
 
                 # Sets the teleport source and destiny
                 self._teleport_source = telport

@@ -7,6 +7,7 @@ class Teleport(object):
         self._x, self._y = position[0] + 256, position[1] + 144
         self._w, self._h = size
         self._status = Teleport.INACTIVE
+        self._charges = 0
 
     @property
     def x(self):
@@ -35,6 +36,14 @@ class Teleport(object):
     @status.setter
     def status(self, value):
         self._status = value
+
+    @property
+    def charges(self):
+        return self._charges
+
+    @charges.setter
+    def charges(self, value):
+        self._charges = value
 
 
 class TeleportBuilder(object):

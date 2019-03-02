@@ -265,9 +265,9 @@ class ItemTeleport(Item):
         # preventing to use a teleporter key with an already activated teleporter
         for telport in self._teleports:
             if x + 8 >= telport.x - 8 and x - 8 <= telport.x + telport.w + 16 \
-                    and y + 8 >= telport.y - 8 and y - 8 <= telport.y + telport.h + 8 \
-                    and telport.status == teleport.Teleport.INACTIVE:
+                    and y + 8 >= telport.y - 8 and y - 8 <= telport.y + telport.h + 8:
                 telport.status = teleport.Teleport.ACTIVE
+                telport.charges = telport.charges + 1
 
                 for tel in self._teleports:
                     if tel.teleport_id == telport.teleport_id \
