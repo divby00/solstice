@@ -301,3 +301,27 @@ class EnemyBeamParticles(Particles):
         for particle in self._particle_list:
             if -1 < particle.frame < 3:
                 screen.blit(self._sprites[particle.frame], (particle.x, particle.y))
+
+
+class LifeExchangerParticles(Particles):
+    def __init__(self, resource_manager, name):
+        super(LifeExchangerParticles, self).__init__(resource_manager, name)
+
+    def generate(self, position):
+        particle = Particle(random.randint(position[0], position[1]),
+                            random.randint(position[2], position[3]),
+                            random.randint(-4, 0))
+        self._particle_list.append(particle)
+
+    def run(self):
+        for particle in self._particle_list:
+            if particle.frame < 3:
+                particle.frame += 1
+            else:
+                self._particle_list.remove(particle)
+
+    def render(self, screen):
+        for particle in self._particle_list:
+            if -1 < particle.frame < 3:
+                screen.blit(self._sprites[particle.frame], (particle.x, particle.y))
+

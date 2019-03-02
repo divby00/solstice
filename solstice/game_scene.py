@@ -4,7 +4,6 @@ import control
 import enemy
 import info_area
 import item
-import lock
 import magnetic
 import nothrust
 import particles
@@ -15,6 +14,8 @@ import rails
 import renderer
 import scene
 import teleport
+from life_exchanger import LifeExchangerBuilder
+from lock import BeamBarriersBuilder, LockBuilder
 
 
 class GameScene(scene.Scene):
@@ -22,6 +23,7 @@ class GameScene(scene.Scene):
         super(GameScene, self).__init__(context, name, scene_speed)
         self._screen = context.screen
         self._locks = None
+        self._life_exchangers = None
         self._beam_barriers = None
         self._items = None
         self._teleports = None
@@ -30,7 +32,7 @@ class GameScene(scene.Scene):
         self._rails = None
         self._container = None
         self._enemies = None
-        self._level = context.resource_manager.get('level01')
+        self._level = context.resource_manager.get('level00')
         self._current_level = None
         self._renderer_object = None
         self._enemies_renderer = None
@@ -64,6 +66,7 @@ class GameScene(scene.Scene):
         player_crap_particles = particles.PlayerCrapParticles(resource_manager, 'crap')
         player_smoke_particles = particles.PlayerSmokeParticles(resource_manager, 'thrust')
         respawn_particles = particles.RespawnParticles(resource_manager, 'respawn_part')
+        life_exchanger_particles = particles.LifeExchangerParticles(resource_manager, 'life_exchanger')
         particles_mngr = particles_manager.ParticlesManager()
         particles_mngr.register_particles(beam_particles)
         particles_mngr.register_particles(exp_particles)
@@ -72,6 +75,7 @@ class GameScene(scene.Scene):
         particles_mngr.register_particles(player_crap_particles)
         particles_mngr.register_particles(player_smoke_particles)
         particles_mngr.register_particles(respawn_particles)
+        particles_mngr.register_particles(life_exchanger_particles)
         return particles_mngr
 
     def _check_player_is_in_elevator(self):
@@ -200,6 +204,11 @@ class GameScene(scene.Scene):
         self._player.recovery_counter = 0
         self._player.recovery_mode = False
 
+        if self._player.over_life_exchanger:
+            self._player.life = self._player.life - 5
+            self._player.hit = True
+            self._sound_player.play_sample('teleport')
+
         if self._player.selected_item is not None:
             self._player.using_item = True
             self._sound_player.play_sample('accept')
@@ -224,8 +233,9 @@ class GameScene(scene.Scene):
         self._rails = rails.RailsBuilder.build(self._current_level.rails)
         self._container = container.ContainerBuilder.build(self._current_level.container_info)
         self._teleports = teleport.TeleportBuilder.build(self._current_level.teleports)
-        self._locks = lock.LockBuilder.build(self, self._current_level.locks)
-        self._beam_barriers = lock.BeamBarriersBuilder.build(self._current_level.beam_barriers)
+        self._locks = LockBuilder.build(self, self._current_level.locks)
+        self._life_exchangers = LifeExchangerBuilder.build(self._current_level.life_exchangers)
+        self._beam_barriers = BeamBarriersBuilder.build(self._current_level.beam_barriers)
         self._enemies = enemy.EnemyBuilder.build(self)
         self._powerups = powerups.Powerups(self._player)
         self._player.on_start(self)
@@ -368,3 +378,7 @@ class GameScene(scene.Scene):
     @property
     def powerups(self):
         return self._powerups
+
+    @property
+    def life_exchangers(self):
+        return self._life_exchangers

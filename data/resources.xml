@@ -144,6 +144,9 @@
     <resource type='gfx' name='hit0' src='gfx/particles.png' x='0' y='8' width='8' height='8'/>
     <resource type='gfx' name='hit1' src='gfx/particles.png' x='8' y='8' width='8' height='8'/>
     <resource type='gfx' name='hit2' src='gfx/particles.png' x='16' y='8' width='8' height='8'/>
+    <resource type='gfx' name='life_exchanger0' src='gfx/particles.png' x='168' y='8' width='8' height='8'/>
+    <resource type='gfx' name='life_exchanger1' src='gfx/particles.png' x='176' y='8' width='8' height='8'/>
+    <resource type='gfx' name='life_exchanger2' src='gfx/particles.png' x='184' y='8' width='8' height='8'/>
     <resource type='gfx' name='enemy_hit0' src='gfx/particles.png' x='24' y='8' width='8' height='8'/>
     <resource type='gfx' name='enemy_hit1' src='gfx/particles.png' x='32' y='8' width='8' height='8'/>
     <resource type='gfx' name='enemy_hit2' src='gfx/particles.png' x='40' y='8' width='8' height='8'/>

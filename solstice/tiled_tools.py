@@ -123,9 +123,10 @@ class TiledLevel(object):
         self.start_point = None
         self.exit_point = None
         self._info_areas = []
-        self.__load(xml_data)
+        self._life_exchangers = []
+        self._load(xml_data)
 
-    def __load_map_info(self):
+    def _load_map_info(self):
 
         """ Reads global enemy data such as max. number of enemies and enemy frecuency """
         enemy_data = {}
@@ -142,7 +143,7 @@ class TiledLevel(object):
                    int(self.root.get(TiledLevel.TILEHEIGHT)),
                    enemy_data)
 
-    def __load_back_info(self):
+    def _load_back_info(self):
         source = None
         back = None
 
@@ -163,7 +164,7 @@ class TiledLevel(object):
 
         return back
 
-    def __load_animations_info(self):
+    def _load_animations_info(self):
         found = False
         animated_tiles = {}
 
@@ -199,7 +200,7 @@ class TiledLevel(object):
 
         return animated_tiles
 
-    def __load_special_info(self):
+    def _load_special_info(self):
         found = False
         special = {}
 
@@ -230,14 +231,14 @@ class TiledLevel(object):
         return special
 
     @staticmethod
-    def __parse_container_info(special):
+    def _parse_container_info(special):
         for s in special:
             for a in special[s]:
                 if a == 'container':
                     return s
 
     @staticmethod
-    def __parse_beam_barriers_info(special):
+    def _parse_beam_barriers_info(special):
         beam_barriers = []
 
         for s in special:
@@ -247,7 +248,7 @@ class TiledLevel(object):
         return beam_barriers
 
     @staticmethod
-    def __parse_locks_info(special):
+    def _parse_locks_info(special):
         locks = []
 
         for s in special:
@@ -266,7 +267,7 @@ class TiledLevel(object):
         return locks
 
     @staticmethod
-    def __parse_teleports_info(special):
+    def _parse_teleports_info(special):
         teleports = []
 
         for s in special:
@@ -280,7 +281,7 @@ class TiledLevel(object):
         return teleports
 
     @staticmethod
-    def __parse_rails_info(special):
+    def _parse_rails_info(special):
         rails = []
 
         for s in special:
@@ -300,7 +301,17 @@ class TiledLevel(object):
         return rails
 
     @staticmethod
-    def __parse_magnetic_info(special):
+    def _parse_life_exchangers(special):
+        life_exchangers = []
+
+        for s in special:
+            for a in special[s]:
+                if a == 'life_exchanger':
+                    life_exchangers.append(s)
+        return life_exchangers
+
+    @staticmethod
+    def _parse_magnetic_info(special):
         magnetic_fields = []
 
         for s in special:
@@ -310,7 +321,7 @@ class TiledLevel(object):
         return magnetic_fields
 
     @staticmethod
-    def __parse_nothrust_info(special):
+    def _parse_nothrust_info(special):
         nothrust = []
 
         for s in special:
@@ -320,7 +331,7 @@ class TiledLevel(object):
         return nothrust
 
     @staticmethod
-    def __parse_items_info(special):
+    def _parse_items_info(special):
         items = []
 
         for s in special:
@@ -346,7 +357,7 @@ class TiledLevel(object):
                 if a == 'info_area':
                     self._info_areas.append(''.join([s, ' ', special[s].get(a)]))
 
-    def __load_tileset_info(self):
+    def _load_tileset_info(self):
         tilesets = []
 
         for tileset in self.root.findall(TiledLevel.TILESET):
@@ -384,7 +395,7 @@ class TiledLevel(object):
         tilesets.sort(key=lambda obj: obj.firstgid)
         return tilesets
 
-    def __load_tileset_graphics(self):
+    def _load_tileset_graphics(self):
         # Load sprites for the tiles
         tiles = []
         img_count = 0
@@ -419,7 +430,7 @@ class TiledLevel(object):
         print('Loaded ' + str(img_count) + ' tiles')
         return tiles
 
-    def __load_layers_info(self):
+    def _load_layers_info(self):
         layers = []
 
         for layer in self.root.findall(TiledLevel.LAYER):
@@ -442,7 +453,7 @@ class TiledLevel(object):
                 print(_('Skipping layer %s' % layername))
         return layers
 
-    def __get_start_point(self):
+    def _get_start_point(self):
         start_point = None
         for obj in self.root.findall('objectgroup'):
 
@@ -464,7 +475,7 @@ class TiledLevel(object):
 
         return start_point
 
-    def __get_exit_point(self):
+    def _get_exit_point(self):
         exit_point = None
         for obj in self.root.findall('objectgroup'):
 
@@ -488,7 +499,7 @@ class TiledLevel(object):
 
         return exit_point
 
-    def __load(self, xml_data):
+    def _load(self, xml_data):
         # XML parsing
         before = pygame.time.get_ticks()
         self.root = ElementTree.fromstring(xml_data)
@@ -497,40 +508,41 @@ class TiledLevel(object):
 
         # Read basic map info
         before = pygame.time.get_ticks()
-        self.map = self.__load_map_info()
+        self.map = self._load_map_info()
         after = pygame.time.get_ticks()
         print('\tLEVEL: Map loaded in %d milliseconds.' % (after - before))
 
         # Read tileset info
         before = pygame.time.get_ticks()
-        self.tilesets = self.__load_tileset_info()
-        self.tiles = self.__load_tileset_graphics()
+        self.tilesets = self._load_tileset_info()
+        self.tiles = self._load_tileset_graphics()
         after = pygame.time.get_ticks()
         print('\tLEVEL: Tileset info loaded in %d milliseconds.' % (after - before))
 
         # Read back info. Back info is the first image being rendered.
         before = pygame.time.get_ticks()
-        self.back = self.__load_back_info()
+        self.back = self._load_back_info()
         after = pygame.time.get_ticks()
         print('\tLEVEL: Back info loaded in %d milliseconds.' % (after - before))
 
         # Read animations info
         before = pygame.time.get_ticks()
-        self.animated_tiles = self.__load_animations_info()
+        self.animated_tiles = self._load_animations_info()
         after = pygame.time.get_ticks()
         print('\tLEVEL: Animations info loaded in %d milliseconds.' % (after - before))
 
         # Read special layer info
         before = pygame.time.get_ticks()
-        special = self.__load_special_info()
-        self.teleports = self.__parse_teleports_info(special)
-        self.magnetic_fields = self.__parse_magnetic_info(special)
-        self.container_info = self.__parse_container_info(special)
-        self.locks = self.__parse_locks_info(special)
-        self.beam_barriers = self.__parse_beam_barriers_info(special)
-        self.items = self.__parse_items_info(special)
-        self.nothrust = self.__parse_nothrust_info(special)
-        self.rails = self.__parse_rails_info(special)
+        special = self._load_special_info()
+        self.teleports = self._parse_teleports_info(special)
+        self.magnetic_fields = self._parse_magnetic_info(special)
+        self.container_info = self._parse_container_info(special)
+        self.locks = self._parse_locks_info(special)
+        self.beam_barriers = self._parse_beam_barriers_info(special)
+        self.items = self._parse_items_info(special)
+        self.nothrust = self._parse_nothrust_info(special)
+        self.rails = self._parse_rails_info(special)
+        self._life_exchangers = self._parse_life_exchangers(special)
         self._parse_info_areas(special)
 
         after = pygame.time.get_ticks()
@@ -538,19 +550,19 @@ class TiledLevel(object):
 
         # Read layers info
         before = pygame.time.get_ticks()
-        self.layers = self.__load_layers_info()
+        self.layers = self._load_layers_info()
         after = pygame.time.get_ticks()
         print('\tLEVEL: Layers info loaded in %d milliseconds.' % (after - before))
 
         # Get starting point
         before = pygame.time.get_ticks()
-        self.start_point = self.__get_start_point()
+        self.start_point = self._get_start_point()
         after = pygame.time.get_ticks()
         print('\tLEVEL: Start point info loaded in %d milliseconds.' % (after - before))
 
         # Get exit point
         before = pygame.time.get_ticks()
-        self.exit_point = self.__get_exit_point()
+        self.exit_point = self._get_exit_point()
         after = pygame.time.get_ticks()
         print('\tLEVEL: Exit info loaded in %d milliseconds.' % (after - before))
 
@@ -573,3 +585,7 @@ class TiledLevel(object):
     @property
     def info_areas(self):
         return self._info_areas
+
+    @property
+    def life_exchangers(self):
+        return self._life_exchangers

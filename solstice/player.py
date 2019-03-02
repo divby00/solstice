@@ -65,6 +65,7 @@ class Player(object):
         self._life = 100
         self._lives = 3
         self._teleporting = False
+        self._over_life_exchanger = False
         self._teleport_animation = -1
         self._destiny = None
         self._flying = False
@@ -89,6 +90,7 @@ class Player(object):
         self._laser_spr = []
         self._magnetic_fields = None
         self._info_areas = None
+        self._life_exchangers = None
         self._nothrust = None
         self._rails = None
         self._container = None
@@ -161,6 +163,15 @@ class Player(object):
                     self._active_info_area = info_area.ActiveInfoArea(info.info_area_type,
                                                                       self._resource_manager)
                     self._sound_player.play_sample('ding')
+
+    def _run_status_over_life_exchanger(self):
+        self._over_life_exchanger = False
+        for life_exchanger in self._life_exchangers:
+            if self._x + 8 >= life_exchanger.x and self._x - 8 <= life_exchanger.x + life_exchanger.w \
+                    and self._y + 8 >= life_exchanger.y and self._y - 8 <= life_exchanger.y + life_exchanger.h:
+                particles = self._particles_manager.get('life_exchanger')
+                particles.generate((self._x - 8, self._x, self._y - 8, self._y))
+                self._over_life_exchanger = True
 
     def _run_status_recovering(self):
         self._recovery_animation += 1
@@ -319,6 +330,7 @@ class Player(object):
     def on_start(self, game_context):
         self._magnetic_fields = game_context.magnetic_fields
         self._info_areas = game_context.info_areas
+        self._life_exchangers = game_context.life_exchangers
         self._active_info_area = None
         self._nothrust = game_context.nothrust
         self._rails = game_context.rails
@@ -384,6 +396,7 @@ class Player(object):
         self._run_status_respawn()
         self._run_status_inmortal()
         self._run_status_info_area()
+        self._run_status_over_life_exchanger()
 
     def render(self, screen):
         if not self._dying:
@@ -775,3 +788,7 @@ class Player(object):
     @active_info_area.setter
     def active_info_area(self, value):
         self._active_info_area = value
+
+    @property
+    def over_life_exchanger(self):
+        return self._over_life_exchanger
