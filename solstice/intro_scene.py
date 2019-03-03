@@ -110,7 +110,7 @@ class Credits(object):
             _('Daniel Galan'),
             _('This is Free Software'),
             _('We hope you enjoy it!'),
-            _('Thank you MikroGen!'),
+            _('Thank you Raffaele Cecco!'),
         ]
         self._font_dither = font_dither
         self._credits_sprites = [font.get(text, screen.Screen.WINDOW_SIZE[0])
@@ -172,8 +172,8 @@ class IntroScene(scene.Scene):
         self._stars = Stars(context.resource_manager, (self._menu_image.get_width(), 145))
         self._skip_text = self._font_white.get(_('Press start to skip'), 256)
         self._intro_text = []
-        self._intro_text.insert(0, self._font_white.get(_('In a close place...'), 256))
-        self._intro_text.insert(1, self._font_white.get(_('...a nuclear plant is going to blow!!!'),
+        self._intro_text.insert(0, self._font_white.get(_('In the near future...'), 256))
+        self._intro_text.insert(1, self._font_white.get(_("...the world's most powerful nuclear plant is going to blow!!!"),
                                                         256))
         self._credits = Credits(self._font_blue, self._font_dither)
         self._background = pygame.Surface(
