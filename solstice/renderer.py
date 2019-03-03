@@ -155,6 +155,9 @@ class Renderer(object):
     '''
     Public methods
     '''
+    def set_animation(self, position, animation_name):
+        pattern = Pattern(int(position[0]) + 256, int(position[1]) + 144, animation_name)
+        self._backpatterns.append(pattern)
 
     def change_animation(self, position, new_animation):
         for pattern in self._backpatterns:

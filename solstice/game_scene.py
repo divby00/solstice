@@ -19,7 +19,7 @@ from lock import BeamBarriersBuilder, LockBuilder
 
 
 class GameScene(scene.Scene):
-    def __init__(self, context, name='game', scene_speed=26):
+    def __init__(self, context, name='game', scene_speed=33):
         super(GameScene, self).__init__(context, name, scene_speed)
         self._screen = context.screen
         self._locks = None
@@ -205,9 +205,12 @@ class GameScene(scene.Scene):
         self._player.recovery_mode = False
 
         if self._player.over_life_exchanger:
-            self._player.life = self._player.life - 5
+            self._player.life = self._player.life - 100
             self._player.hit = True
-            self._sound_player.play_sample('teleport')
+            self._renderer_object.set_animation((296, 72), 'teleport_pass')
+            teleport_item = item.ItemTeleport(self, (296, 72), (16, 16))
+            teleport_item._sprite = self._resource_manager.get('item_teleport_pass')
+            self._items.append(teleport_item)
 
         if self._player.selected_item is not None:
             self._player.using_item = True

@@ -8,5 +8,9 @@ setup(
     license='MIT',
     author='Division by 0',
     author_email='divisionby0x00@gmail.com',
-    description='An Equinox Remake'
+    description='An Equinox Remake',
+    include_package_data=True,
+    install_requires=[
+        'pygame'
+    ]
 )
