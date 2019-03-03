@@ -30,6 +30,14 @@ class Configuration(object):
     OPT_KEY_ACTION_1 = 'key action 1'
     OPT_KEY_ACTION_2 = 'key action 2'
     OPT_KEY_START = 'key start'
+    OPT_VERTICAL_AXIS = 'vertical axis'
+    OPT_HORIZONTAL_AXIS = 'horizontal axis'
+    OPT_AXIS_UP = 'axis up'
+    OPT_AXIS_DOWN = 'axis down'
+    OPT_AXIS_LEFT = 'axis left'
+    OPT_AXIS_RIGHT = 'axis right'
+    OPT_BUTTON_ACTION_1 = 'joy button action 1'
+    OPT_BUTTON_ACTION_2 = 'joy button action 2'
 
     # Default values
     DATA_PATH = './'
@@ -50,6 +58,14 @@ class Configuration(object):
     KEY_ACTION_1 = 117
     KEY_ACTION_2 = 105
     KEY_START = 13
+    VERTICAL_AXIS = 1
+    HORIZONTAL_AXIS = 0
+    AXIS_UP = -1
+    AXIS_DOWN = 1
+    AXIS_RIGHT = 1
+    AXIS_LEFT = -1
+    BUTTON_ACTION_1 = 1
+    BUTTON_ACTION_2 = 2
 
     def __init__(self):
         self._parser = ConfigParser.ConfigParser()
@@ -66,6 +82,14 @@ class Configuration(object):
         self._key_act1 = Configuration.KEY_ACTION_1
         self._key_act2 = Configuration.KEY_ACTION_2
         self._key_start = Configuration.KEY_START
+        self._vertical_axis = Configuration.VERTICAL_AXIS
+        self._horizontal_axis = Configuration.HORIZONTAL_AXIS
+        self._axis_up = Configuration.AXIS_UP
+        self._axis_down = Configuration.AXIS_DOWN
+        self._axis_left = Configuration.AXIS_LEFT
+        self._axis_right = Configuration.AXIS_RIGHT
+        self._button_act1 = Configuration.BUTTON_ACTION_1
+        self._button_act2 = Configuration.BUTTON_ACTION_2
 
         try:
             parsed_file = self._parser.read([Configuration.CFGFILE_NAME])
@@ -110,6 +134,22 @@ class Configuration(object):
                                                      Configuration.OPT_KEY_ACTION_2)
                 self._key_start = self._parser.getint(Configuration.SECTION[3],
                                                       Configuration.OPT_KEY_START)
+                self._vertical_axis = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_VERTICAL_AXIS)
+                self._horizontal_axis = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_HORIZONTAL_AXIS)
+                self._axis_up = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_AXIS_UP)
+                self._axis_down = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_AXIS_DOWN)
+                self._axis_left = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_AXIS_LEFT)
+                self._axis_right = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_AXIS_RIGHT)
+                self._button_act1 = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_BUTTON_ACTION_1)
+                self._button_act2 = self._parser.getint(Configuration.SECTION[3],
+                                                     Configuration.OPT_BUTTON_ACTION_2)
             else:
                 self._default_values_set()
         except ConfigurationError as e:
@@ -149,6 +189,14 @@ class Configuration(object):
         self._key_act1 = Configuration.KEY_ACTION_1
         self._key_act2 = Configuration.KEY_ACTION_2
         self._key_start = Configuration.KEY_START
+        self._vertical_axis = Configuration.VERTICAL_AXIS
+        self._horizontal_axis = Configuration.HORIZONTAL_AXIS
+        self._axis_up = Configuration.AXIS_UP
+        self._axis_down = Configuration.AXIS_DOWN
+        self._axis_left = Configuration.AXIS_LEFT
+        self._axis_right = Configuration.AXIS_RIGHT
+        self._button_act1 = Configuration.BUTTON_ACTION_1
+        self._button_act2 = Configuration.BUTTON_ACTION_2
 
     def _paths_section_set(self):
         self._parser.set(Configuration.SECTION[0],
@@ -208,6 +256,30 @@ class Configuration(object):
         self._parser.set(Configuration.SECTION[3],
                          Configuration.OPT_KEY_START,
                          Configuration.KEY_START)
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_VERTICAL_AXIS,
+                         Configuration.VERTICAL_AXIS),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_HORIZONTAL_AXIS,
+                         Configuration.HORIZONTAL_AXIS),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_AXIS_UP,
+                         Configuration.AXIS_UP),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_AXIS_DOWN,
+                         Configuration.AXIS_DOWN),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_AXIS_LEFT,
+                         Configuration.AXIS_LEFT),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_AXIS_RIGHT,
+                         Configuration.AXIS_RIGHT),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_BUTTON_ACTION_1,
+                         Configuration.BUTTON_ACTION_1),
+        self._parser.set(Configuration.SECTION[3],
+                         Configuration.OPT_BUTTON_ACTION_2,
+                         Configuration.BUTTON_ACTION_2)
 
     @staticmethod
     def _check_correct_values(option, read_value):
@@ -300,6 +372,38 @@ class Configuration(object):
     @property
     def key_start(self):
         return self._key_start
+
+    @property
+    def axis_up(self):
+        return self._axis_up
+
+    @property
+    def axis_down(self):
+        return self._axis_down
+
+    @property
+    def axis_left(self):
+        return self._axis_left
+
+    @property
+    def axis_right(self):
+        return self._axis_right
+
+    @property
+    def vertical_axis(self):
+        return self._vertical_axis
+
+    @property
+    def horizontal_axis(self):
+        return self._horizontal_axis
+
+    @property
+    def button_act1(self):
+        return self._button_act1
+
+    @property
+    def button_act2(self):
+        return self._button_act2
 
     @property
     def parser(self):

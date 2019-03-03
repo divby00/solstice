@@ -14,6 +14,7 @@ class Scene(object):
         self._scene_data = None
         self._screen = None
         self._keyboard_event = None
+        self._joystick_event = None
         self._running = False
         self._menu_group = None
         self._config = context.config
@@ -214,6 +215,14 @@ class Scene(object):
     @keyboard_event.setter
     def keyboard_event(self, value):
         self._keyboard_event = value
+
+    @property
+    def joystick_event(self):
+        return self._joystick_event
+
+    @joystick_event.setter
+    def joystick_event(self, value):
+        self._joystick_event = value
 
     @property
     def menu_group(self):

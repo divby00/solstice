@@ -3,9 +3,15 @@ from gettext import gettext as _
 
 
 class ControlAction(object):
-    def __init__(self, name, mapping):
+    KEY_PRESS = 0
+    BUTTON_PRESS = 1
+    AXIS_CHANGED = 2
+
+    def __init__(self, name, mapping, type=KEY_PRESS, axis=None):
         self._name = name
         self._mapping = mapping
+        self._type = type
+        self._axis = axis
 
     '''
     Public methods
@@ -18,6 +24,14 @@ class ControlAction(object):
     @property
     def mapping(self):
         return self._mapping
+
+    @property
+    def type(self):
+        return self._type
+
+    @property
+    def axis(self):
+        return self._axis
 
 
 class ControlInput(object):
@@ -64,6 +78,8 @@ class JoystickInput(ControlInput):
         super(JoystickInput, self).__init__(actions)
         self._joystick = joystick
         self._joystick.init()
+        self._buttons = range(self._joystick.get_numbuttons());
+        self._axes = range(self._joystick.get_numaxes())
 
     '''
     Public methods
@@ -72,8 +88,21 @@ class JoystickInput(ControlInput):
     def update(self):
         pass
 
-    def on(self, action_name):
-        pass
+    def on(self, action_name, joystick_event=None):
+        for action in self._actions:
+            if action.name == action_name:
+                if joystick_event:
+                    if joystick_event.key == action.mapping:
+                        return True
+                else:
+                    if action.type == ControlAction.BUTTON_PRESS and action.mapping in self._buttons:
+                        return self._joystick.get_button(action.mapping)
+
+                    if action.type == ControlAction.AXIS_CHANGED and action.axis in self._axes:
+                        return self._joystick.get_axis(action.axis) > 0 and action.mapping > 0 \
+                               or self._joystick.get_axis(action.axis) < 0 and action.mapping < 0
+
+        return False
 
 
 class UndefinedDeviceError(Exception):
@@ -97,16 +126,15 @@ class Control(object):
         pygame.key.set_repeat()
         self._config = context.config
         self._keyboard_event = None
+        self._joystick_event = None
         self._event_driven = True
-        joysticks = []
-        self._devices = self._register_devices(joysticks)
+        self._devices = self._register_devices()
 
     '''
     Private methods
     '''
 
-    def _register_devices(self, joysticks):
-        # TODO: Add joystick support
+    def _register_devices(self):
         devices = []
         actions = []
 
@@ -121,8 +149,19 @@ class Control(object):
             devices.append(KeyboardInput(actions))
 
         if self._config.control_type in ['autodetect', 'joystick']:
-            for j in joysticks:
-                devices.append(JoystickInput(actions, j))
+            if pygame.joystick.get_count() > 0:
+                joystick_device = pygame.joystick.Joystick(0)
+                actions.append(ControlAction(Control.UP, self._config.axis_up, ControlAction.AXIS_CHANGED,
+                                             self._config.vertical_axis))
+                actions.append(ControlAction(Control.DOWN, self._config.axis_down, ControlAction.AXIS_CHANGED,
+                                             self._config.vertical_axis))
+                actions.append(ControlAction(Control.LEFT, self._config.axis_left, ControlAction.AXIS_CHANGED,
+                                             self._config.horizontal_axis))
+                actions.append(ControlAction(Control.RIGHT, self._config.axis_right, ControlAction.AXIS_CHANGED,
+                                             self._config.horizontal_axis))
+                actions.append(ControlAction(Control.ACTION1, self._config.button_act1, ControlAction.BUTTON_PRESS))
+                actions.append(ControlAction(Control.ACTION2, self._config.button_act2, ControlAction.BUTTON_PRESS))
+                devices.append(JoystickInput(actions, joystick_device))
 
         if len(devices) == 0:
             raise UndefinedDeviceError(_('Unable to set a control device.'))
@@ -138,6 +177,10 @@ class Control(object):
             if self._keyboard_event:
                 for device in self._devices:
                     if device.on(action_name, self._keyboard_event):
+                        return True
+            if self._joystick_event:
+                for device in self._devices:
+                    if device.on(action_name, self._joystick_event):
                         return True
         else:
             pygame.event.pump()
@@ -155,6 +198,14 @@ class Control(object):
     @keyboard_event.setter
     def keyboard_event(self, value):
         self._keyboard_event = value
+
+    @property
+    def joystick_event(self):
+        return self._joystick_event
+
+    @joystick_event.setter
+    def joystick_event(self, value):
+        self._joystick_event = value
 
     @property
     def event_driven(self):

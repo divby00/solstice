@@ -63,12 +63,15 @@ class SceneManager(object):
     def run(self):
         while self._scene.running:
             self._scene.keyboard_event = None
+            self._scene.joystick_event = None
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self._scene.running = False
                 if event.type == pygame.KEYDOWN:
                     self._scene.keyboard_event = event
+                if event.type == pygame.JOYBUTTONDOWN:
+                    self._scene.joystick_event = event
                 if event.type == pygame.VIDEORESIZE:
                     self._screen.resize_window(event)
                     self._update_window_size_in_config(event.size)
