@@ -171,6 +171,7 @@ class Player(object):
                     and self._y + 8 >= life_exchanger.y and self._y - 8 <= life_exchanger.y + life_exchanger.h:
                 particles = self._particles_manager.get('life_exchanger')
                 particles.generate((self._x - 8, self._x, self._y - 8, self._y))
+                self._life_exchanger_coordinates = life_exchanger.x - 256, life_exchanger.y - 144
                 self._over_life_exchanger = True
 
     def _run_status_recovering(self):
@@ -792,3 +793,7 @@ class Player(object):
     @property
     def over_life_exchanger(self):
         return self._over_life_exchanger
+
+    @property
+    def life_exchanger_coordinates(self):
+        return self._life_exchanger_coordinates

@@ -205,10 +205,11 @@ class GameScene(scene.Scene):
         self._player.recovery_mode = False
 
         if self._player.over_life_exchanger:
+            life_ex_coordinates = self._player.life_exchanger_coordinates
             self._player.life = self._player.life - 100
             self._player.hit = True
-            self._renderer_object.set_animation((296, 72), 'teleport_pass')
-            teleport_item = item.ItemTeleport(self, (296, 72), (16, 16))
+            self._renderer_object.set_animation(life_ex_coordinates, 'teleport_pass')
+            teleport_item = item.ItemTeleport(self, life_ex_coordinates, (16, 16))
             teleport_item._sprite = self._resource_manager.get('item_teleport_pass')
             self._items.append(teleport_item)
 
