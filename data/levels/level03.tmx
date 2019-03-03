@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="96" height="108" tilewidth="8" tileheight="8" nextobjectid="161">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="96" height="108" tilewidth="8" tileheight="8" nextobjectid="162">
  <properties>
   <property name="devil00_frequency" value="25"/>
   <property name="devil01_frequency" value="25"/>
@@ -48080,9 +48080,9 @@
    <tile gid="47"/>
    <tile gid="48"/>
    <tile gid="49"/>
-   <tile gid="50"/>
-   <tile gid="51"/>
-   <tile gid="52"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="47"/>
    <tile gid="0"/>
@@ -48176,9 +48176,9 @@
    <tile gid="84"/>
    <tile gid="85"/>
    <tile gid="86"/>
-   <tile gid="87"/>
-   <tile gid="88"/>
-   <tile gid="89"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="84"/>
    <tile gid="0"/>
@@ -73516,6 +73516,11 @@
    <properties>
     <property name="animation" value="object013"/>
     <property name="zindex" value="0"/>
+   </properties>
+  </object>
+  <object id="161" name="life_exchanger" x="56" y="808" width="16" height="16">
+   <properties>
+    <property name="life_exchanger" value="1"/>
    </properties>
   </object>
  </objectgroup>

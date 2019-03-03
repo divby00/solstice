@@ -54,10 +54,10 @@
  <tileset firstgid="1335" name="object009" tilewidth="8" tileheight="8" tilecount="96" columns="12">
   <image source="object009.png" width="96" height="64"/>
  </tileset>
- <imagelayer name="back" visible="0" offsetx="8" offsety="8">
+ <imagelayer name="back" offsetx="8" offsety="8">
   <image source="base.png" width="32" height="32"/>
  </imagelayer>
- <layer name="background" width="96" height="108" visible="0">
+ <layer name="background" width="96" height="108">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
