@@ -15,6 +15,7 @@ import renderer
 import scene
 import teleport
 from life_exchanger import LifeExchangerBuilder
+from crusher import CrusherBuilder
 from lock import BeamBarriersBuilder, LockBuilder
 
 
@@ -40,6 +41,7 @@ class GameScene(scene.Scene):
         self._info_areas = None
         self._on_elevator = False
         self._powerups = None
+        self._crushers = None
         self._particles_manager = GameScene._init_particles(context.resource_manager)
         context.particles_manager = self._particles_manager
         self._player = player.Player(context, self)
@@ -239,6 +241,7 @@ class GameScene(scene.Scene):
         self._teleports = teleport.TeleportBuilder.build(self._current_level.teleports)
         self._locks = LockBuilder.build(self, self._current_level.locks)
         self._life_exchangers = LifeExchangerBuilder.build(self._current_level.life_exchangers)
+        self._crushers = CrusherBuilder.build(self._current_level.crushers)
         self._beam_barriers = BeamBarriersBuilder.build(self._current_level.beam_barriers)
         self._enemies = enemy.EnemyBuilder.build(self)
         self._powerups = powerups.Powerups(self._player)

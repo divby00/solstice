@@ -311,6 +311,16 @@ class TiledLevel(object):
         return life_exchangers
 
     @staticmethod
+    def _parse_crushers(special):
+        crushers = []
+
+        for s in special:
+            for a in special[s]:
+                if a == 'crusher':
+                    crushers.append(s)
+        return crushers
+
+    @staticmethod
     def _parse_magnetic_info(special):
         magnetic_fields = []
 
@@ -543,6 +553,7 @@ class TiledLevel(object):
         self.nothrust = self._parse_nothrust_info(special)
         self.rails = self._parse_rails_info(special)
         self._life_exchangers = self._parse_life_exchangers(special)
+        self._crushers = self._parse_crushers(special)
         self._parse_info_areas(special)
 
         after = pygame.time.get_ticks()
@@ -589,3 +600,7 @@ class TiledLevel(object):
     @property
     def life_exchangers(self):
         return self._life_exchangers
+
+    @property
+    def crushers(self):
+        return self._crushers

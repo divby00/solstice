@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="64" height="32" tilewidth="8" tileheight="8" nextobjectid="31">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="64" height="32" tilewidth="8" tileheight="8" nextobjectid="35">
  <properties>
   <property name="devil00_frequency" value="0"/>
   <property name="devil01_frequency" value="0"/>
@@ -6565,10 +6565,10 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="38"/>
-   <tile gid="39"/>
-   <tile gid="406"/>
-   <tile gid="407"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6629,10 +6629,10 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="1"/>
-   <tile gid="2"/>
-   <tile gid="369"/>
-   <tile gid="370"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6693,10 +6693,10 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="38"/>
-   <tile gid="39"/>
-   <tile gid="406"/>
-   <tile gid="407"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -8681,10 +8681,6 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="519"/>
-   <tile gid="519"/>
-   <tile gid="519"/>
-   <tile gid="519"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -8707,26 +8703,6 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="519"/>
-   <tile gid="519"/>
-   <tile gid="519"/>
-   <tile gid="519"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="519"/>
-   <tile gid="519"/>
-   <tile gid="519"/>
-   <tile gid="519"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -8745,10 +8721,34 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="519"/>
    <tile gid="519"/>
    <tile gid="519"/>
    <tile gid="519"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="519"/>
+   <tile gid="519"/>
+   <tile gid="519"/>
+   <tile gid="519"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -10457,6 +10457,18 @@
   <object id="30" x="280" y="80" width="8" height="8">
    <properties>
     <property name="animation" value="object006"/>
+    <property name="zindex" value="0"/>
+   </properties>
+  </object>
+  <object id="31" name="crusher" x="240" y="48" width="16" height="32">
+   <properties>
+    <property name="crusher" value="1"/>
+    <property name="id" value="1"/>
+   </properties>
+  </object>
+  <object id="33" x="240" y="32" width="8" height="8">
+   <properties>
+    <property name="animation" value="crusher"/>
     <property name="zindex" value="0"/>
    </properties>
   </object>
