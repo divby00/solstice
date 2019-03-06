@@ -20,7 +20,7 @@ from lock import BeamBarriersBuilder, LockBuilder
 
 
 class GameScene(scene.Scene):
-    def __init__(self, context, name='game', scene_speed=33):
+    def __init__(self, context, name='game', scene_speed=29):
         super(GameScene, self).__init__(context, name, scene_speed)
         self._screen = context.screen
         self._locks = None
@@ -33,7 +33,7 @@ class GameScene(scene.Scene):
         self._rails = None
         self._container = None
         self._enemies = None
-        self._level = context.resource_manager.get('level00')
+        self._level = context.resource_manager.get('level01')
         self._current_level = None
         self._renderer_object = None
         self._enemies_renderer = None
