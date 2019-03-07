@@ -6,3 +6,6 @@ locale
 venv
 build
 .idea
+solstice/dist
+solstice.spec
+solstice.egg-info
