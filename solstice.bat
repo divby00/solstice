@@ -1,1 +1,1 @@
-python solstice/solstice.py
+python solstice/main.py

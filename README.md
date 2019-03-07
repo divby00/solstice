@@ -1,5 +1,6 @@
 # Solstice
-This project is a remake of Mikrogen's Equinox, a great game that I enjoyed a lot when I was a child.
+
+This project is a remake of Mikro-Gen's Equinox, a great game that I enjoyed a lot when I was a child.
 
 In this remake you control a drone with the mission of stabilize a nuclear plant that can blow in any moment. 
 The drone has the ability to fly and shoot to destroy the baddies made by the radiation, at the cost of energy.
@@ -12,21 +13,49 @@ There are 8 levels to complete and each level has a time limit.
 Good luck.
 
 # Installation
-At the moment there is no binary distribution of this project, to run this game install Python 2.7 and Pygame 1.9,
-clone the project with git or download the source code from the button at the right and run python src/solstice.py from project's root folder.
+
+Depending your OS, there are several ways to install the game:
+
+## Windows
+
+Windows users who don't want to install Python, the best option is to download the provided binaries at 
+https://github.com/divby00/solstice/releases/download/0.0-alpha/solstice-0.0.zip
+Please note that this package is not updated.
+
+## Other OS
+
+At the moment there isn't binary distribution of this game for Linux or Mac, to run this game follow this instructions:
+
+* Install Python 2.7
+* Install Pygame 1.9.14 `pip install pygame`
+* Install git
+* Clone the project: `git clone https://github.com/divby00/solstice.git`
+* Enter the solstice folder and run `./solstice.sh`
+
+## Setuptools
+
+There is some support for setuptools, clone the project after installing python and git as explained above, enter in 
+the solstice folder and run `python setup.py develop`
+Now you could run the game with `python -m solstice.main`, note that the first time you run this command it won't work,
+but it'll generate a file called `solstice.cfg`, adjust in that file the path to the game assets (`data.zip`) and the
+next times it will work.
 
 # Screenshots
-Screenshots of development version (Using 16 colors palette from Niklas Jansson, http://androidarts.com/).
-![Title screen](https://cloud.githubusercontent.com/assets/7277786/10656742/5f0cba20-7882-11e5-8066-563e1f6086aa.png)
-![Ingame screen](https://cloud.githubusercontent.com/assets/7277786/10656746/6e7ca330-7882-11e5-869a-cfb297a6a361.png)
 
-Screenshots of old version (2015-01-02). (EGA palette).
-![Title screen](https://cloud.githubusercontent.com/assets/7277786/5601945/12a838c8-932a-11e4-9ca8-6f978f4e1b46.png)
-![Ingame screen](https://cloud.githubusercontent.com/assets/7277786/5601946/12aca7d2-932a-11e4-83c3-e05f7cf5877c.png)
+* Screenshots of development version (Using 16 colors palette from Niklas Jansson, http://androidarts.com/).
+
+    ![Title screen](https://cloud.githubusercontent.com/assets/7277786/10656742/5f0cba20-7882-11e5-8066-563e1f6086aa.png)
+    ![Ingame screen](https://cloud.githubusercontent.com/assets/7277786/10656746/6e7ca330-7882-11e5-869a-cfb297a6a361.png)
+
+* Screenshots of old version (2015-01-02). (EGA palette).
+
+    ![Title screen](https://cloud.githubusercontent.com/assets/7277786/5601945/12a838c8-932a-11e4-9ca8-6f978f4e1b46.png)
+    ![Ingame screen](https://cloud.githubusercontent.com/assets/7277786/5601946/12aca7d2-932a-11e4-83c3-e05f7cf5877c.png)
 
 # Development notes
 
 ## Overview
+
 This remake is made with Python 2.7 and Pygame 1.9. The game is based in the Spectrum version of Equinox. 
 You can get the original game here: http://www.worldofspectrum.org/infoseekid.cgi?id=0001637
 
@@ -53,10 +82,12 @@ You can get the original game here: http://www.worldofspectrum.org/infoseekid.cg
         pip install -r dependencies.txt
 
 ## Tools
+
 I have used both VIM and PyCharm to edit the source code, GIMP for graphics (using 16 colors palette from Niklas Jansson, http://androidarts.com/)
 and Tiled (http://www.mapeditor.org) for the making and design of the levels. 
 
 ## Additional notes
+
 The levels information are exported with this tool as `TMX`, there is a small implementation for loading the TMX format in `tiled_tools.py`.
 
 All the data the game uses is saved in the zipped file data.zip, as all the data is read from it, you have to recreate
