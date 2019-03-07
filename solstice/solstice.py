@@ -46,7 +46,7 @@ class Solstice(object):
             'game_over': game_over_scene.GameOverScene(self),
         '''
         # The first parameter in this function call is the game 'context'
-        self._scene_manager = scene_manager.SceneManager(self, 'game')
+        self._scene_manager = scene_manager.SceneManager(self, 'logo')
 
     '''
     Private methods

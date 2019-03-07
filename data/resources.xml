@@ -281,9 +281,11 @@
     <resource type='sample' name='player_hit_sam' src='samples/player_hit.ogg'/>
     <resource type='sample' name='ding' src='samples/ding.ogg'/>
     <resource type='sample' name='powerup' src='samples/powerup.ogg'/>
-    <resource type='sample' name='level01_song' src='music/level01_song.ogg'/>
-    <resource type='music' name='ingame_song' src='music/ingame.xm'/>
-    <resource type='music' name='menu_song' src='music/menu.xm'/>
+    <resource type='sample' name='level01_song' src='music/level01.ogg'/>
+    <resource type='sample' name='level02_song' src='music/level02.ogg'/>
+    <resource type='sample' name='level03_song' src='music/level03.ogg'/>
+    <resource type='music' name='ending' src='music/ending.ogg'/>
+    <resource type='music' name='title' src='music/title.ogg'/>
     <resource type='font' name='font_white' src='fonts/font_white.png' rows='4' columns='32'/>
     <resource type='font' name='font_blue' src='fonts/font_blue.png' rows='4' columns='32'/>
     <resource type='font' name='font_yellow' src='fonts/font_yellow.png' rows='4' columns='32'/>
