@@ -317,7 +317,10 @@ class TiledLevel(object):
         for s in special:
             for a in special[s]:
                 if a == 'crusher':
-                    crushers.append(s)
+                    crusher_id = special[s].get(a)
+                    if crusher_id is not None:
+                        crushers.append(''.join([crusher_id, ' ', s]))
+
         return crushers
 
     @staticmethod

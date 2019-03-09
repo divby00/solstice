@@ -90,6 +90,7 @@ class Player(object):
         self._laser_spr = []
         self._magnetic_fields = None
         self._info_areas = None
+        self._crushers = None
         self._life_exchangers = None
         self._nothrust = None
         self._rails = None
@@ -339,6 +340,7 @@ class Player(object):
         self._current_level = game_context.current_level
         self._teleports = game_context.teleports
         self._enemies = game_context.enemies
+        self._crushers = game_context.crushers
         self._w = self._sprites[0].get_width()
         self._h = self._sprites[0].get_height()
         self._x = ((self._current_level.start_point[0]) + 256 + 8)
@@ -541,6 +543,13 @@ class Player(object):
                     and self._y + 8 == rail.position[1]:
                 return rail.direction
         return 0
+
+    def check_in_crusher(self):
+        for crusher in self._crushers:
+            if self._x + 8 > crusher.x and self._x - 8 < crusher.x + crusher.w \
+                    and self._y + 8 > crusher.y and self.y - 8 < crusher.y + crusher.h:
+                return True
+        return False
 
     def check_upper_collision(self, level):
         calculated_y = int((self._y - 9) / level.map.tileheight) - 18

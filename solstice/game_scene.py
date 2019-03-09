@@ -33,7 +33,7 @@ class GameScene(scene.Scene):
         self._rails = None
         self._container = None
         self._enemies = None
-        self._level = context.resource_manager.get('level01')
+        self._level = context.resource_manager.get('level00')
         self._current_level = None
         self._renderer_object = None
         self._enemies_renderer = None
@@ -88,6 +88,10 @@ class GameScene(scene.Scene):
 
     def _run_powerups(self):
         self._powerups.run()
+
+    def _run_crushers(self):
+        in_crusher = self._player.check_in_crusher()
+        #self._crushers.run()
 
     def _run_info_areas(self):
         if self._player.active_info_area:
@@ -300,6 +304,7 @@ class GameScene(scene.Scene):
             self._player.run()
             for the_enemy in self._enemies:
                 the_enemy.run()
+            self._run_crushers()
             self._run_powerups()
             self._run_info_areas()
             self._particles_manager.run()
@@ -389,3 +394,7 @@ class GameScene(scene.Scene):
     @property
     def life_exchangers(self):
         return self._life_exchangers
+
+    @property
+    def crushers(self):
+        return self._crushers
