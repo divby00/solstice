@@ -35,6 +35,7 @@ class Renderer(object):
         self._level = context.current_level
         self._player = context.player
         self._enemies = context.enemies
+        self._crushers = context.crushers
         self._powerups = context.powerups
         self._items = context.items
         self._animations = context.animations
@@ -198,6 +199,10 @@ class Renderer(object):
         # Enemies rendering
         for enemy in self._enemies:
             enemy.render(self._tmp_surface)
+
+        # Crushers rendering
+        for crusher in self._crushers:
+            crusher.render(self._tmp_surface)
 
         # Powerup rendering
         self._powerups.render(self._tmp_surface)

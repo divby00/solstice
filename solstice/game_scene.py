@@ -90,8 +90,9 @@ class GameScene(scene.Scene):
         self._powerups.run()
 
     def _run_crushers(self):
-        in_crusher = self._player.check_in_crusher()
-        #self._crushers.run()
+        for crusher in self._crushers:
+            crusher.run()
+        #in_crusher = self._player.check_in_crusher()
 
     def _run_info_areas(self):
         if self._player.active_info_area:
@@ -245,7 +246,7 @@ class GameScene(scene.Scene):
         self._teleports = teleport.TeleportBuilder.build(self._current_level.teleports)
         self._locks = LockBuilder.build(self, self._current_level.locks)
         self._life_exchangers = LifeExchangerBuilder.build(self._current_level.life_exchangers)
-        self._crushers = CrusherBuilder.build(self._current_level.crushers)
+        self._crushers = CrusherBuilder.build(self)
         self._beam_barriers = BeamBarriersBuilder.build(self._current_level.beam_barriers)
         self._enemies = enemy.EnemyBuilder.build(self)
         self._powerups = powerups.Powerups(self._player)

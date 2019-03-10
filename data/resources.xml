@@ -266,6 +266,10 @@
     <resource type='gfx' name='powerup_transition_01' src='gfx/powerups.png' x='60' y='0' width='10' height='10'/>
     <resource type='gfx' name='powerup_transition_02' src='gfx/powerups.png' x='50' y='0' width='10' height='10'/>
     <resource type='gfx' name='powerup_transition_03' src='gfx/powerups.png' x='40' y='0' width='10' height='10'/>
+    <resource type='gfx' name='crusher00' src='gfx/crusher.png' x='0' y='0' width='16' height='24'/>
+    <resource type='gfx' name='crusher01' src='gfx/crusher.png' x='16' y='0' width='16' height='32'/>
+    <resource type='gfx' name='crusher02' src='gfx/crusher.png' x='32' y='0' width='16' height='40'/>
+    <resource type='gfx' name='crusher03' src='gfx/crusher.png' x='48' y='0' width='16' height='48'/>
     <resource type='sample' name='thrustup' src='samples/thrustup.ogg'/>
     <resource type='sample' name='bulletsup' src='samples/bulletsup.ogg'/>
     <resource type='sample' name='pickup' src='samples/pickup.ogg'/>
@@ -345,7 +349,6 @@
     <resource type='animation' name='lock_dirt_horizontal' src='animations/lock_dirt_horizontal.xml'/>
     <resource type='animation' name='lock_block' src='animations/lock_block.xml'/>
     <resource type='animation' name='tnt' src='animations/tnt.xml'/>
-    <resource type='animation' name='crusher' src='animations/crusher.xml'/>
     <resource type='animation' name='powerup_appears' src='animations/powerup_appears.xml'/>
     <resource type='animation' name='powerup_disappears' src='animations/powerup_disappears.xml'/>
     <resource type='animation' name='powerup_life' src='animations/powerup_life.xml'/>
