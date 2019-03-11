@@ -2,8 +2,7 @@ from __future__ import division
 
 import pygame
 from gettext import gettext as _
-
-import config
+from config import Entries, DefaultValues
 
 
 class IconNotFoundError(Exception):
@@ -44,22 +43,16 @@ class Screen(object):
         self._set_icon()
 
         if self._full_screen:
-            self._display = pygame.display.set_mode((self._native_w, self._native_h),
-                                                    graphic_parameters)
+            self._display = pygame.display.set_mode((self._native_w, self._native_h), graphic_parameters)
         else:
             self._final_offset = 0, 0
             self._scaling_resolution = self._screen_size
-            self._display = pygame.display.set_mode((self._screen_size[0], self._screen_size[1]),
-                                                    graphic_parameters)
-        self._virt = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
-        self._scaled_virt = pygame.Surface(self._scaling_resolution, 0).convert()
+            self._display = pygame.display.set_mode((self._screen_size[0], self._screen_size[1]), graphic_parameters)
+        self._virtual_screen = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
+        self._scaled_virtual = pygame.Surface(self._scaling_resolution, 0).convert()
         pygame.display.set_caption(self._caption)
         pygame.mouse.set_visible(False)
         pygame.event.set_allowed([pygame.QUIT])
-
-    '''
-    Private methods
-    '''
 
     def _set_icon(self):
         try:
@@ -101,10 +94,6 @@ class Screen(object):
     def _get_vertical_offset(self):
         return 0, ((self._native_h - self._scaling_resolution[1]) / 2)
 
-    '''
-    Public methods
-    '''
-
     def toggle_fullscreen(self, full_screen):
         self._full_screen = full_screen
         if self._full_screen:
@@ -121,27 +110,22 @@ class Screen(object):
                     print('This should never happen')
                     exit(-1)
 
-            self._display = pygame.display.set_mode((self._native_w, self._native_h),
-                                                    graphics_params)
-            self._virt = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
-            self._scaled_virt = pygame.Surface(self._scaling_resolution, 0).convert()
+            self._display = pygame.display.set_mode((self._native_w, self._native_h), graphics_params)
+            self._virtual_screen = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
+            self._scaled_virtual = pygame.Surface(self._scaling_resolution, 0).convert()
         else:
             graphics_params = pygame.DOUBLEBUF
             self._final_offset = 0, 0
             self._scaling_resolution = self._last_resize_size
-            self._display = pygame.display.set_mode(
-                (self._last_resize_size[0], self._last_resize_size[1]),
-                graphics_params)
-            self._virt = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
-            self._scaled_virt = pygame.Surface(self._scaling_resolution, 0).convert()
+            self._display = pygame.display.set_mode((self._last_resize_size[0], self._last_resize_size[1]), graphics_params)
+            self._virtual_screen = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
+            self._scaled_virtual = pygame.Surface(self._scaling_resolution, 0).convert()
             pygame.display.set_caption(self._caption)
             pygame.mouse.set_visible(False)
             pygame.event.set_allowed([pygame.QUIT])
-            self._configuration.parser.set(config.Configuration.SECTION[1],
-                                           config.Configuration.OPT_SCREEN_WIDTH,
+            self._configuration.parser.set(DefaultValues.SECTION.value[1], Entries.SCREEN_WIDTH.value,
                                            self._scaling_resolution[0])
-            self._configuration.parser.set(config.Configuration.SECTION[1],
-                                           config.Configuration.OPT_SCREEN_HEIGHT,
+            self._configuration.parser.set(DefaultValues.SECTION.value[1], Entries.SCREEN_HEIGHT.value,
                                            self._scaling_resolution[1])
 
     def resize_window(self, resize_event):
@@ -152,14 +136,14 @@ class Screen(object):
         self._scaling_resolution = self._screen_size
         self._display = pygame.display.set_mode((self._screen_size[0], self._screen_size[1]),
                                                 graphics_params)
-        self._virt = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
-        self._scaled_virt = pygame.Surface(self._scaling_resolution, 0).convert()
+        self._virtual_screen = pygame.Surface(Screen.WINDOW_SIZE, 0).convert()
+        self._scaled_virtual = pygame.Surface(self._scaling_resolution, 0).convert()
         pygame.mouse.set_visible(False)
         pygame.event.set_allowed([pygame.QUIT])
 
     @property
-    def virt(self):
-        return self._virt
+    def virtual_screen(self):
+        return self._virtual_screen
 
     @property
     def icon(self):
@@ -170,8 +154,8 @@ class Screen(object):
         return self._scaling_resolution
 
     @property
-    def scaled_virt(self):
-        return self._scaled_virt
+    def scaled_virtual(self):
+        return self._scaled_virtual
 
     @property
     def display(self):

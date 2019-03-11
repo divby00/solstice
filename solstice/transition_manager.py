@@ -125,7 +125,7 @@ class TransitionCirclesIn(Transition):
         if not (self._status == Transition.IDLE or self._status == Transition.FINISHED):
             for y in xrange(0, 24):
                 for x in xrange(0, 32):
-                    screen.virt.blit(self._sprites[self._frame], (x * 8, y * 8))
+                    screen.virtual_screen.blit(self._sprites[self._frame], (x * 8, y * 8))
 
 
 class TransitionSquaresIn(Transition):
@@ -170,8 +170,8 @@ class TransitionSquaresIn(Transition):
 
     def render(self, screen):
         if not (self._status == Transition.IDLE or self._status == Transition.FINISHED):
-            pygame.draw.rect(screen.virt, (0, 0, 0), (0, 0, self._offset, 192))
+            pygame.draw.rect(screen.virtual_screen, (0, 0, 0), (0, 0, self._offset, 192))
             for y in xrange(0, 19):
                 for x in xrange(0, 19):
-                    screen.virt.blit(self._sprites[self._matrix[y][x]],
-                                     (self._offset + (x * 16), y * 16))
+                    screen.virtual_screen.blit(self._sprites[self._matrix[y][x]],
+                                               (self._offset + (x * 16), y * 16))

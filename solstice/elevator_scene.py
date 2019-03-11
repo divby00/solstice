@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pygame
 
 import board
@@ -101,7 +103,7 @@ class ElevatorUiManager(object):
     def _render_info(self, scr):
         txt = self._txt_access_allowed if not self._buttons[
             self._tabindex].disabled else self._txt_access_denied
-        scr.virt.blit(txt, (148, 24))
+        scr.virtual_screen.blit(txt, (148, 24))
 
     def _render_buttons(self, scr):
         for btn in self._buttons:
@@ -111,21 +113,21 @@ class ElevatorUiManager(object):
             if btn.pressed:
                 sprite = btn.sprites['pressed']
             if sprite is not None:
-                scr.virt.blit(sprite, btn.position)
+                scr.virtual_screen.blit(sprite, btn.position)
 
     def _render_focus(self, scr):
         position = self._buttons[self._tabindex].position
         size = self._buttons[self._tabindex].size
-        pygame.draw.rect(scr.virt, (49, 162, 242),
+        pygame.draw.rect(scr.virtual_screen, (49, 162, 242),
                          (position[0] - 1, position[1] - 1, size[0] + 2, size[1] + 2), 1)
 
         # Render the selected level
         floor_sprite = self._selected_floor.sprite if not self._buttons[self._tabindex].disabled \
             else self._selected_floor.blocked_sprite
-        scr.virt.blit(floor_sprite, self._selected_floor.position)
+        scr.virtual_screen.blit(floor_sprite, self._selected_floor.position)
 
     def _render_panel(self, scr):
-        scr.virt.blit(self._panel.sprite, self._panel.position)
+        scr.virtual_screen.blit(self._panel.sprite, self._panel.position)
 
     def _render_player_mark(self, scr):
         self._player_mark.render(scr)
@@ -218,7 +220,7 @@ class ElevatorPlayerMark(object):
 
     def render(self, scr):
         if self._frame < 5:
-            scr.virt.blit(self._sprites[self._frame], self._position)
+            scr.virtual_screen.blit(self._sprites[self._frame], self._position)
 
     def run(self):
         self._frame += 1
@@ -363,10 +365,10 @@ class ElevatorScene(scene.Scene):
         pass
 
     def render(self, screen):
-        screen.virt.fill((47, 72, 78))
-        screen.virt.blit(self._txt_select_floor, (36, 4))
+        screen.virtual_screen.fill((47, 72, 78))
+        screen.virtual_screen.blit(self._txt_select_floor, (36, 4))
         self._ui_manager.render(screen)
-        self._board.render(screen.virt)
+        self._board.render(screen.virtual_screen)
 
     def run(self):
         self._control.event_driven = True

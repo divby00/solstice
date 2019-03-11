@@ -70,19 +70,19 @@ class ResourceManager(object):
         return ElementTree.fromstring(xml)
 
     def _update_load_screen(self, screen):
-        screen.virt.fill((0, 0, 0, 0))
+        screen.virtual_screen.fill((0, 0, 0, 0))
         if screen.icon:
-            screen.virt.blit(screen.icon, (128 - 16, 55))
+            screen.virtual_screen.blit(screen.icon, (128 - 16, 55))
 
         bar_size = (self._actual_resource * 53) / self._total_resources
-        pygame.draw.rect(screen.virt, (255, 255, 255), (102, 94, bar_size, 1), 1)
-        pygame.draw.rect(screen.virt, (255, 255, 85), (102, 95, bar_size, 1), 1)
-        pygame.draw.rect(screen.virt, (85, 255, 85), (102, 96, bar_size, 1), 1)
-        pygame.draw.rect(screen.virt, (0, 170, 0), (102, 97, bar_size, 1), 1)
-        pygame.transform.scale(screen.virt,
+        pygame.draw.rect(screen.virtual_screen, (255, 255, 255), (102, 94, bar_size, 1), 1)
+        pygame.draw.rect(screen.virtual_screen, (255, 255, 85), (102, 95, bar_size, 1), 1)
+        pygame.draw.rect(screen.virtual_screen, (85, 255, 85), (102, 96, bar_size, 1), 1)
+        pygame.draw.rect(screen.virtual_screen, (0, 170, 0), (102, 97, bar_size, 1), 1)
+        pygame.transform.scale(screen.virtual_screen,
                                screen.scaling_resolution,
-                               screen.scaled_virt)
-        screen.display.blit(screen.scaled_virt, screen.final_offset)
+                               screen.scaled_virtual)
+        screen.display.blit(screen.scaled_virtual, screen.final_offset)
         pygame.display.update()
 
     def _gfx_load(self, resource):

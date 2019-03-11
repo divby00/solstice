@@ -40,6 +40,20 @@ Now you could run the game with `python -m solstice.main`, note that the first t
 but it'll generate a file called `solstice.cfg`, adjust in that file the path to the game assets (`data.zip`) and the
 next times it will work.
 
+# Controls
+
+You can control the game with a keyboard or a gamepad. Please note that the gamepad support is on alpha stage at the
+moment, it will work *only* during the game, not in menus or any other interactive scene.
+
+The keyboard default mapping is:
+
+* W: Up
+* A: Left
+* D: Right
+* S: Get / Change item
+* U: Laser
+* I: Use item
+
 # Screenshots
 
 * Screenshots of development version (Using 16 colors palette from Niklas Jansson, http://androidarts.com/).

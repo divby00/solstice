@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 import pygame
 
-import scene
+from scene import Scene
 
 
-class LogoScene(scene.Scene):
+class LogoScene(Scene):
     LOGO_DELAY = 1500
 
     def __init__(self, context, name='logo', scene_speed=25):
@@ -11,15 +13,10 @@ class LogoScene(scene.Scene):
         self._sound_player = context.sound_player
         self._logo = context.resource_manager.get('logo')
         self._logo_sound = self._sound_player.load_sample(['logo_sound'])
-        self._dither_sprites = [context.resource_manager.get('dither' + str(index))
-                                for index in xrange(0, 6)]
+        self._dither_sprites = [context.resource_manager.get('dither' + str(index)) for index in range(0, 6)]
         self._dithering_frame = None
         self._fading = 0
         self._playing = False
-
-    '''
-    Public methods
-    '''
 
     def on_start(self):
         self._dithering_frame = len(self._dither_sprites)
@@ -54,12 +51,12 @@ class LogoScene(scene.Scene):
 
         if self._dithering_frame < len(self._dither_sprites):
             # TODO Take to reuse as a centered drawing function
-            screen.virt.blit(self._logo, (128 - (self._logo.get_width() / 2),
-                                          96 - (self._logo.get_height() / 2)))
+            screen.virtual_screen.blit(self._logo,
+                                       (128 - (self._logo.get_width() / 2), 96 - (self._logo.get_height() / 2)))
 
-        for a in xrange(0, 192, 8):
-            for i in xrange(0, 256, 8):
+        for a in range(0, 192, 8):
+            for i in range(0, 256, 8):
                 if self._dithering_frame < len(self._dither_sprites):
-                    screen.virt.blit(self._dither_sprites[self._dithering_frame], (i, a))
+                    screen.virtual_screen.blit(self._dither_sprites[self._dithering_frame], (i, a))
                 else:
-                    screen.virt.fill((0, 0, 0, 0))
+                    screen.virtual_screen.fill((0, 0, 0, 0))

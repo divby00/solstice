@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import board
 import container
 import control
@@ -14,8 +16,8 @@ import rails
 import renderer
 import scene
 import teleport
-from life_exchanger import LifeExchangerBuilder
 from crusher import CrusherBuilder
+from life_exchanger import LifeExchangerBuilder
 from lock import BeamBarriersBuilder, LockBuilder
 
 
@@ -92,7 +94,7 @@ class GameScene(scene.Scene):
     def _run_crushers(self):
         for crusher in self._crushers:
             crusher.run()
-        #in_crusher = self._player.check_in_crusher()
+        # in_crusher = self._player.check_in_crusher()
 
     def _run_info_areas(self):
         if self._player.active_info_area:
@@ -314,7 +316,7 @@ class GameScene(scene.Scene):
     def render(self, screen):
         self._renderer_object.render()
         if self._menu_group.visible:
-            self._menu_group.render(screen.virt, (128, 70))
+            self._menu_group.render(screen.virtual_screen, (128, 70))
 
     @property
     def resource_manager(self):

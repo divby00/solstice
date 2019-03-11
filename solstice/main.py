@@ -9,50 +9,45 @@ import platform
 import sys
 from gettext import gettext as _
 
-'''
-Everything works correctly with pygame_sdl2 except sound
-import pygame_sdl2
-pygame_sdl2.import_as_pygame()
-'''
 import pygame
-import config as config
-import control as control
-import resource_manager as resource_manager
-import scene_manager as scene_manager
-import logo_scene as logo_scene
-import elevator_scene as elevator_scene
-import intro_scene as intro_scene
-import game_scene as game_scene
-import screen as screen
-import sound_player as sound_player
+
+from config import Configuration
+from control import Control
+from elevator_scene import ElevatorScene
+from game_scene import GameScene
+from intro_scene import IntroScene
+from logo_scene import LogoScene
+from resource_manager import ResourceManager
+from scene_manager import SceneManager
+from screen import Screen
+from sound_player import SoundPlayer
 
 
 class Solstice(object):
+
+    @staticmethod
+    def _platform_specific_init():
+        if platform.system() == 'Windows':
+            os.environ['SDL_AUDIODRIVER'] = 'dsound'
+
     def __init__(self):
         Solstice._platform_specific_init()
-        self._config = config.Configuration()
+        self._config = Configuration()
         self._translations_init()
         self._pygame_init()
-        self._screen = screen.Screen(self._config, _('Solstice'))
-        self._control = control.Control(self)
+        self._screen = Screen(self._config, _('Solstice'))
+        self._control = Control(self)
         # TODO: Change data file name (don't use .zip extension)
-        self._resource_manager = resource_manager.ResourceManager(self, 'data.zip')
-        self._sound_player = sound_player.SoundPlayer(self)
+        self._resource_manager = ResourceManager(self, 'data.zip')
+        self._sound_player = SoundPlayer(self)
         self._scenes = {
-            'logo': logo_scene.LogoScene(self),
-            'intro': intro_scene.IntroScene(self),
-            'game': game_scene.GameScene(self),
-            'elevator': elevator_scene.ElevatorScene(self)
+            'logo': LogoScene(self),
+            'intro': IntroScene(self),
+            'game': GameScene(self),
+            'elevator': ElevatorScene(self)
         }
-        '''
-            'game_over': game_over_scene.GameOverScene(self),
-        '''
-        # The first parameter in this function call is the game 'context'
-        self._scene_manager = scene_manager.SceneManager(self, 'game')
-
-    '''
-    Private methods
-    '''
+        # The first parameter is the game 'context'
+        self._scene_manager = SceneManager(self, 'logo')
 
     def _translations_init(self):
         gettext.bindtextdomain('solstice', self._config.locale_path)
@@ -66,15 +61,6 @@ class Solstice(object):
         self._sound_preinit()
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.init()
-
-    @staticmethod
-    def _platform_specific_init():
-        if platform.system() == 'Windows':
-            os.environ['SDL_AUDIODRIVER'] = 'dsound'
-
-    '''
-    Public methods
-    '''
 
     def run(self):
         self._scene_manager.run()

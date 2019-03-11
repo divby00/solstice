@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from enum import IntEnum
 
 
@@ -9,8 +11,8 @@ class CrusherStatus(IntEnum):
 
 
 class CrusherThreshold(IntEnum):
-    SLOW = 5,
-    QUICK = 1
+    SLOW = 8,
+    QUICK = 2
 
 
 class CrusherDirection(IntEnum):

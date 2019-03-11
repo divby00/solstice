@@ -31,9 +31,9 @@ class SceneManager(object):
 
     def _update_window_size_in_config(self, size):
         self._config.parser.set(config.Configuration.SECTION[1],
-                                config.Configuration.OPT_SCREEN_WIDTH, size[0])
+                                config.Entries.SCREEN_WIDTH, size[0])
         self._config.parser.set(config.Configuration.SECTION[1],
-                                config.Configuration.OPT_SCREEN_HEIGHT, size[1])
+                                config.Entries.SCREEN_HEIGHT, size[1])
 
     '''
     Public methods
@@ -80,10 +80,10 @@ class SceneManager(object):
             self._transition_manager.run()
             self._scene.render(self._screen)
             self._transition_manager.render(self._screen)
-            pygame.transform.scale(self._screen.virt,
+            pygame.transform.scale(self._screen.virtual_screen,
                                    self._screen.scaling_resolution,
-                                   self._screen.scaled_virt)
-            self._screen.display.blit(self._screen.scaled_virt, self._screen.final_offset)
+                                   self._screen.scaled_virtual)
+            self._screen.display.blit(self._screen.scaled_virtual, self._screen.final_offset)
             pygame.display.update()
             self._clock.tick(self._fps)
 

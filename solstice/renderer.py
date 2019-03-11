@@ -224,11 +224,11 @@ class Renderer(object):
                                     pattern.y + animation.frames[animation.active_frame].offset_y))
 
         # Viewport rendering
-        self._screen.virt.blit(self._tmp_surface, (0, 0),
-                               (self._player.x - 128, self._player.y - 72, 256, 144))
+        self._screen.virtual_screen.blit(self._tmp_surface, (0, 0),
+                                         (self._player.x - 128, self._player.y - 72, 256, 144))
 
         # Board rendering
-        self._board.render(self._screen.virt)
+        self._board.render(self._screen.virtual_screen)
 
         # Debug information
         '''
