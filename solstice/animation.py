@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import io
 import pygame
 import xml.etree.cElementTree as ElementTree
@@ -9,10 +11,6 @@ class Frame(object):
         self._offset_x = 0
         self._offset_y = 0
         self._duration = 0
-
-    '''
-    Public methods
-    '''
 
     @property
     def id(self):
@@ -55,10 +53,6 @@ class Animation(object):
         self._images = {}
         self._frames = []
 
-    '''
-    Public methods
-    '''
-
     @property
     def frames(self):
         return self._frames
@@ -89,10 +83,6 @@ class AnimationLoader(object):
         self._zip_file = zip_file
         self._image_buffer = {}
 
-    '''
-    Public methods
-    '''
-
     def read(self, animation_data, name):
         animation = Animation(name)
         root = ElementTree.fromstring(animation_data)
@@ -117,9 +107,7 @@ class AnimationLoader(object):
                             if img is not None:
                                 surface = pygame.Surface((image_w, image_h)).convert_alpha()
                                 surface.fill((0, 0, 0, 0))
-                                surface.blit(img, (0, 0),
-                                             (image_x, image_y, image_x + image_w,
-                                              image_y + image_h), 0)
+                                surface.blit(img, (0, 0), (image_x, image_y, image_x + image_w, image_y + image_h), 0)
                                 self._image_buffer.update({image_name: img})
                                 animation.images.update({str(image_id): surface})
                     else:
@@ -128,9 +116,7 @@ class AnimationLoader(object):
                         if img is not None:
                             surface = pygame.Surface((image_w, image_h)).convert_alpha()
                             surface.fill((0, 0, 0, 0))
-                            surface.blit(img, (0, 0),
-                                         (image_x, image_y, image_x + image_w, image_y + image_h),
-                                         0)
+                            surface.blit(img, (0, 0), (image_x, image_y, image_x + image_w, image_y + image_h), 0)
                             animation.images.update({str(image_id): surface})
 
             for frames in anim.findall('frames'):

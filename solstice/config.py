@@ -83,10 +83,10 @@ class Configuration(object):
             if not os.path.isfile(file_path):
                 raise ConfigurationError(_('Unable to find the data file in the directory pointed at config. file.'))
         elif option == Entries.SOUND_VOL:
-            if read_value not in list(range(DefaultValues.SOUND_VOLUME + 1)):
+            if read_value not in list(range(DefaultIntValues.SOUND_VOLUME + 1)):
                 raise ConfigurationError(_('Sound volume must be between 0 (min) and 5 (max).'))
         elif option == Entries.MUSIC_VOL:
-            if read_value not in list(range(DefaultValues.MUSIC_VOLUME + 1)):
+            if read_value not in list(range(DefaultIntValues.MUSIC_VOLUME + 1)):
                 raise ConfigurationError(_('Music volume must be between 0 (min) and 5 (max).'))
         elif option == Entries.CONTROL_TYPE:
             if read_value not in ['keyboard', 'joystick', 'autodetect']:
@@ -123,41 +123,41 @@ class Configuration(object):
         self._button_act2 = DefaultIntValues.BUTTON_ACTION_2
 
         try:
-            parsed_file = self._parser.read([DefaultValues.CFGFILE_NAME])
+            parsed_file = self._parser.read(DefaultValues.CFGFILE_NAME.value)
 
             if len(parsed_file) > 0:
-                self._data_path = self._parser.get(DefaultValues.SECTION[0], Entries.DATA_PATH)
+                self._data_path = self._parser.get(DefaultValues.SECTION.value[0], Entries.DATA_PATH.value)
                 self._check_correct_values(Entries.DATA_PATH, self.data_path)
-                self._locale_path = self._parser.get(DefaultValues.SECTION[0], Entries.LOCALE_PATH)
-                w = self._parser.getint(DefaultValues.SECTION[1], Entries.SCREEN_WIDTH)
+                self._locale_path = self._parser.get(DefaultValues.SECTION.value[0], Entries.LOCALE_PATH.value)
+                w = self._parser.getint(DefaultValues.SECTION.value[1], Entries.SCREEN_WIDTH.value)
                 self._check_correct_values(Entries.SCREEN_WIDTH, w)
-                h = self._parser.getint(DefaultValues.SECTION[1], Entries.SCREEN_HEIGHT)
+                h = self._parser.getint(DefaultValues.SECTION.value[1], Entries.SCREEN_HEIGHT.value)
                 self._check_correct_values(Entries.SCREEN_HEIGHT, h)
-                self._full_screen = self._parser.getboolean(DefaultValues.SECTION[1], Entries.FULLSCREEN.value)
-                self._sound = self._parser.getboolean(DefaultValues.SECTION[2], Entries.SOUND)
-                self._music = self._parser.getboolean(DefaultValues.SECTION[2], Entries.MUSIC)
-                self._sound_vol = self._parser.getint(DefaultValues.SECTION[2], Entries.SOUND_VOL)
+                self._full_screen = self._parser.getboolean(DefaultValues.SECTION.value[1], Entries.FULLSCREEN.value)
+                self._sound = self._parser.getboolean(DefaultValues.SECTION.value[2], Entries.SOUND.value)
+                self._music = self._parser.getboolean(DefaultValues.SECTION.value[2], Entries.MUSIC.value)
+                self._sound_vol = self._parser.getint(DefaultValues.SECTION.value[2], Entries.SOUND_VOL.value)
                 self._check_correct_values(Entries.SOUND_VOL, self._sound_vol)
-                self._music_vol = self._parser.getint(DefaultValues.SECTION[2], Entries.MUSIC_VOL)
+                self._music_vol = self._parser.getint(DefaultValues.SECTION.value[2], Entries.MUSIC_VOL.value)
                 self._check_correct_values(Entries.MUSIC_VOL, self._music_vol)
                 self._screen_size = (w, h)
-                self._control_type = self._parser.get(DefaultValues.SECTION[3], Entries.CONTROL_TYPE)
+                self._control_type = self._parser.get(DefaultValues.SECTION.value[3], Entries.CONTROL_TYPE.value)
                 self._check_correct_values(Entries.CONTROL_TYPE, self._control_type)
-                self._key_up = self._parser.getint(DefaultValues.SECTION[3], Entries.KEY_UP)
-                self._key_down = self._parser.getint(DefaultValues.SECTION[3], Entries.KEY_DOWN)
-                self._key_left = self._parser.getint(DefaultValues.SECTION[3], Entries.KEY_LEFT)
-                self._key_right = self._parser.getint(DefaultValues.SECTION[3], Entries.KEY_RIGHT)
-                self._key_act1 = self._parser.getint(DefaultValues.SECTION[3], Entries.KEY_ACTION_1)
-                self._key_act2 = self._parser.getint(DefaultValues.SECTION[3], Entries.KEY_ACTION_2)
-                self._key_start = self._parser.getint(DefaultValues.SECTION[3], Entries.KEY_START)
-                self._vertical_axis = self._parser.getint(DefaultValues.SECTION[3], Entries.VERTICAL_AXIS)
-                self._horizontal_axis = self._parser.getint(DefaultValues.SECTION[3], Entries.HORIZONTAL_AXIS)
-                self._axis_up = self._parser.getint(DefaultValues.SECTION[3], Entries.AXIS_UP)
-                self._axis_down = self._parser.getint(DefaultValues.SECTION[3], Entries.AXIS_DOWN)
-                self._axis_left = self._parser.getint(DefaultValues.SECTION[3], Entries.AXIS_LEFT)
-                self._axis_right = self._parser.getint(DefaultValues.SECTION[3], Entries.AXIS_RIGHT)
-                self._button_act1 = self._parser.getint(DefaultValues.SECTION[3], Entries.BUTTON_ACTION_1)
-                self._button_act2 = self._parser.getint(DefaultValues.SECTION[3], Entries.BUTTON_ACTION_2)
+                self._key_up = self._parser.getint(DefaultValues.SECTION.value[3], Entries.KEY_UP.value)
+                self._key_down = self._parser.getint(DefaultValues.SECTION.value[3], Entries.KEY_DOWN.value)
+                self._key_left = self._parser.getint(DefaultValues.SECTION.value[3], Entries.KEY_LEFT.value)
+                self._key_right = self._parser.getint(DefaultValues.SECTION.value[3], Entries.KEY_RIGHT.value)
+                self._key_act1 = self._parser.getint(DefaultValues.SECTION.value[3], Entries.KEY_ACTION_1.value)
+                self._key_act2 = self._parser.getint(DefaultValues.SECTION.value[3], Entries.KEY_ACTION_2.value)
+                self._key_start = self._parser.getint(DefaultValues.SECTION.value[3], Entries.KEY_START.value)
+                self._vertical_axis = self._parser.getint(DefaultValues.SECTION.value[3], Entries.VERTICAL_AXIS.value)
+                self._horizontal_axis = self._parser.getint(DefaultValues.SECTION.value[3], Entries.HORIZONTAL_AXIS.value)
+                self._axis_up = self._parser.getint(DefaultValues.SECTION.value[3], Entries.AXIS_UP.value)
+                self._axis_down = self._parser.getint(DefaultValues.SECTION.value[3], Entries.AXIS_DOWN.value)
+                self._axis_left = self._parser.getint(DefaultValues.SECTION.value[3], Entries.AXIS_LEFT.value)
+                self._axis_right = self._parser.getint(DefaultValues.SECTION.value[3], Entries.AXIS_RIGHT.value)
+                self._button_act1 = self._parser.getint(DefaultValues.SECTION.value[3], Entries.BUTTON_ACTION_1.value)
+                self._button_act2 = self._parser.getint(DefaultValues.SECTION.value[3], Entries.BUTTON_ACTION_2.value)
             else:
                 self._default_values_set()
         except ConfigurationError as e:

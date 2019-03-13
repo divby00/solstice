@@ -1,14 +1,14 @@
+# -*- coding: utf-8 -*-
+
+
 class Container(object):
+
     def __init__(self, x, y, w, h):
         self._x = x
         self._y = y
         self._w = w
         self._h = h
         self._secured = False
-
-    '''
-    Public methods
-    '''
 
     @property
     def x(self):
@@ -36,6 +36,7 @@ class Container(object):
 
 
 class ContainerBuilder(object):
+
     @staticmethod
     def build(container_info):
         info = container_info.split(' ')

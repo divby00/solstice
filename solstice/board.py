@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pygame
 
 hit_mask_0 = [
@@ -129,25 +131,19 @@ class Board(object):
         self._dronelife = []
         self._red_dither = []
 
-        for i in xrange(0, 3):
+        for i in range(0, 3):
             self._bluebar.insert(i, context.resource_manager.get('bluebar' + str(i)))
             self._greenbar.insert(i, context.resource_manager.get('greenbar' + str(i)))
             self._redbar.insert(i, context.resource_manager.get('redbar' + str(i)))
 
-        self._dronelife = [context.resource_manager.get('playerhit' + str(index))
-                           for index in xrange(0, 9)]
-        self._red_dither = [context.resource_manager.get('red_dither' + str(index))
-                            for index in xrange(0, 6)]
-
-    '''
-    Private methods
-    '''
+        self._dronelife = [context.resource_manager.get('playerhit' + str(index)) for index in range(0, 9)]
+        self._red_dither = [context.resource_manager.get('red_dither' + str(index)) for index in range(0, 6)]
 
     def _render_red_border(self, screen):
         if self._player.continuos_hit > 0:
             hitmask = None
-            for y in xrange(0, 18):
-                for x in xrange(0, 32):
+            for y in range(0, 18):
+                for x in range(0, 32):
                     if self._player.continuos_hit < 2:
                         hitmask = hit_mask_0
                     elif 2 <= self._player.continuos_hit < 4:
@@ -217,10 +213,6 @@ class Board(object):
     def _render_info_area(self):
         if self._player.active_info_area:
             self._player.active_info_area.render(self._board)
-
-    '''
-    Public methods
-    '''
 
     def render(self, screen):
         self._render_red_border(screen)

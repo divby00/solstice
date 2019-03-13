@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import pygame
 
 
 class BitmapFont(object):
+
     def __init__(self, surface, rows, columns):
         surface_width = surface.get_width()
         surface_height = surface.get_height()
@@ -11,22 +14,15 @@ class BitmapFont(object):
         self._glyph = []
         self._glyphs = {}
 
-        for a in xrange(0, surface_height, self._glyph_height):
-
-            for i in xrange(0, surface_width, self._glyph_width):
-                dst_surface = pygame.Surface((self._glyph_width,
-                                              self._glyph_height))
+        for a in range(0, surface_height, self._glyph_height):
+            for i in range(0, surface_width, self._glyph_width):
+                dst_surface = pygame.Surface((self._glyph_width, self._glyph_height))
 
                 if dst_surface is not None:
                     dst_surface = dst_surface.convert_alpha()
                     dst_surface.fill(self._blank)
-                    dst_surface.blit(surface, (0, 0),
-                                     (i, a, self._glyph_width, self._glyph_height), 0)
+                    dst_surface.blit(surface, (0, 0), (i, a, self._glyph_width, self._glyph_height), 0)
                     self._glyph.append(dst_surface)
-
-    '''
-    Private methods
-    '''
 
     def _render(self, text, max_width):
         texts = []
@@ -72,10 +68,6 @@ class BitmapFont(object):
 
         self._glyphs[text] = dst_surface
         return dst_surface
-
-    '''
-    Public methods
-    '''
 
     def get(self, text, max_width=None):
         if text in self._glyphs.keys():

@@ -1,21 +1,34 @@
-import pygame
+# -*- coding: utf-8 -*-
+
 from gettext import gettext as _
+
+import pygame
+from enum import IntEnum, Enum
+
+
+class ControlActionType(IntEnum):
+    KEY_PRESS = 0,
+    BUTTON_PRESS = 1,
+    AXIS_CHANGED = 2
+
+
+class ControlMovement(Enum):
+    UP = 'up',
+    DOWN = 'down',
+    LEFT = 'left',
+    RIGHT = 'right',
+    ACTION1 = 'action1',
+    ACTION2 = 'action2',
+    START = 'start'
 
 
 class ControlAction(object):
-    KEY_PRESS = 0
-    BUTTON_PRESS = 1
-    AXIS_CHANGED = 2
 
-    def __init__(self, name, mapping, type=KEY_PRESS, axis=None):
+    def __init__(self, name, mapping, control_type=ControlActionType.KEY_PRESS, axis=None):
         self._name = name
         self._mapping = mapping
-        self._type = type
+        self._type = control_type
         self._axis = axis
-
-    '''
-    Public methods
-    '''
 
     @property
     def name(self):
@@ -35,12 +48,9 @@ class ControlAction(object):
 
 
 class ControlInput(object):
+
     def __init__(self, actions):
         self._actions = actions
-
-    '''
-    Public methods
-    '''
 
     def update(self):
         raise NotImplementedError('Not yet implemented')
@@ -50,13 +60,10 @@ class ControlInput(object):
 
 
 class KeyboardInput(ControlInput):
+
     def __init__(self, actions):
         super(KeyboardInput, self).__init__(actions)
         self._keys = None
-
-    '''
-    Public methods
-    '''
 
     def update(self):
         self._keys = pygame.key.get_pressed()
@@ -74,16 +81,13 @@ class KeyboardInput(ControlInput):
 
 
 class JoystickInput(ControlInput):
+
     def __init__(self, actions, joystick):
         super(JoystickInput, self).__init__(actions)
         self._joystick = joystick
         self._joystick.init()
-        self._buttons = range(self._joystick.get_numbuttons());
+        self._buttons = range(self._joystick.get_numbuttons())
         self._axes = range(self._joystick.get_numaxes())
-
-    '''
-    Public methods
-    '''
 
     def update(self):
         pass
@@ -95,10 +99,10 @@ class JoystickInput(ControlInput):
                     if joystick_event.key == action.mapping:
                         return True
                 else:
-                    if action.type == ControlAction.BUTTON_PRESS and action.mapping in self._buttons:
+                    if action.type == ControlActionType.BUTTON_PRESS and action.mapping in self._buttons:
                         return self._joystick.get_button(action.mapping)
 
-                    if action.type == ControlAction.AXIS_CHANGED and action.axis in self._axes:
+                    if action.type == ControlActionType.AXIS_CHANGED and action.axis in self._axes:
                         return self._joystick.get_axis(action.axis) > 0 and action.mapping > 0 \
                                or self._joystick.get_axis(action.axis) < 0 and action.mapping < 0
 
@@ -106,6 +110,7 @@ class JoystickInput(ControlInput):
 
 
 class UndefinedDeviceError(Exception):
+
     def __init__(self, value):
         self.value = value
 
@@ -130,10 +135,6 @@ class Control(object):
         self._event_driven = True
         self._devices = self._register_devices()
 
-    '''
-    Private methods
-    '''
-
     def _register_devices(self):
         devices = []
         actions = []
@@ -151,26 +152,22 @@ class Control(object):
         if self._config.control_type in ['autodetect', 'joystick']:
             if pygame.joystick.get_count() > 0:
                 joystick_device = pygame.joystick.Joystick(0)
-                actions.append(ControlAction(Control.UP, self._config.axis_up, ControlAction.AXIS_CHANGED,
+                actions.append(ControlAction(Control.UP, self._config.axis_up, ControlActionType.AXIS_CHANGED,
                                              self._config.vertical_axis))
-                actions.append(ControlAction(Control.DOWN, self._config.axis_down, ControlAction.AXIS_CHANGED,
+                actions.append(ControlAction(Control.DOWN, self._config.axis_down, ControlActionType.AXIS_CHANGED,
                                              self._config.vertical_axis))
-                actions.append(ControlAction(Control.LEFT, self._config.axis_left, ControlAction.AXIS_CHANGED,
+                actions.append(ControlAction(Control.LEFT, self._config.axis_left, ControlActionType.AXIS_CHANGED,
                                              self._config.horizontal_axis))
-                actions.append(ControlAction(Control.RIGHT, self._config.axis_right, ControlAction.AXIS_CHANGED,
+                actions.append(ControlAction(Control.RIGHT, self._config.axis_right, ControlActionType.AXIS_CHANGED,
                                              self._config.horizontal_axis))
-                actions.append(ControlAction(Control.ACTION1, self._config.button_act1, ControlAction.BUTTON_PRESS))
-                actions.append(ControlAction(Control.ACTION2, self._config.button_act2, ControlAction.BUTTON_PRESS))
+                actions.append(ControlAction(Control.ACTION1, self._config.button_act1, ControlActionType.BUTTON_PRESS))
+                actions.append(ControlAction(Control.ACTION2, self._config.button_act2, ControlActionType.BUTTON_PRESS))
                 devices.append(JoystickInput(actions, joystick_device))
 
         if len(devices) == 0:
             raise UndefinedDeviceError(_('Unable to set a control device.'))
 
         return devices
-
-    '''
-    Public methods
-    '''
 
     def on(self, action_name):
         if self._event_driven:
