@@ -120,6 +120,7 @@ There're many things missing yet. The most important ones to consider the game f
 * An ending scene.
 * Create levels 7 & 8.
 * Add support for the bomb item.
+* Add time limit.
 * Fix the issue with music while playing.
 * Fix the joystick and keyboard controls redefinition.
 * Add joystick support to the UI.
