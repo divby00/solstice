@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import enemy
 import info_area
 import teleport
 import powerups
+from crusher import CrusherStatus, CrusherDirection
 
 
 class Laser(object):
@@ -452,7 +455,7 @@ class Player(object):
                 damaged_enemy = enemy_in_sight
                 break
 
-        for x in xrange(calculated_x, calculated_x_limit):
+        for x in range(calculated_x, calculated_x_limit):
             if self._current_level.is_hard(x, calculated_y):
                 a = abs(x - calculated_x) * 8
                 if self._x % 8 is not 0:
@@ -547,7 +550,8 @@ class Player(object):
     def check_in_crusher(self):
         for crusher in self._crushers:
             if self._x + 8 > crusher.x and self._x - 8 < crusher.x + crusher.w \
-                    and self._y + 8 > crusher.y and self.y - 8 < crusher.y + crusher.h:
+                    and self._y + 8 > crusher.y and self.y - 8 < crusher.y + crusher.h \
+                    and crusher.direction is CrusherDirection.DOWN:
                 return True
         return False
 

@@ -30,11 +30,28 @@ class CrusherSprites(object):
         return self._frames
 
 
+class CrusherHard(object):
+
+    def __init__(self, hard_layer, hard_tile):
+        self._hard_layer = hard_layer
+        self._hard_tile = hard_tile
+
+    @property
+    def hard_layer(self):
+        return self._hard_layer
+
+    @property
+    def hard_tile(self):
+        return self._hard_tile
+
+
 class CrusherBuilder(object):
     @staticmethod
     def build(game_context):
         results = []
+        hard_layer = [layer for layer in game_context.current_level.layers if layer.name == 'hard'][0]
         sprites = CrusherSprites([game_context.resource_manager.get('crusher0' + str(i)) for i in range(0, 4)])
+        hard = CrusherHard(hard_layer, game_context.current_level.hard_tiles[0])
 
         for crusher in game_context.current_level.crushers:
             crusher_elements = crusher.split(' ')
@@ -43,17 +60,18 @@ class CrusherBuilder(object):
             y = int(crusher_elements[2])
             w = int(crusher_elements[3])
             h = int(crusher_elements[4])
-            results.append(Crusher(id, (x, y), (w, h), sprites))
+            results.append(Crusher(id, (x, y), (w, h), sprites, hard))
 
         return results
 
 
 class Crusher(object):
 
-    def __init__(self, id, position, size, sprites):
+    def __init__(self, id, position, size, sprites, hard):
         self._id = id
         self._x, self._y = position[0] + 256, position[1] + 144
         self._sprites = sprites
+        self._hard = hard
         self._w, self._h = size
         self._status_counter = 0
         self._status = CrusherStatus.RELAXED
@@ -76,10 +94,41 @@ class Crusher(object):
                 self._vertical_direction = CrusherDirection.DOWN
                 self._status_counter = 0
 
+            self._change_height()
+            self._change_hard_zones()
+
         self._status_counter = self._status_counter + 1
 
     def render(self, screen):
         screen.blit(self._sprites.frames[self._status], (self._x, self._y))
+
+    def _change_height(self):
+        if self._status == CrusherStatus.RELAXED:
+            self._h = 24
+        elif self._status == CrusherStatus.FIRST:
+            self._h = 32
+        elif self._status == CrusherStatus.SECOND:
+            self._h = 40
+        elif self._status == CrusherStatus.THIRD:
+            self._h = 48
+
+    def _change_hard_zones(self):
+        gx = (self._x - 256) / 8
+        gy = (self._y - 144) / 8
+        gw = self._w / 8
+        # Maximum crusher height (48) / 8
+        gh = 6
+
+        # Clean hard zones
+        for a in range(gy, gy + gh):
+            for i in range(gx, gx + gw):
+                self._hard.hard_layer.set_gid(i, a, 0)
+
+        # Set new hard zones
+        gh = self._h / 8
+        for a in range(gy, gy + gh):
+            for i in range(gx, gx + gw):
+                self._hard.hard_layer.set_gid(i, a, self._hard.hard_tile)
 
     @property
     def id(self):
@@ -102,17 +151,13 @@ class Crusher(object):
         return self._h
 
     @property
+    def direction(self):
+        return self._vertical_direction
+
+    @property
     def status(self):
         return self._status
 
     @status.setter
     def status(self, value):
         self._status = value
-        if self._status == CrusherStatus.RELAXED:
-            self._h = 24
-        elif self._status == CrusherStatus.FIRST:
-            self._h = 32
-        elif self._status == CrusherStatus.SECOND:
-            self._h = 40
-        elif self._status == CrusherStatus.THIRD:
-            self._h = 48

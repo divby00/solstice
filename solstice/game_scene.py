@@ -94,7 +94,10 @@ class GameScene(scene.Scene):
     def _run_crushers(self):
         for crusher in self._crushers:
             crusher.run()
-        # in_crusher = self._player.check_in_crusher()
+
+        if self._player.check_in_crusher() and not self._player.dying and not self._player.inmortal:
+            self._player.life = self._player.life - 5
+            self._player.hit = True
 
     def _run_info_areas(self):
         if self._player.active_info_area:
