@@ -107,12 +107,22 @@ The levels information are exported with this tool as `TMX`, there is a small im
 All the data the game uses is saved in the zipped file data.zip, as all the data is read from it, you have to recreate
 this zip file each time that you change some resource. The script `zipdata.sh` is useful for this.
 
-The game has a resource manager that it is responsible of assets loading and also is used to access this resources.
+The game has a resource manager that it is responsible of assets loading and also is used to access these resources.
 Basically, it is a dictionary with the name of the asset that you want to obtain and the data itself. The definition of
 all the resources is in file `resources.xml`, for each resource is a field called name, this is the key that you have to
 use with resource manager (`resource_manager.py`).
 
+## What is left
 
+There're many things missing yet. The most important ones to consider the game finished are:
 
-
-
+* A game over scene.
+* An ending scene.
+* Create levels 7 & 8.
+* Add support for the bomb item.
+* Fix the issue with music while playing.
+* Fix the joystick and keyboard controls redefinition.
+* Add joystick support to the UI.
+* Find some way to serialize the level data to support coming back to the previous levels or remove this once for all. (ElevatorScene).
+* More animations.
+* More sounds.

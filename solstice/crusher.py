@@ -116,6 +116,7 @@ class Crusher(object):
         gx = (self._x - 256) / 8
         gy = (self._y - 144) / 8
         gw = self._w / 8
+
         # Maximum crusher height (48) / 8
         gh = 6
 
