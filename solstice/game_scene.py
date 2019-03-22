@@ -259,7 +259,8 @@ class GameScene(scene.Scene):
         self._renderer_object = renderer.Renderer(self)
         self._items = item.ItemBuilder.build(self, self._resource_manager,
                                              self._current_level.items)
-        self._sound_player.play_sample('level01_song')
+        self._sound_player.load_music('level01_song')
+        self._sound_player.play_music()
         self._control.event_driven = False
 
     def get_renderer(self):

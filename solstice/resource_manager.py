@@ -22,7 +22,7 @@ class ResourceManager(object):
         self._context = context
         self._zip_file = self._zip_file_open(zip_file_name)
         self._animation_loader = animation.AnimationLoader(self._zip_file)
-        xml_root = self._read_resources_file(xml_file_name)
+        self._xml_root = self._read_resources_file(xml_file_name)
         self._images_cache = {}
         self._images = {}
         self._songs = {}
@@ -30,11 +30,11 @@ class ResourceManager(object):
         self._fonts = {}
         self._levels = {}
         self._animations = {}
-        self._resources = xml_root.findall('resource')
-        self._total_resources = len(xml_root.findall('resource'))
+        self._resources = self._xml_root.findall('resource')
+        self._total_resources = len(self._xml_root.findall('resource'))
         self._actual_resource = 0
 
-        for resource in xml_root.findall('resource'):
+        for resource in self._xml_root.findall('resource'):
             if resource.get('type') == 'gfx':
                 self._gfx_load(resource)
                 self._actual_resource += 1
@@ -123,6 +123,16 @@ class ResourceManager(object):
         if song is not None:
             self._songs[name] = song
 
+    def _load_song_reloading(self, song_name):
+        song = None
+        for resource in self._xml_root.findall('resource'):
+            if resource.get('type') == 'music':
+                src, name = ResourceManager.get_resource_common_info(resource)
+                if name == song_name:
+                    song_data = self._zip_file.read(src)
+                    song = io.BytesIO(song_data)
+        return song
+
     def _load_sample(self, resource):
         src, name = ResourceManager.get_resource_common_info(resource)
         sample_data = self._zip_file.read(src)
@@ -195,6 +205,9 @@ class ResourceManager(object):
                 raise ResourceNotFoundError(message)
         except ResourceNotFoundError as e:
             print(e.value)
+
+    def get_reloading(self, resource_name):
+        return self._load_song_reloading(resource_name)
 
     @property
     def animations(self):

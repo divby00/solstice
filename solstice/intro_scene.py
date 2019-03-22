@@ -156,7 +156,6 @@ class IntroScene(Scene):
         self._sun = context.resource_manager.get('sun')
         self._plant = context.resource_manager.get('plant')
         self._font_dither = context.resource_manager.get('font_dither')
-        self._sound_player.load_music('title')
         self._stars = Stars(context.resource_manager, (self._menu_image.get_width(), 145))
         self._skip_text = self._font_white.get(_('Press start to skip'), 256)
         self._intro_text = []
@@ -207,6 +206,7 @@ class IntroScene(Scene):
         self._title_fade = -1
         self._credits.on_start()
         self._menu_group.visible = False
+        self._sound_player.load_music('intro')
         self._sound_player.play_music()
         self._control.event_driven = True
 
