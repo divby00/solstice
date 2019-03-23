@@ -118,10 +118,7 @@ class ResourceManager(object):
 
     def _load_song(self, resource):
         src, name = ResourceManager.get_resource_common_info(resource)
-        song_data = self._zip_file.read(src)
-        song = io.BytesIO(song_data)
-        if song is not None:
-            self._songs[name] = song
+        self._songs[name] = True
 
     def _load_song_reloading(self, song_name):
         song = None
@@ -178,7 +175,6 @@ class ResourceManager(object):
 
     def exists(self, res_name):
         if res_name in self._images \
-                or res_name in self._songs \
                 or res_name in self._fonts \
                 or res_name in self._samples \
                 or res_name in self._levels:
@@ -191,7 +187,7 @@ class ResourceManager(object):
             if resource_name in self._images:
                 return self._images[resource_name]
             elif resource_name in self._songs:
-                return self._songs[resource_name]
+                return self._load_song_reloading(resource_name)
             elif resource_name in self._fonts:
                 return self._fonts[resource_name]
             elif resource_name in self._samples:
@@ -205,9 +201,6 @@ class ResourceManager(object):
                 raise ResourceNotFoundError(message)
         except ResourceNotFoundError as e:
             print(e.value)
-
-    def get_reloading(self, resource_name):
-        return self._load_song_reloading(resource_name)
 
     @property
     def animations(self):

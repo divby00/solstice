@@ -156,7 +156,6 @@ class Scene(object):
 
     def enter_game(self):
         if self._name == 'intro':
-            pygame.mixer.music.stop()
             self._scene_manager.set('game')
         else:
             self._menu_group.visible = False

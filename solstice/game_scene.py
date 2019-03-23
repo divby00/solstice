@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import board
 import container
 import control
 import enemy
@@ -10,12 +9,13 @@ import magnetic
 import nothrust
 import particles
 import particles_manager
-import player
 import powerups
 import rails
 import renderer
 import scene
 import teleport
+from board import Board
+from player import Player
 from crusher import CrusherBuilder
 from life_exchanger import LifeExchangerBuilder
 from lock import BeamBarriersBuilder, LockBuilder
@@ -35,7 +35,7 @@ class GameScene(scene.Scene):
         self._rails = None
         self._container = None
         self._enemies = None
-        self._level = context.resource_manager.get('level00')
+        self._level = context.resource_manager.get('level01')
         self._current_level = None
         self._renderer_object = None
         self._enemies_renderer = None
@@ -46,8 +46,8 @@ class GameScene(scene.Scene):
         self._crushers = None
         self._particles_manager = GameScene._init_particles(context.resource_manager)
         context.particles_manager = self._particles_manager
-        self._player = player.Player(context, self)
-        self._board = board.Board(context, self._player)
+        self._player = Player(context, self)
+        self._board = Board(context, self._player)
         self._animations = context.resource_manager.animations
         self._resource_manager = context.resource_manager
         self._sound_player = context.sound_player
@@ -259,7 +259,8 @@ class GameScene(scene.Scene):
         self._renderer_object = renderer.Renderer(self)
         self._items = item.ItemBuilder.build(self, self._resource_manager,
                                              self._current_level.items)
-        self._sound_player.load_music('level01_song')
+        song = self._scene_data + 1 if self._scene_data else 1
+        self._sound_player.load_music('level0' + str(song) + '_song')
         self._sound_player.play_music()
         self._control.event_driven = False
 
@@ -270,7 +271,7 @@ class GameScene(scene.Scene):
         return self._current_level.layers
 
     def on_quit(self):
-        self._sound_player.stop()
+        self._sound_player.stop_music()
 
     def run(self):
         if self._on_elevator:

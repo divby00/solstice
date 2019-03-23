@@ -6,12 +6,7 @@ class SoundPlayer(object):
         self._context = context
         self._music = self._context.config.music
         self._sound = self._context.config.sound
-        self._song = None
         self._samples = {}
-
-    '''
-    Public methods
-    '''
 
     def play(self, sound):
         if self._sound:
@@ -24,10 +19,10 @@ class SoundPlayer(object):
 
     def load_music(self, song_name):
         if self._music:
-            self._song = self._context.resource_manager.get(song_name)
             if pygame.mixer.music.get_busy():
                 pygame.mixer.music.stop()
-            pygame.mixer.music.load(self._song)
+            song = self._context.resource_manager.get(song_name)
+            pygame.mixer.music.load(song)
 
     def play_sample(self, sample_name):
         if self._sound:
