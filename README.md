@@ -1,8 +1,7 @@
 # Solstice
 
-```
-IMPORTANT: This project is not longer under development, anyway, it doesn't mean that the remake has died, I've changed the technology and you can find the final remake in the repository 'solstice-godot', or in the url http://love4retro.itch.io/solstice. I keep this for historic purposes.
-```
+
+## IMPORTANT: This project is not longer under development, anyway, it doesn't mean that the remake has died, I've changed the technology and you can find the final remake in the repository 'solstice-godot', or in the url http://love4retro.itch.io/solstice. I keep this for historic purposes.
 
 This project is a remake of Mikro-Gen's Equinox, a great game that I enjoyed a lot when I was a child.
 
